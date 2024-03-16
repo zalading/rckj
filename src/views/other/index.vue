@@ -48,7 +48,44 @@ export default {
         { name: '重庆', value: 70, pos: [108.384366, 30.439702] },
         { name: '黑龙江', value: 70, pos: [127, 48] },
         { name: '内蒙古', value: 30, pos: [110.3467, 41.4899] }
-      ],
+        ],
+        // provinceList: [
+        // { name: '吉林', value:[125.8154, 44.2584,34] },
+        // { name: '北京', value:[116.4551, 40.2539,56] },
+        // { name: '辽宁', value:[123.1238, 42.1216,78] },
+        // { name: '河北', value:[114.4995, 38.1006,46] },
+        // { name: '天津', value:[117.4219, 39.4189,88] },
+        // { name: '山西', value:[112.3352, 37.9413,24] },
+        // { name: '陕西', value:[109.1162, 34.2004,18] },
+        // { name: '甘肃', value:[103.5901, 36.3043,46] },
+        // { name: '宁夏', value:[106.3586, 38.1775,13] },
+        // { name: '四川', value:[103.9526, 30.7617,78] },
+        // { name: '山东', value:[117.1582, 36.8701,22] },
+        // { name: '河南', value:[113.4668, 34.6234,56] },
+        // { name: '江苏', value:[118.8062, 31.9208,53] },
+        // { name: '湖北', value:[114.3896, 30.6628,98] },
+        // { name: '浙江', value:[119.5313, 29.8773,58] },
+        // { name: '福建', value:[119.4543, 25.9222,96] },
+        // { name: '江西', value:[116.0046, 28.6633,57] },
+        // { name: '湖南', value:[113.0823, 28.2568,76] },
+        // { name: '贵州', value:[106.6992, 26.7682,76] },
+        // { name: '云南', value:[102.9199, 25.4663,94] },
+        // { name: '海南', value:[110.3893, 19.8516,38] },
+        // { name: '上海', value:[121.4648, 31.2891,48] },
+        // { name: '香港', value:[114.3, 22.9,38] },
+        // { name: '澳门', value:[113.5, 22.2,61] },
+        // { name: '台湾', value:[121, 23,26] },
+        // { name: '广东', value:[113.12244, 23.009505,39] },
+        // { name: '安徽', value:[117.29, 32.0581,68] },
+        // { name: '广西', value:[108.479, 23.1152,48] },
+        // { name: '青海', value:[99.4038, 36.8207,48] },
+        // { name: '新疆', value:[87.9236, 43.5883,94] },
+        // { name: '西藏', value:[88.388277, 31.56375,49] },
+        // { name: '重庆', value:[108.384366, 30.439702,39] },
+        // { name: '黑龙江', value:[127, 48,48] },
+        // { name: '内蒙古', value:[110.3467, 41.4899,48] }
+        // ],
+        lowerPrice:20
         };
   },
   mounted() {
@@ -85,15 +122,31 @@ export default {
                             color: '#fff', // 文字颜色
                             fontSize: 12, // 文字大小
                           fontWeight: 'bold', // 文字大小
-                          
                     },
-                        data:this.provinceList,
+                    data: this.provinceList,
+                    // regions: this.provinceList.map((area) => {
+                      // return {
+                        // name: area.name,
                         itemStyle: {
-                            color: '#4389ED', // 地图背景颜色
-                            borderWidth: 1, // 分界线wdith
-                            borderColor: '#61CFF8', // 分界线颜色
-                            opacity: 0.92
+                          color: function (params) {
+                            if (params.value < 20) {
+                              return 'red'
+                            } else {
+                              return '#4389ED'
+                            }
+                          },
+                                    borderWidth: 1, // 分界线wdith
+                                    borderColor: '#61CFF8', // 分界线颜色
                         },
+                      // }
+            // }),
+                            // itemStyle: {
+                                  // areaColor:'red',
+                                    // color: 'red', // 地图背景颜色
+                                    // borderWidth: 1, // 分界线wdith
+                                    // borderColor: '#61CFF8', // 分界线颜色
+                                    // opacity: 0.92
+                                // },
                         emphasis: {
                             label: {
                                 show: true, // 是否显示高亮
@@ -140,6 +193,7 @@ export default {
     linstenProvinceClick() {
       // 接收一个对象， 解构出的data对象值为series数组中data数据源中的对象
       this.myChart.on('click', ({ data }) => {
+        console.log('111111');
         // if (data.name == '浙江') {
         //   this.getlist=this.zhejiang
         // } else if (data.name == '上海') {
@@ -164,8 +218,22 @@ export default {
         };
         this.myChart.setOption(option);
       });
-    },
-    },
+      },
+    
+  // 获取地图数据区域对应的颜色
+    getAreaColorByValue(areaCount) {
+    let color = '#4389ED'
+      if (areaCount >= this.lowerPrice) {
+        color = '#4389ED' // 绿色
+      } else if (areaCount == 0) {
+        color='skyblue'
+      }
+      else {
+        color = 'red'
+      }
+      return color
+    }
+  },
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div ref="myMap" style="width: 100%; height: 620px"></div>
+    <div ref="myMap" style="width: 100%; height: 500px"></div>
   </div>
 </template>
 
@@ -10,9 +10,11 @@ import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
 import "echarts-gl"
 export default {
   name: 'ThreeMap',
+  props: ['price'],
     data() {
       return {
-        myChart:null,
+        myChart: null,
+        num:21,
         provinceList: [
         { name: '吉林', value: 36, pos: [125.8154, 44.2584] },
         { name: '北京', value: 32, pos: [116.4551, 40.2539] },
@@ -55,25 +57,31 @@ export default {
         this.initMap();
     },
     methods: {
-        initMap() {
+      initMap() {
+          let num=this.price
             this.myChart = this.echarts.init(this.$refs.myMap);
             this.myChart.showLoading();
             this.myChart.hideLoading();
           this.echarts.registerMap('myMap', chinaJson);
             let option = {
               tooltip: {},//自定义代码
+              layoutCenter: ['50%', '50%'],//设置地图在画布的位置
+              layoutSize: 1000,  //设置地图大小
               series: [
                 {
-                      layoutCenter:['10%','10%'],
                         type: 'map3D',
                         name: '地区',
                         selectedMode: 'single', // 地图高亮单选
                         regionHeight: 4, // 地图高度
                         map: 'myMap',
                         viewControl: {
-                            distance: 88, // 地图视角 控制初始大小
+                            // distance: 88, // 地图视角 控制初始大小
                             alpha: 55,// 倾斜角度
-                            rotateSensitivity: [1, 1]
+                          rotateSensitivity: [1, 1],
+                          projection: 'orthographic',
+                          orthographicSize: 75, //控制地图大小
+                          maxOrthographicSize: 75,
+                          minOrthographicSize: 75,
                         },
                         label: {
                             show: true, // 是否显示名字
@@ -82,8 +90,14 @@ export default {
                           fontWeight: 'bold', // 文字大小
                     },
                         data:this.provinceList,
-                        itemStyle: {
-                            color: '#4389ED', // 地图背景颜色
+                  itemStyle: {
+                    color: function (params) {
+                            if (params.value < num) {
+                              return 'red'
+                            } else {
+                              return '#4389ED'
+                            }
+                          }, // 地图背景颜色
                             borderWidth: 1, // 分界线wdith
                             borderColor: '#61CFF8', // 分界线颜色
                             opacity: 1
@@ -103,7 +117,7 @@ export default {
                                 borderWidth: 10, // 分界线wdith
                                 borderColor: '#6BECF5'// 分界线颜色
                             }
-                        },
+                  },
                         light: {
                             main: {
                                 color: '#fff',
@@ -118,7 +132,7 @@ export default {
                                 intensity: 0.6
                             }
                         }
-                    }
+                    },
               ],
               // series: [{
               //   type: 'bar3D',
@@ -178,7 +192,7 @@ export default {
     linstenProvinceClick() {
       // 接收一个对象， 解构出的data对象值为series数组中data数据源中的对象
       this.myChart.on('click', ({ data }) => {
-        console.log('11111');
+        console.log('this.price',this.price);
         // if (data.name == '浙江') {
         //   this.getlist=this.zhejiang
         // } else if (data.name == '上海') {
@@ -203,7 +217,7 @@ export default {
         };
         this.myChart.setOption(option);
       });
-    },
+      },
     },
 }
 </script>

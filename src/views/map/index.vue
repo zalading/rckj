@@ -1,7 +1,8 @@
 <template>
   <div class="wrap">
     <header class="header">
-      <div class="title" >商品区域分布展示
+      <div class="title" >
+        商品区域分布展示
         <div class="white"></div>
       </div>
       <sideNav />
@@ -27,40 +28,70 @@
             </div>
             <div class="goodNum">
              <p>￥
-              <CountTo :start-val="0" :end-val="21" :duration="1000"></CountTo>
+              <CountTo :start-val="0" :end-val="lowerPrice" :duration="1000"></CountTo>
              </p>
              <p>瑞幸</p>
-             <p><CountTo :startVal='0' :endVal='223' :duration='1000' /></p>
+             <p><CountTo :startVal='0' :endVal='lowerNum' :duration='1000' /></p>
             </div>
         </div>
         <div class="map" ref="mapRef">
-          <ThreeMap></ThreeMap>
+          <ThreeMap :price="lowerPrice"></ThreeMap>
         </div>
       </div>
       <div class="right">
-        <div class="saleAvager">
-          <p>地区销量平均值</p>
-          <div class="bingtu" ref=""></div>
-        </div>
         <div class="priceAvager">
-          <p>地区价格平均值</p>
-          <div class="bingtu" ref=""></div>
+          <h4>地区价格平均值</h4>
+          <div class="bingtu">
+            <div class="title">
+              <p>地区</p>
+              <p>平均价格</p>
+            </div>
+            <div class="title" v-for="(item,index) in avapriceData" :key="index">
+              <p>{{item.area}}</p>
+              <p>￥{{item.avaPrice}}</p>
+            </div>
+          </div>
         </div>
+        <div class="saleAvager">
+          <h4>链接上下架情况</h4>
+          <div class="bingtu">
+            <div class="showGoods">
+              <div class="shangpin" v-for="(item,index) in coffee" :key="index">
+                <div class="s-left">
+                  <img :src="item.imgurl" alt="">
+                </div>
+                <div class="s-right">
+                  <p>{{ item.title }}</p>
+                  <div class="s-title">
+                    店铺：{{ item.shop }}
+                  </div>
+                  <div class="price">
+                    <p>￥{{ item.price }}</p>
+                    <p>销售量{{ item.del }}</p>
+                  </div>
+                  <p>地区：{{ item.location }}</p>
+                </div>
+                <div class="link">
+                  <p>{{ item.link }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </div> 
     </div>
   </div>
 </template>
 <script>
 import * as echarts from 'echarts'
-// import chinaJson from '@/utils/china.json';
-// import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
 import CountTo from 'vue-count-to';
 import ThreeMap from '@/views/map/components/Threemap' 
 export default {
   name:'MapIndex',
   components: {
     CountTo,
-    ThreeMap
+    ThreeMap,
   },
   data() {
     return {
@@ -99,16 +130,36 @@ export default {
         { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 南京', price: 35, del: 96, shop: '苏宁易购官方旗舰店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp' }
       ],
       coffee: [
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '福建 泉州', price: 999, del: 16, shop: 'Lantek兰泰克食品', imgurl: 'https://img.alicdn.com/imgextra/i4/314020065/O1CN011rlLuB1CLoUDxR5VH_!!0-saturn_solar.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '福建 泉州', price: 399, del: 68, shop: 'Lantek兰泰克食品', imgurl: 'https://img.alicdn.com/imgextra/i1/314020065/O1CN0194jVQR1CLoZ2kHKGG_!!0-saturn_solar.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '广东 广州', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i3/2070505646/O1CN01MC4moY1rZv6RmScFk_!!2070505646.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '浙江 温州', price: 5.5, del: 96, shop: '毛球美食优惠', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 134, del: 96, shop: '夸香特产直销', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i1/2215864919718/O1CN01GZ6Unp2LetpxbPM8u_!!2215864919718.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 苏州', price: 35, del: 96, shop: '发财树树陆店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp' },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '福建 泉州', price: 999, del: 16, shop: 'Lantek兰泰克食品', imgurl: 'https://img.alicdn.com/imgextra/i4/314020065/O1CN011rlLuB1CLoUDxR5VH_!!0-saturn_solar.jpg_580x580q90.jpg_.webp',link:'上架中' },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '福建 泉州', price: 399, del: 68, shop: 'Lantek兰泰克食品', imgurl: 'https://img.alicdn.com/imgextra/i1/314020065/O1CN0194jVQR1CLoZ2kHKGG_!!0-saturn_solar.jpg_580x580q90.jpg_.webp' ,link:'已下架'},
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '广东 广州', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i3/2070505646/O1CN01MC4moY1rZv6RmScFk_!!2070505646.jpg_580x580q90.jpg_.webp' ,link:'已下架' },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '浙江 温州', price: 5.5, del: 96, shop: '毛球美食优惠', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' ,link:'未上架' },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 134, del: 96, shop: '夸香特产直销', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i1/2215864919718/O1CN01GZ6Unp2LetpxbPM8u_!!2215864919718.jpg_580x580q90.jpg_.webp' ,link:'已下架' },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 苏州', price: 35, del: 96, shop: '发财树树陆店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
       ],
       getlist: [],
       searchValue: '',  //搜索名称
-      areaSale: [],
+      // areaSale: [],
+      avasaleData: [
+        {area:'新疆',avaSale:'345'},
+        {area:'吉林',avaSale:'277'},
+        {area:'安徽',avaSale:'422'},
+        {area:'浙江',avaSale:'123'},
+        {area:'安庆',avaSale:'232'},
+        {area:'山西',avaSale:'246'},
+        {area:'河北',avaSale:'342'},
+      ],
+      avapriceData: [
+        {area:'新疆',avaPrice:'345'},
+        {area:'吉林',avaPrice:'277'},
+        {area:'安徽',avaPrice:'422'},
+        {area:'浙江',avaPrice:'123'},
+        {area:'安庆',avaPrice:'232'},
+        {area:'山西',avaPrice:'246'},
+        {area:'河北',avaPrice:'342'},
+      ],
+      lowerPrice: 21,//最低价
+      lowerNum:223 //最低数量
     };
   },
   created() {
@@ -142,17 +193,18 @@ export default {
           {
             name: '区域销量占比分析',
             type: 'pie',
-            radius: ['35%','70%'],
-            center:['55%','50%'],
+            radius: ['40','100'],
+            center: ['55%', '50%'],
+            // roseType: 'area',
             data: [
-        { name: '吉林', value: 36,itemStyle:{color:'#84f1ff'}},
-        { name: '北京', value: 32,itemStyle:{color:'#6a92f5'} },
-        { name: '辽宁', value: 54,itemStyle:{color:'#513bff'} },
-        { name: '河北', value: 23,itemStyle:{color:'#7242f0'} },
-        { name: '天津', value: 78,itemStyle:{color:'#986cfd'} },
-        { name: '山西', value: 30,itemStyle:{color:'#3e6ff7'} },
-        { name: '浙江', value: 30,itemStyle:{color:'#62edfb'} },
-        { name: '内蒙古', value: 34,itemStyle:{color:'#4e6ebb'} }
+              { name: '吉林', value: 86,itemStyle:{color:'#84f1ff'}},
+              { name: '北京', value: 72,itemStyle:{color:'#6a92f5'} },
+              { name: '辽宁', value: 64,itemStyle:{color:'#513bff'} },
+              { name: '河北', value: 53,itemStyle:{color:'#7242f0'} },
+              { name: '天津', value: 48,itemStyle:{color:'#986cfd'} },
+              { name: '山西', value: 34,itemStyle:{color:'#3e6ff7'} },
+              { name: '浙江', value: 30,itemStyle:{color:'#62edfb'} },
+              { name: '内蒙古', value: 24,itemStyle:{color:'#4e6ebb'} }
             ],
             // data:this.areaSale,
             emphasis: {
@@ -244,164 +296,6 @@ export default {
 
 option && myChart.setOption(option);
     },
-
-    //地图
-    // initChart() {
-    //   const option = {
-    //     tooltip: {
-    //       //提示框组件
-    //       show: true,
-    //       trigger: 'item'
-    //     },
-    //     visualMap: {
-    //       textStyle: {
-    //         color: '#fff'
-    //       },
-    //       show: true, // 是否显示视觉映射组件
-    //       min: 0, // 视觉映射组件的最小值
-    //       max: 100, // 视觉映射组件的最大值
-    //       left: '2%', // 视觉映射组件的左边界
-    //       bottom: '12%', // 视觉映射组件的上边界
-    //       calculable: true, // 是否开启视觉映射组件的拖拽缩放功能
-    //       inRange: {
-    //         // 视觉映射组件的色彩映射区间
-    //         // 不同区间的颜色值
-    //         color: [
-    //           '#6caad7',
-    //           '#514aca',
-    //           '#4243c2',
-    //           '#4d32a5',
-    //           '#3892dc',
-    //           '#5f1e83',
-    //           '#25abde',
-    //           '#3497dc',
-    //           '#6f8dcd'
-    //         ]
-    //       }
-    //     },
-    //     geo: {
-    //           show: true,
-    //       map: 'china',
-    //       left: '10%', //移动地图在容器中的位置
-    //         top: '8%',
-    //           label: {
-    //             show:false
-    //           },
-    //           roam: false,
-    //           itemStyle: {
-    //             normal: {
-    //               areaColor: '#151d4c',
-    //               //borderWidth: 2,//设置外层边框
-    //                   borderColor:'#79bbe9',
-    //             },
-    //             emphasis: {
-    //                   show:false,
-    //                 }
-    //               }
-    //         },
-    //     series: [
-    //       {
-    //         name: '中国',
-    //         type: 'map',
-    //         map: 'china',
-    //         left: '10%', //移动地图在容器中的位置
-    //         top: '8%',
-    //         label: {
-    //           show: true,
-    //           color: '#fff',
-    //           fontSize: 10
-    //         },
-    //         roam:false,
-    //         itemStyle: {
-    //           normal: {
-    //             areaColor: '#151d4c',
-    //             borderWidth: 1, // 区域边框宽度，默认为1，表示边框宽度为1px
-    //             borderColor: '#5d7695',// 区域边框颜色值，默认为#e1e1e1，表示浅灰色边框
-
-    //           }
-    //           // opacity: 0.7,
-    //           // shadowBlur: 3,
-    //           // shadowColor: "#1f343a",
-    //           // shadowOffsetX: 4,
-    //           // shadowOffsetY: 4,
-    //         },
-    //         emphasis: {
-    //           // 选中状态下的样式设置
-    //           label: {
-    //             // 标签样式设置
-    //             show: true
-    //           },
-    //           itemStyle: {
-    //             // 区域填充样式设置
-    //             areaColor: '#90c31d',
-    //             shadowBlur: 3,
-    //             shadowColor: "#1f343a",
-    //             shadowOffsetX: 4,
-    //             shadowOffsetY: 4,
-    //           }
-    //         },
-    //         data: this.provinceList
-    //       }
-    //     ]
-    //   };
-    //   this.chartRef = this.echarts.init(this.$refs.mapRef);
-    //   this.linstenProvinceClick();
-    //   this.chartRef.setOption(option);
-    //   window.addEventListener('resize', this.adaptScreen);
-    // },
-    // adaptScreen() {
-    //   this.chartRef.resize();
-    // },
-    // linstenProvinceClick() {
-    //   // 接收一个对象， 解构出的data对象值为series数组中data数据源中的对象
-    //   this.chartRef.on('click', ({ data }) => {
-    //     if (data.name == '浙江') {
-    //       this.getlist=this.zhejiang
-    //     } else if (data.name == '上海') {
-    //       this.getlist=this.shanghai
-    //     } else {
-    //       return
-    //     }
-    //     if (!data || !data.name) return;
-    //     const provinceName = data.name;
-    //     const provinceList = cloneDeep(this.provinceList);
-    //     provinceList?.forEach(item => {
-    //       if (item.name === provinceName) {
-    //         item.value = 100;
-    //       }
-    //     });
-    //     const option = {
-    //       series: [
-    //         {
-    //           data: provinceList
-    //         }
-    //       ]
-    //     };
-    //     this.chartRef.setOption(option);
-    //   });
-    // },
-
-    //全部搜索
-    // AllGoods() {
-    //   this.searchValue = ''
-    //   this.getlist=this.zhejiang
-    // },
-    //搜索功能
-    // changeGoods() {
-    //   clearTimeout(this.Timer)
-    //   this.Timer = setTimeout(() => {
-    //     if (this.searchValue === '') {
-    //       this.getlist=this.zhejiang
-    //     } else if (this.searchValue === '五粮醇') {
-    //       this.getlist=this.wuliangye
-    //     } else if(this.searchValue === '瑞幸咖啡') {
-    //       this.getlist=this.coffee
-    //     } else {
-    //       console.log('没有该选项');
-    //     }
-    //   },300)
-      
-    // },
   }
 };
 </script>
@@ -413,16 +307,18 @@ option && myChart.setOption(option);
 }
 .wrap {
   width: 100%;
-  height: 1070px;
-  background-image: url(@/assets/mapbgc.png);
+  height: 100%;
+  background-image: url(@/assets/mapbgc.jpg);
+  // position: fixed;
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
+    // background-position: center;
   .header {
     width: 100%;
     height: 110px;
     // position: relative;
     .title {
+      width: 100%;
       position: relative;
       display: flex;
       justify-content: center;
@@ -458,9 +354,8 @@ option && myChart.setOption(option);
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
-          width: 505px;
-          height: 390px;
-          margin-bottom: 30px;
+          width: 500px;
+          height: 383px;
           p{
             color: #fff;
             height: 100px;
@@ -479,12 +374,12 @@ option && myChart.setOption(option);
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
-          width: 515px;
-          height: 396px;
+          width: 500px;
+          height: 383px;
           p{
             color: #fff;
             height: 100px;
-            line-height: 157px;
+            line-height: 150px;
             font-size: 24px;
             text-align: center;
             text-shadow: -2px -2px 4px  rgba(29, 99, 191, 1), 2px 2px 4px  rgba(29, 99, 191, 1);
@@ -501,10 +396,10 @@ option && myChart.setOption(option);
           background-image: url(@/assets/yuantai.png);
           background-size: cover;
           background-repeat: no-repeat;
-          width: 454px;
+          width: 500px;
           height: 263px;
-          margin-top: 25px;
-          margin-left: 150px;
+          margin-top: 10px;
+          margin-left: 120px;
           .goodName{
             color: rgba(255, 255, 255, 0.8);
             font-size: 24px;
@@ -526,7 +421,8 @@ option && myChart.setOption(option);
           }
         }
         .map {
-          height: 625px;
+          // height: 625px;
+          height: 500px;
           width: 100%;
         }
       }
@@ -538,16 +434,86 @@ option && myChart.setOption(option);
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
-          width: 505px;
-          height: 390px;
-          margin-bottom: 30px;
-          p{
+          width: 500px;
+          height: 383px;
+          // height: 480px;
+          // margin-bottom: 30px;
+          h4{
             color: #fff;
             height: 100px;
+            // line-height: 192px;
             line-height: 150px;
             font-size: 24px;
             text-align: center;
             text-shadow: -2px -2px 4px  rgba(29, 99, 191, 1), 2px 2px 4px  rgba(29, 99, 191, 1);
+          }
+          .bingtu{
+            padding: 10px 30px;
+            .showGoods{
+        height:245px;
+        width:440px;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+            width: 4px; /* 设置滚动条的宽度 */
+        }
+        &::-webkit-scrollbar-track {
+            background-color: #1d4366 !important; /* 设置背景色 */
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #388fcd; /* 设置滑块的颜色 */
+        }
+        .shangpin{
+          display: flex;
+          width: 430px;
+          .s-left{
+            width: 100px;
+            height: 100px;
+            img{
+              width: 100px;
+              height: 100px;
+              border-radius: 5px;
+            }
+          }
+          .s-right{
+            width: 245px;
+            height: 100px;
+            margin-left: 10px;
+            p{
+              margin: 2px  !important;
+              font-size: 12px;
+              color: #dad4d4;
+              padding-top: 5px;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              // &:hover{
+              //   overflow: visible;
+              // }
+            }
+            .s-title{
+              width: 245px;
+              color: #dad4d4;
+              font-size: 12px;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+            }
+            .price{
+              display: flex;
+              justify-content: space-between;
+            }
+          }
+          .link{
+            height: 100px;
+            width: 72px;
+            color: #fff;
+            font-size: 12px;
+            text-align: center;
+            line-height: 72px;
+          }
+        }
+
+      }
           }
         }
         .priceAvager{
@@ -555,10 +521,10 @@ option && myChart.setOption(option);
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
-          width: 505px;
-          height: 390px;
+          width: 500px;
+          height: 383px;
           margin-bottom: 30px;
-          p{
+          h4{
             color: #fff;
             height: 100px;
             line-height: 150px;
@@ -566,85 +532,22 @@ option && myChart.setOption(option);
             text-align: center;
             text-shadow: -2px -2px 4px  rgba(29, 99, 191, 1), 2px 2px 4px  rgba(29, 99, 191, 1);
           }
+          .bingtu{
+            padding: 20px 30px;
+            .title{
+              width: 380px;
+              height: 30px;
+              display: flex;
+              justify-content: space-between;
+              color: #fff;
+              p{
+                width: 190px;
+                text-align: center;
+
+              }
+            }
+          }
         }
-//       .goods{
-//         margin-bottom: 40px;
-//        span{
-//         padding: 5px;
-//        }
-//        .el-icon-search{
-//         margin: 0 5px;
-//         color: #ccc;
-//        }
-//        input{
-//         margin-left: 5px;
-//         background-color: transparent;
-//         border: none;
-//         color: #fff;
-//         &:focus{
-//         outline:1px solid transparent;
-// }
-//        }
-//       }
-//       .showGoods{
-//         height:760px;
-//         width: 400px;
-//         overflow-y: scroll;
-//         &::-webkit-scrollbar {
-//             width: 4px; /* 设置滚动条的宽度 */
-//         }
-
-//         &::-webkit-scrollbar-track {
-//             background-color: #1d4366 !important; /* 设置背景色 */
-//         }
-
-//         &::-webkit-scrollbar-thumb {
-//             background-color: #388fcd; /* 设置滑块的颜色 */
-//         }
-//         .shangpin{
-//           display: flex;
-//           width: 350px;
-//           // border: 1px solid #fff;
-//           .s-left{
-//             width: 100px;
-//             height: 100px;
-//             border-radius: 5px;
-//             overflow: hidden;
-//             img{
-//               width: 100px;
-//               height: 100%;
-//             }
-//           }
-//           .s-right{
-//             // width: 110px;
-//             height: 100px;
-//             p{
-//               margin: 2px  !important;
-//               font-size: 12px;
-//               color: #dad4d4;
-//               padding-top: 5px;
-//               white-space: nowrap;
-//               text-overflow: ellipsis;
-//               overflow: hidden;
-//               // &:hover{
-//               //   overflow: visible;
-//               // }
-//             }
-//             .s-title{
-//               width: 240px;
-//               // height: 36px;
-//               white-space: nowrap;
-//               text-overflow: ellipsis;
-//               overflow: hidden;
-//             }
-//             .price{
-//               display: flex;
-//               justify-content: space-between;
-//             }
-//           }
-//         }
-
-//       }
     }
   }
 }
