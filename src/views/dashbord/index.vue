@@ -1,151 +1,154 @@
 <template>
-  <div id="app">
-    <!-- <router-view></router-view> -->
+  <div class="app">
+    <div class="one">
     <div class="header">
-        <img src="../../assets/logo.png" alt="">
-        <i class="el-icon-user" @click="openLogin"></i>
-      <!-- <button @click="openLogin">Login</button> -->
+        <div><img src="../../assets/shouye/logo.png" alt="" class="logo"></div>
+        <!-- 导航栏 -->
+        <div class="nav" @mouseenter="enter" @mouseleave="leave">
+          <ul>
+            <li class="nav-item active">首页</li>
+            <li class="nav-item" @click="gobusiness">事业中心</li>
+            <li class="nav-item" @click="gotechnology">技术实力</li>
+            <li class="nav-item" @click="goabout">关于苒辰</li>
+            <li class="nav-item" @click="gonews">新闻中心</li>
+            <li class="nav-item" @click="gorelate">联系苒辰</li>
+          </ul>
+        </div>
+        <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon">
     </div>
-    <!-- 导航栏 -->
-    <div class="nav" @mouseenter="enter" @mouseleave="leave">
-      <ul>
-        <li class="nav-item">关于苒辰</li>
-        <li class="nav-item">事业中心</li>
-        <li class="nav-item">技术实力</li>
-        <li class="nav-item">服务场景</li>
-        <li class="nav-item">新闻中心</li>
-        <li class="nav-item">联系苒辰</li>
-      </ul>
-      <div class="navup" v-show="navopen">
-        <div class="two">
-        <p>企业介绍</p>
-        <p>渠道中心</p>
-        <p>技术分类</p>
-        <p>服务场景</p>
-        <p>新闻中心</p>
-        <p>联系我们</p>
+    <div class="ranchen">
+      <div class="line"></div>
+      <p>品牌维权控价，品牌电商数据，品牌内容营销，品牌商场注入</p>
+      <div class="line"></div>
+    </div>
+    <div class="info">
+      <div class="moreinfo">
+        <span>了解更多</span>
+        <img src="@/assets/shouye/single.png" alt="">
       </div>
-      <div class="two">
-        <p>企业介绍</p>
-        <p>渠道中心</p>
-        <p>技术分类</p>
-        <p>服务场景</p>
-        <p>新闻中心</p>
-        <p>联系我们</p>
+      <div class="moreinfo" @click="goabout">
+        <span class="infospan">了解苒辰</span>
+        <img src="@/assets/shouye/single2.png" alt="">
       </div>
-      <div class="two">
-        <p>企业介绍</p>
-        <p>渠道中心</p>
-        <p>技术分类</p>
-        <p>服务场景</p>
-        <p>新闻中心</p>
-        <p>联系我们</p>
+    </div>
+    </div>
+    <div class="two">
+      <h3>我们的优势</h3>
+      <div class="blueline"></div>
+      <div class="number">
+        <div class="numberitem">
+          <p>6<i>年</i></p>
+          <h4>技术经验</h4>
+        </div>
+        <div class="numberitem">
+          <p>2000<span class="span1">+</span></p>
+          <h4>服务客户</h4>
+        </div>
+        <div class="numberitem">
+          <p>150<span class="span2">+</span></p>
+          <h4>公司团队</h4>
+        </div>
+      </div>
+      <div class="text">
+        <h5>1.多个国内外合作品牌处理经验，沉淀6年的处理反馈流程和客户服务经验，迅速解决客户的问题并提出最优结局方案。</h5>
+        <div class="line"></div>
+        <p>2.全网多个处理品牌，全面覆盖主流电商渠道，保证您最全最优的解决方案。</p>
+        <div class="line"></div>
+        <p>3.全面服务模式,全程跟踪服务，数据分析，给您最省心的服务体验。</p>
+      </div>
+    </div>
+    <div class="three">
+      <h3>服务范围</h3>
+      <div class="blueline"></div>
+      <img src="@/assets/shouye/pinpai.png" alt="">
+    </div>
+    <div class="four">
+      <h3>合作案例</h3>
+      <div class="blueline"></div>
+      <div class="cooperate">
+        <div class="left"><img src="@/assets/shouye/cooperate1.png" alt=""></div>
+        <div class="right">
+          <p>美的集团电商和法务部领导2022年来我司探讨深度合作细节，合作之前全网低价乱价链接上万条交给我司控价后，再经过一年的维护处理后低价链接清除90%，并且提前续签下一年合作。</p>
+          <img src="@/assets/shouye/cooperate2.png" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="five">
+      <h3>联系我们</h3>
+      <div class="blueline"></div>
+      <div class="ours">
+        <div class="left">
+          <div class="callus">
+            <div class="number">
+              <i class="el-icon-phone"></i>
+              <p>联系电话：053-87654321</p>
+            </div>
+            <div class="number">
+              <i class="el-icon-message"></i>
+              <p>联系邮箱：ranchenkeji@hanzghou.com</p>
+            </div>
+            <div class="number">
+              <i class="el-icon-location"></i>
+              <p>联系地址：杭州运河万科中心B2幢8楼801</p>
+            </div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="navbottom">
+            <h4>首页</h4>
+            <p>我们的优势</p>
+            <p>服务范围</p>
+            <p>案例合作</p>
+          </div>
+          <div class="navline"></div>
+          <div class="navbottom">
+            <h4>事业中心</h4>
+            <p>负责板块</p>
+            <p>内容营销</p>
+          </div>
+          <div class="navline"></div>
+          <div class="navbottom">
+            <h4>技术与实力</h4>
+            <p>我们的技术</p>
+            <p>我们的实力</p>
+          </div>
+          <div class="navline"></div>
+          <div class="navbottom">
+            <h4>新闻中心</h4>
+          </div>
+        </div>
+      </div>
+       <!-- 底部版权 -->
+      <div class="footer">
+        <div class="botText"> <span style="margin-right: 32px;"> 备案号：浙ICP备2024070257号</span> Copyright @
+            2024. All rights reserved.苒辰科技 版权所有
       </div>
       </div>
     </div>
 
-    <div class="blank"></div>
-    <!-- 图片展示 -->
-    <div class="show">
-      <div class="jieshao">
-        <div class="conpany">
-          <h4>公司介绍</h4>
-          <p>公司于2018年06月15日成立</p>
-          <p>经营范围:</p>
-          <p>技术服务、技术开发、技术咨询、技术交流、技术转让、技术推广；
-            版权代理；社会经济咨询服务；品牌管理；信息咨询服务（不含许可类信息咨询服务）；
-            商标代理；市场营销策划；咨询策划服务；科技中介服务；网络技术服务；软件开发；
-            专业设计服务；平面设计；计算机系统服务；信息系统集成服务；知识产权服务（专利代理服务除外）；</p>
-        </div>
-      </div>
-      <img src="../../assets/banner2.webp" alt="">
-      <img src="../../assets/banner3.webp" alt="">
-    </div>
-    <!-- 轮播图 -->
-    <div class="banner">
-      <el-carousel :interval="4000"  height="200px">
-        <el-carousel-item v-for="(item,index) in bannerImg" :key="index">
-          <img :src="items" v-for="items in item" :key="items" alt="">
-        </el-carousel-item>
-      </el-carousel>
-    </div>
-    
-    <!-- 底部版权 -->
-    <div class="bottem">
-      <div class="one">
-        <h3>关于苒辰</h3>
-        <h3>事业中心</h3>
-        <h3>技术实力</h3>
-        <h3>服务场景</h3>
-        <h3>新闻中心</h3>
-        <h3>联系苒辰</h3>
-      </div>
-      <div class="two">
-        <p>企业介绍</p>
-        <p>渠道中心</p>
-        <p>技术分类</p>
-        <p>服务场景</p>
-        <p>新闻中心</p>
-        <p>联系我们</p>
-      </div>
-      <div class="two">
-        <p>企业介绍</p>
-        <p>渠道中心</p>
-        <p>技术分类</p>
-        <p>服务场景</p>
-        <p>新闻中心</p>
-        <p>联系我们</p>
-      </div>
-      <div class="two">
-        <p>企业介绍</p>
-        <p>渠道中心</p>
-        <p>技术分类</p>
-        <p>服务场景</p>
-        <p>新闻中心</p>
-        <p>联系我们</p>
-      </div>
-      <div class="line" />
-      <div class="callus">
-        <div class="number">
-          <i class="el-icon-phone"></i>
-          <p>053-87654321</p>
-        </div>
-        <div class="number">
-          <i class="el-icon-location"></i>
-          <p>杭州运河万科中心B2幢8楼801</p>
-        </div>
-        <div class="number">
-          <i class="el-icon-message"></i>
-          <p>ranchenkeji@hanzghou.com</p>
-        </div>
-      </div>
-      <div class="botText"> <span style="margin-right: 32px;color: #666;"> 备案号：浙ICP备XXXXXXXX号</span> Copyright @
-          2023.
-          All rights reserved.苒辰科技 版权所有.
-    </div>
-    </div>
-
-    <!-- 登录弹窗 -->
+     <!-- 登录弹窗 -->
     <el-dialog
       center
       :visible.sync="dialogVisible"
-      width="400px"
-      :before-close="deliagClose">
-  <div class="heder">
-    <div class="contact">
-      <i class="el-icon-phone"></i>
-      <p>苒辰科技咨询热线</p>
-    </div>
-    <h2>XXXX-XXXXXXXX</h2>
-  </div>
-  <div class="phone">
-    <p>您也可以留下您的电话号码，我们会最快时间联系您</p>
-    <input type="phone" placeholder="请输入您的电话号码"><button>提交</button>
-    <div class="protect">
-      <i class="el-icon-lock"></i><span>信息保护中请放心填写</span>
-    </div>
-  </div>
-</el-dialog>
+      width="425px"
+      :show-close="false">
+      <div class="heder">
+        <i class="el-icon-close" @click="deliagClose"></i>
+        <div class="contact">
+        <i class="el-icon-phone"></i>
+        <p>苒辰科技咨询热线</p>
+        </div>
+        <h2>15372004152</h2>
+        <div class="line"></div>
+      </div>
+      <div class="phone">
+        <p>您也可以留下您的电话号码，我们会最快时间联系您</p>
+        <input type="phone" placeholder="请输入您的电话号码"><button>提交</button>
+        <div class="protect">
+        <i class="el-icon-lock"></i><span>信息保护中请放心填写</span>
+        </div>
+      </div>
+    </el-dialog> 
   </div>
 </template>
 
@@ -156,31 +159,7 @@ export default {
   data() {
       return {
         dialogVisible: false,
-        navopen:false,
-        //轮播图本地图片
-        // bannerImg:[
-        //   require( '@/assets/banner1.webp'),
-        //   require( '@/assets/banner2.webp'),
-        //   require( '@/assets/banner3.webp'),
-        //   require( '@/assets/banner4.webp'),
-        //   require( '@/assets/banner5.webp'),
-        //   require( '@/assets/banner6.webp'),
-        //   require( '@/assets/banner7.webp'),
-        //   require( '@/assets/banner8.webp'),
-        // ],
-        bannerImg: [
-          [
-          require('@/assets/banner1.webp'),
-          require('@/assets/banner2.webp'),
-          require('@/assets/banner3.webp'),
-          require('@/assets/banner4.webp')
-          ],
-          [
-          require('@/assets/banner5.webp'),
-          require('@/assets/banner6.webp'),
-          require('@/assets/banner7.webp'),
-          require('@/assets/banner8.webp')
-       ]],
+        // navopen:false,
         formData: {
           phone: '',
           password:''
@@ -205,9 +184,23 @@ export default {
       deliagClose() {
        this.dialogVisible=false
       },
+      gobusiness() {
+        this.$router.push('/business')
+      },
+      gotechnology() {
+        this.$router.push('/technology')
+      },
+      goabout() {
+        this.$router.push('/about')
+      },
+      gonews() {
+        this.$router.push('/news')
+      },
+      gorelate() {
+        this.$router.push('/relate')
+      },
       openLogin() {
         this.$router.push('/login')
-        // this.dialogVisible=true
       },
       login() {
         if (this.formData.password.length>=6) {
@@ -235,255 +228,450 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
-#app{
+.one{
   width: 100%;
-  height: 100%;
+  height: 1080px;
+  background-image: url(@/assets/shouye/shouyebgi.png);
   .header{
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #fff;
-  width: 100%;
-  height: 65px;
-  padding: 0 50px;
-  display: flex;
-  justify-content: space-between;
-  img{
-    margin-top: 5px;
-    width: 105px;
-    height: 60px;
-  }
-  i{
-    height: 65px;
-    line-height: 65px;
-    font-size: 24px;
-  }
-  button{
-    height: 30px;
-    width: 80px;
-    line-height: 27px;
-    font-size: 24px;
-    font-family: fangsong;
-    margin-top: 10px;
-    background-color: transparent;
-    border: none;
-    color: #cecece;
-  }
-}
-.nav{
-  position: fixed;
-  left: 0;
-  top: 65px;
-  width: 100%;
-  height: 57px;
-  background-color: #fff;
-  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.1);
-  ul{
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-  }
-  .nav-item{
-    padding: 0 20px 20px 20px;
-    // padding-bottom: 20px;
-    margin-right: 30px;
-    border-bottom: 2px solid transparent;
-    list-style: none;
-    font-size: 26px;
-    font-weight: bolder;
-    &:hover{
-      border-color: rgb(87, 194, 244);
-    }
-  }
-  &::last-child{
-    margin-right: 0;
-  }
-  .navup{
-  width: 100%;
-  height: 150px;
-  position: fixed;
-  top: 117px;
-  left: 0;
-  background-color: rgba(255, 255, 255, 0.7);
-  padding-top: 15px;
-  .two{
+    width: 100%;
     display: flex;
-    justify-content: center;
-    p{
-      width: 144px;
-      text-align: center;
-      padding: 0 20px;
-      margin-right: 30px;
-      margin-bottom: 15px;
+    justify-content: space-between;
+    .logo{
+      margin-top: 54px;
+      margin-left: 50px;
+      width: 191px;
+      height: 191px;
+    }
+    .nav{
+      width: 1370px;
+      height: 57px;
+      ul{
+        display: flex;
+        margin-top: 53px;
+        border-bottom: 1px solid rgba(194, 194, 194, 1);
+        padding:0 77px;
+      }
+      .nav-item{
+        font-size: 36px;
+        font-weight: 400;
+        color: #fff;
+        margin-right: 128px;
+        padding-bottom: 7px;
+        border-bottom: 5px solid transparent;
+        list-style: none;
+        font-size: 26px;
+        font-weight: bolder;
+        &:last-child{
+          margin-right: 0;
+        }
+      }
+      .active{
+        border-color: rgba(255, 141, 26, 1);
+      }
+      .navup{
+        width: 100%;
+        height: 150px;
+        position: fixed;
+        top: 117px;
+        left: 0;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding-top: 15px;
+      .two{
+          display: flex;
+          justify-content: center;
+          p{
+            width: 144px;
+            text-align: center;
+            padding: 0 20px;
+            margin-right: 30px;
+            margin-bottom: 15px;
+          }
+        }
+      }
+    }
+    .loginicon{
+      width: 52px;
+      height: 49px;
+      margin-top: 54px;
+      margin-right: 25px;
     }
   }
-}
-}
+  .ranchen{
+    background-image: url(@/assets/shouye/RANCHEN.png);
+    width: 1550px;
+    height: 464px;
+    background-repeat: no-repeat;
+    background-size: center;
+    margin-top: 151px;
+    margin-left: 239px;
+    display: flex;
+    margin-bottom: 108px;
+    .line{
+      width: 151px;
+      height: 2px;
+      background-color: #fff;
+      margin-top: 230px;
+    }
+    p{
+      font-size: 45px;
+      font-weight: 400;
+      padding: 199px 36px 0 36px;
+      color:#fff;
+    }
+  }
+  .info{
+    display: flex;
+    margin-left: 1299px;
+    .moreinfo{
+      width: 202px;
+      height: 61px;
+      border: 2px solid  rgba(204, 204, 204, 1);
+      display: flex;
+      margin-right: 51px;
+      color: rgb(204,204,204);
+      span{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 137px;
+        height: 57px;
+        line-height: 69px;
+        border-right: 2px solid rgba(204, 204, 204, 1);
+        font-size: 24px;
+      }
+      .infospan{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 137px;
+        height: 57px;
+        line-height: 69px;
+        border-right: 2px solid rgba(4, 22, 44, 1);
+        font-size: 24px;
+      }
+      img{
+        width: 37px;
+        height: 32px;
+        margin-top: 12px;
+        margin-left: 16px;
+      }
+      &:last-child{
+        color: rgba(4, 22, 44, 1);
+        background: rgba(204, 204, 204, 1);
+      }
+    }
+  }
+
+
+
+
+
+
 .blank{
   height: 160px;
   background-color: #f5f6f7;
 }
-.show{
-  margin-bottom: 20px;
-  .jieshao{
-    width: 100%;
-    height: 1000px;
-    background-image: url('@/assets/banner6.webp');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 5px;
-    .conpany{
-      width: 500px;
-      height: 400px;
-      margin-left: 1100px;
-      padding-top: 100px;
-      h4{
-        font-size: 26px;
-        color: #7fcceb;
-        margin-bottom: 10px;
-      }
-      p{
-        font-size: 22px;
-        margin-bottom: 5px;
-        color: #5b8cb7;
-      }
-    }
-  }
-  img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-.banner{
-  margin-bottom: 20px;
-  .el-carousel__item  {
-    width: 100%;
-    height: 100%;
-    color: #475669;
-    opacity: 0.75;
-    line-height: 200px;
-    margin: 0;
-    img{
-      width: 24%;
-      height: 100%;
-      margin-right: 15px;
-      &::last-child{
-        margin-right: 0;
-      }
-    }
-  }
-  
-}
-.bottem{
-  position: relative;
-  width: 100%;
-  height: 450px;
-  background-color: black;
-  color: #fff;
-  padding: 50px 300px;
-  .one{
-    display: flex;
-    // justify-content: center;
-    h3{
-      width: 140px;
-      margin-bottom: 20px;
-    }
-  }
-  .two{
-    display: flex;
-    // justify-content: center;
-    p{
-      width: 140px;
-      margin-bottom: 15px;
-    }
-  }
-  .line{
-    width: 100%;
-    height: 30px;
-    margin-bottom: 30px;
-    border-bottom: 1px dashed #fff;
-  }
-  .callus{
-    .number{
-      display: flex;
-      margin-bottom: 10px;
-      i{
-        font-size: 24px;
-        margin-right: 15px;
-      }
-    }
-  }
-  .botText {
-    position: absolute;
-    bottom: 30px;
-    left: 100px;
-    font-size: 12px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    bottom: 24px;
-    left: 0;
-    right: 0;
-    z-index: 77;
-  }
-}
+
+
 .el-input{
   width: 90%;
 }
-::v-deep .el-dialog--center .el-dialog__body{
-  padding: 0;
-  .heder{
-    padding: 0 30px;
-    .contact{
-      display: flex;
-      align-items: center;
-      i{
-        margin-right: 5px;
-      }
-    }
-    h2{
-      font-size: 30px;
-      color: #3f95d2;
-    }
-  }
-  .phone{
-    background-color: #f3f4f6;
-    padding: 20px 30px;
-    p{
-      color: #666666;
-      padding: 10px 0;
-    }
-    input{
-      width: 270px;
-      height: 40px;
-      border: none;
-      padding-left: 10px;
-    }
-    button{
-      width: 70px;
-      height: 40px;
-      line-height: 40px;
-      text-align: center;
-      background-color: #3f95d2;
-      color: #fff;
-      border: none;
-    }
-    .protect{
-      margin-top: 10px;
-      i.el-icon-lock{
-        color: #4ec649;
-        margin-right: 5px;
-      }
-      span{
-        color: #666;
-      }
-    }
-  }
-}
+
 }
 
+.two{
+  width: 100%;
+  height: 1080px;
+  background-image: url(@/assets/shouye/twobgi.png);
+  h3{
+    font-size: 48px;
+    font-weight: normal;
+    padding-top: 71px;
+    text-align: center;
+    margin-bottom: 13px;
+  }
+  .blueline{
+    margin: auto;
+    width: 93px;
+    height: 5px;
+    background-color: rgba(31, 108, 196, 1);
+  }
+  .number{
+    width: 693px;
+    height: 169px;
+    background: rgba(6, 40, 86, 1);
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 164px;
+    .numberitem{
+      color: #fff;
+      width: 160px;
+      text-align: center;
+      p{
+        position: relative;
+        font-size: 60px;
+        margin-right: 6px;
+        margin-top: 50px;
+      }
+      i{
+        font-size: 24px;
+        font-style: normal;
+      }
+      .span1{
+        position: absolute;
+        top: -21px;
+        right: -22px;
+        font-size: 46px;
+      }
+      .span2{
+        position: absolute;
+        top: -21px;
+        right: -2px;
+        font-size: 46px;
+      }
+      h4{
+        width: 160px;
+        text-align: center;
+        font-size: 21px;
+        font-weight: 400;
+      }
+    }
+  }
+  .text{
+    display: flex;
+    h5{
+      width: 430px;
+      height: 373px;
+      margin-left: 299px;
+      font-weight: normal;
+      font-size: 43px;
+    }
+    .line{
+      width: 3px;
+      height: 258px;
+      background-color: rgba(171, 171, 171, 1);
+      margin-left: 37px;
+      margin-top: 15px;
+    }
+    p{
+      margin:0 50px;
+      width: 344px;
+      height: 312px;
+      font-size: 43px;
+    }
+  }
+}
+.three{
+  background-image: url(@/assets/shouye/threebgi.png);
+  width: 100%;
+  height: 1080px;
+  h3{
+    font-size: 48px;
+    font-weight: normal;
+    padding-top: 71px;
+    text-align: center;
+    margin-bottom: 13px;
+    color: #fff;
+  }
+  .blueline{
+    margin: auto;
+    width: 93px;
+    height: 5px;
+    background-color: #fff;
+  }
+  img{
+    width: 1649px;
+    height: 773px;
+    margin-top: 41px;
+    margin-left: 136px;
+  }
+}
+.four{
+  background-image: url(@/assets/shouye/twobgi.png);
+  width: 100%;
+  height: 1080px;
+  h3{
+    font-size: 48px;
+    font-weight: normal;
+    padding-top: 71px;
+    text-align: center;
+    margin-bottom: 13px;
+  }
+  .blueline{
+    margin: auto;
+    width: 93px;
+    height: 5px;
+    background-color: rgba(6, 40, 86, 1);
+  }
+  .cooperate{
+    margin-top: 62px;
+    margin-left: 93px;
+    display: flex;
+    .left img{
+      width: 505px;
+      height: 674px;
+    }
+    .right{
+      p{
+        margin-top: 102px;
+        width: 790px;
+        font-size: 36px;
+        text-indent:2em;
+        margin-left: 40px;
+      }
+      img{
+        margin-left: 584px;
+        margin-top: 30px;
+      }
+    }
+  }
+}
+.five{
+  background-image: url(@/assets/shouye/threebgi.png);
+  width: 100%;
+  height: 1080px;
+  h3{
+    font-size: 48px;
+    font-weight: normal;
+    padding-top: 71px;
+    text-align: center;
+    margin-bottom: 13px;
+    color: #fff;
+  }
+  .blueline{
+    margin: auto;
+    width: 93px;
+    height: 5px;
+    background-color: #fff;
+  }
+  .ours{
+    display: flex;
+    margin-top: 113px;
+    padding: 0 111px;
+    .left{
+      .callus{
+        color: #fff;
+        .number{
+          display: flex;
+          margin-bottom: 10px;
+          font-size: 36px;
+          i{
+            font-size: 36px;
+            margin-right: 35px;
+          }
+        }
+      }
+    }
+    .right{
+      display: flex;
+      padding-left: 160px;
+      padding-top: 130px;
+      .navbottom{
+        width: 176px;
+        color: #fff;
+        text-align: center;
+        h4{
+          font-size: 24px;
+          font-weight: 400;
+          margin-bottom: 37px;
+        }
+        p{
+          font-size: 18px;
+          margin-bottom: 53px;
+        }
+      }
+      .navline{
+        width: 1px;
+        height: 238px;
+        background-color: rgba(201, 201, 201, 1);
+        margin-top: 20px;
+      }
+    }
+  }
+  .footer{
+    color: #fff;
+    font-size: 24px;
+    margin-left: 499px;
+    margin-top: 300px;
+  }
+}
+::v-deep .el-dialog{
+  background-image: url(@/assets/shouye/dialog.png);
+  background-size: cover;
+  background-color: transparent;
+  height: 250px;
+  margin-top: 40vh !important;
+}
+::v-deep .el-dialog--center .el-dialog__body{
+  
+padding: 0;
+.heder{
+  position: relative;
+  padding: 0 40px;
+  .el-icon-close{
+    position: absolute;
+    top: -8px;
+    right: 23px;
+    font-size: 30px;
+  }
+  .contact{
+    display: flex;
+    align-items: center;
+    i{
+      margin-right: 5px;
+      color: #000;
+    }
+  }
+  h2{
+    font-size: 35px;
+    color: rgba(9, 53, 84, 1);
+    margin-left: 57px;
+  }
+  .line{
+    width: 120px;
+    height: 1px;
+    background-color: #000;
+    margin-left: 115px;
+    margin-top: 10px;
+  }
+}
+.phone{
+  // background-color: #f3f4f6;
+  padding: 5px 40px;
+  p{
+    color: #666666;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  input{
+    width: 270px;
+    height: 40px;
+    border: none;
+    padding-left: 10px;
+    outline: none;
+    :focus{
+      border: none;
+    }
+  }
+  button{
+    width: 70px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #3f95d2;
+    color: #fff;
+    border: none;
+  }
+  .protect{
+    margin-top: 10px;
+    i.el-icon-lock{
+      color: #4ec649;
+      margin-right: 5px;
+    }
+    span{
+      color: #666;
+    }
+  }
+}
+}
 </style>

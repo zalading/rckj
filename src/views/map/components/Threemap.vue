@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div ref="myMap" style="width: 100%; height: 500px"></div>
+    <div ref="myMap" style="width: 762px; height: 500px"></div>
   </div>
 </template>
 
@@ -222,10 +222,9 @@ export default {
 }
 </script>
 
-<style>
-/* .content{
-  width: 100%;
-  height: 100%;
-  background-color: #092f59;
-} */
+<style scoped>
+.content{
+  width: 762px;
+  height: 500px;
+}
 </style>

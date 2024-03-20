@@ -1,12 +1,20 @@
 <template>
   <div class="content">
-    <div class="logo">
-      <img src="../../assets/logo2.jpg" alt="">
-    </div>
-    <p>Sign in to RanChen</p>
+    
    <div class="form">
+    <h4>欢迎登录</h4>
      <!-- 输入手机号和密码 -->
-    <el-form :model="formData" status-icon :rules="rules" ref="ruleForm" label-position="top" label-width="100px" class="demo-ruleForm">
+     <div class="phone">
+      <img src="@/assets/phone.png" alt="">
+      <input type="phone" placeholder="请输入登录ID" v-model="formData.phone">
+     </div>
+     <div class="password">
+      <img src="@/assets/password.png" alt="">
+      <input type="password" placeholder="请输入密码" v-model="formData.password">
+     </div>
+     <p>修改密码</p>
+     <button @click="login">登录</button>
+    <!-- <el-form :model="formData" status-icon :rules="rules" ref="ruleForm" label-position="top" label-width="100px" class="demo-ruleForm">
       <el-form-item label="账号" prop="phone">
         <el-input type="phone" v-model="formData.phone" autocomplete="off"></el-input>
       </el-form-item>
@@ -17,7 +25,7 @@
 
       <div class="dialog-footer">
         <el-button type="primary" @click="login">登录</el-button>
-      </div>
+      </div> -->
    </div>
   </div>
 </template>
@@ -44,7 +52,9 @@ export default {
   },
   methods: {
     login() {
-        if (this.formData.password.length>=6) {
+      console.log(this.formData.phone);
+      let regExp = /^1[3456789]\d{9}$/
+        if (this.formData.password.length>=6&&regExp.test(this.formData.phone)) {
           this.$message({
             message: '登录成功！',
             type:'success'
@@ -68,33 +78,109 @@ export default {
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .content{
-  .logo{
-    margin:0 auto;
-    padding-top: 150px;
-    padding-bottom: 10px;
-    width: 80px;
-    height: 70px;
-    img{
-      width: 100%;
-      height: 100%;
-    }
-  }
-  p{
-    display: flex;
-    justify-content: center;
-    font-size: 22px;
-    color:#a7a8a8;
-    font-weight: 300;
-  }
+  width: 100%;
+  height: 100%;
+  background-image: url(@/assets/loginbgi.png);
+  position: fixed;
   .form{
-    margin: auto;
-    padding:5px 16px 0 16px;
-    width: 276px;
-    height: 214px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    background-image: url(@/assets/loginform.png);
+    width: 772px;
+    height: 495px;
+    margin-top: 206px;
+    margin-left: 948px;
+    padding: 67px 196px;
+    h4{
+      font-size: 27px;
+      font-weight: 400;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .phone{
+      width: 388px;
+      height: 56px;
+      background: rgba(12, 63, 128, 1);
+      padding: 15px;
+      margin-bottom: 50px;
+      img{
+        width:35px;
+        height:32px;
+        margin-right: 9px;
+        vertical-align: middle;
+      }
+      input{
+        background-color: transparent;
+        border: none;
+        height: 100%;
+        width: 270px;
+        color: #fff;
+        &::placeholder{
+          color: rgba(184, 184, 184, 1);
+          font-size: 14px;
+        }
+        &:focus{
+          border-color: initial;
+          outline: none;
+        }
+      }
+    }
+    .password{
+      width: 388px;
+      height: 56px;
+      background: rgba(12, 63, 128, 1);
+      padding: 15px;
+      margin-bottom: 16px;
+      img{
+        width:35px;
+        height:32px;
+        margin-right: 9px;
+        vertical-align: middle;
+      }
+      input{
+        background-color: transparent;
+        border: none;
+        height: 100%;
+        width: 270px;
+        color: #fff;
+        &::placeholder{
+          color: rgba(184, 184, 184, 1);
+          font-size: 14px;
+        }
+        &:focus{
+          border-color: initial;
+          outline: none;
+        }
+      }
+    }
+    p{
+      color: #fff;
+      text-align: right;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    button{
+      width: 225px;
+      height: 56px; 
+      line-height: 56px;
+      text-align: center;
+      background: rgba(21, 97, 193, 1);
+      margin-left: 82px;
+      font-size: 18px;
+      border:none;
+      outline: none;
+      color: #fff;
+      &:focus{
+        background-color: #4c8eae;
+      }
+    }
     .el-input__inner{
       height: 30px;
     }

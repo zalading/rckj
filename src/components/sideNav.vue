@@ -20,7 +20,7 @@
             <i class="el-icon-s-custom"></i>
             <span>用户中心</span>
           </li>
-          <li>
+          <li @click="nav3">
             <i class="el-icon-s-order"></i>
             <span>产品分析</span>
           </li>
@@ -71,6 +71,9 @@ export default {
     nav1() {
       this.$router.push('/map').catch(()=>{this.drawer=false})
     },
+    nav3() {
+      this.$router.push('/goodsAlayse').catch(()=>{this.drawer=false})
+    },
     //跳转到销售分析
     nav4() {
       this.$router.push('/saleAlayse').catch(()=>{this.drawer=false})
@@ -86,7 +89,7 @@ export default {
       top: 33px;
       left: 30px;
       font-size: 30px;
-      color: #fff;
+      color: rgb(181,211,245);
     }
   ::v-deep .el-drawer__body{
       width: 155px;

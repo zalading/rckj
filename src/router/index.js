@@ -8,10 +8,41 @@ const routes = [
     path: '/',
     redirect: '/dashbord',
   },
+  //首页
   {
     path: '/dashbord',
     name: 'dashbord',
     component: () => import( '../views/dashbord/index.vue')
+  },
+  //事业中心
+  {
+    path: '/business',
+    name: 'business',
+    component: () => import( '../views/business/index.vue')
+  },
+  //技术实力
+  {
+    path: '/technology',
+    name: 'technology',
+    component: () => import( '../views/technology/index.vue')
+  },
+  //关于苒辰
+  {
+    path: '/about',
+    name: 'about',
+    component: () => import( '../views/about/index.vue')
+  },
+  //新闻中心
+  {
+    path: '/news',
+    name: 'news',
+    component: () => import( '../views/news/index.vue')
+  },
+  //联系我们
+  {
+    path: '/relate',
+    name: 'relate',
+    component: () => import( '../views/relate/index.vue')
   },
   {
     path: '/login',
@@ -24,9 +55,14 @@ const routes = [
     component: () => import( '../views/map')
   },
   {
+    path: '/goodsAlayse',
+    name: 'goodsAlayse',
+    component: () => import( '../views/function/goodsAlayse')
+  },
+  {
     path: '/saleAlayse',
     name: 'saleAlayse',
-    component: () => import( '../views/saleAlayse')
+    component: () => import( '../views/function/saleAlayse')
   },
   {
     path: '/other',

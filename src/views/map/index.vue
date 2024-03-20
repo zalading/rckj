@@ -3,62 +3,98 @@
     <header class="header">
       <div class="title" >
         商品区域分布展示
-        <div class="white"></div>
       </div>
       <sideNav />
     </header>
     <div class="body">
       <div class="left">
         <div class="circle">
-          <p>区域销量占比分析</p>
+          <div class="circleTitle">
+            <div class="line"></div>
+              <p>区域销量占比分析</p>
+            <div class="line"></div>
+          </div>
+          <!-- <div class="alasyle" v-if="showalasyle" @click="showbingtu">占比分析</div> -->
           <div class="bingtu" ref="bingtu"></div>
         </div>
         <div class="bar">
-          <p>区域Top10商家数量</p>
+          <div class="circleTitle">
+            <div class="line"></div>
+              <p>区域Top10商家数量</p>
+            <div class="line"></div>
+          </div>
           <div class="bingtu" ref="linetu"></div>
         </div>
       </div>
       <div class="middle">
-        <!-- 放地图 -->
-        <div class="cellPrice">
-            <div class="goodName">
-             <span>最低价</span>
-             <span>产品名称</span>
-             <span>数量</span>
-            </div>
-            <div class="goodNum">
-             <p>￥
-              <CountTo :start-val="0" :end-val="lowerPrice" :duration="1000"></CountTo>
-             </p>
-             <p>瑞幸</p>
-             <p><CountTo :startVal='0' :endVal='lowerNum' :duration='1000' /></p>
-            </div>
-        </div>
         <div class="map" ref="mapRef">
           <ThreeMap :price="lowerPrice"></ThreeMap>
         </div>
+        <div class="numtop">
+          <div class="numtext">产品名称</div>
+          <div class="numtext">最低价</div>
+          <div class="numtext">数量</div>
+        </div>
+        <div class="numbotton">
+          <div class="numbgi">
+            <p>{{ goodsName }}</p>
+          </div>
+          <div class="numbgi">
+            <p>￥
+              <CountTo :start-val="0" :end-val="lowerPrice" :duration="1000"></CountTo>
+             </p>
+          </div>
+          <div class="numbgi">
+            <p><CountTo :startVal='0' :endVal='lowerNum' :duration='1000' /></p>
+          </div>
+        </div>
       </div>
       <div class="right">
-        <div class="priceAvager">
-          <h4>地区价格平均值</h4>
+        <div class="saleAvager">
+          <div class="circleTitle">
+            <div class="line"></div>
+              <p>低价商品</p>
+            <div class="line"></div>
+          </div>
           <div class="bingtu">
-            <div class="title">
-              <p>地区</p>
-              <p>平均价格</p>
-            </div>
-            <div class="title" v-for="(item,index) in avapriceData" :key="index">
-              <p>{{item.area}}</p>
-              <p>￥{{item.avaPrice}}</p>
+            <div class="showGoods">
+              <div class="shangpin" v-for="(item,index) in wuliangye" :key="index">
+                <div class="s-left">
+                  <img :src="item.imgurl" alt="" @error=handleImageError>
+                </div>
+                <div class="s-right">
+                  <p>{{ item.title }}</p>
+                  <div class="s-title">
+                    店铺：{{ item.shop }}
+                  </div>
+                  <div class="price">
+                    <p>￥{{ item.price }}</p>
+                    <p>销售量{{ item.del }}</p>
+                  </div>
+                  <p>地区：{{ item.location }}</p>
+                </div>
+                <div class="money">
+                  <p>{{ item.data }}</p>
+                </div>
+                <div class="money">
+                  <!-- <p>盈利金额</p> -->
+                  <p>盈利￥{{ item.money }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="saleAvager">
-          <h4>链接上下架情况</h4>
+        <div class="priceAvager">
+          <div class="circleTitle">
+            <div class="line"></div>
+              <p>链接上下架情况</p>
+            <div class="line"></div>
+          </div>
           <div class="bingtu">
             <div class="showGoods">
               <div class="shangpin" v-for="(item,index) in coffee" :key="index">
                 <div class="s-left">
-                  <img :src="item.imgurl" alt="">
+                  <img :src="item.imgurl" alt="" @error=handleImageError>
                 </div>
                 <div class="s-right">
                   <p>{{ item.title }}</p>
@@ -78,7 +114,6 @@
             </div>
           </div>
         </div>
-        
       </div> 
     </div>
   </div>
@@ -87,6 +122,7 @@
 import * as echarts from 'echarts'
 import CountTo from 'vue-count-to';
 import ThreeMap from '@/views/map/components/Threemap' 
+// import autofit from 'autofit.js'
 export default {
   name:'MapIndex',
   components: {
@@ -122,12 +158,12 @@ export default {
         { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 5.5, del: 96, shop: '赛盼旗舰店', imgurl: '' }
       ],
       wuliangye: [
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 999, del: 16, shop: '五粮浓香官方旗舰店', imgurl: 'https://img.alicdn.com/imgextra/i2/1106960035/O1CN01QaLAcm1C84g5ESj4P_!!0-saturn_solar.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '辽宁 沈阳', price: 399, del: 68, shop: '酒富盛酩酒类专营店', imgurl: 'https://img.alicdn.com/imgextra/i2/120634331/O1CN01PgavvV1hreIDJ5HjR_!!0-saturn_solar.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/6000000003630/O1CN01XO9X0D1cgaePiynYt_!!6000000003630-0-sm.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 5.5, del: 96, shop: '五粮浓香官方旗舰店', imgurl: 'https://picasso.alicdn.com/imgextra/O1CNA1MBPOjT2MRRsY9qvuy_!!2207953779824-0-psf.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 134, del: 96, shop: '五粮浓香官方旗舰店', imgurl: 'https://picasso.alicdn.com/imgextra/O1CNA1GC4yhR2MRRsUW3Mzw_!!2207953779824-0-psf.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 南京', price: 35, del: 96, shop: '苏宁易购官方旗舰店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp' }
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 999, del: 16, shop: '五粮浓香官方旗舰店', imgurl: 'https://img.alicdn.com/imgextra/i2/1106960035/O1CN01QaLAcm1C84g5ESj4P_!!0-saturn_solar.jpg_580x580q90.jpg_.webp',data:'3/18',money:899 },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '辽宁 沈阳', price: 399, del: 68, shop: '酒富盛酩酒类专营店', imgurl: 'https://img.alicdn.com/imgextra/i2/120634331/O1CN01PgavvV1hreIDJ5HjR_!!0-saturn_solar.jpg_580x580q90.jpg_.webp',data:'3/18',money:1090},
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/6000000003630/O1CN01XO9X0D1cgaePiynYt_!!6000000003630-0-sm.jpg_580x580q90.jpg_.webp',data:'3/18',money:2090 },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 5.5, del: 96, shop: '五粮浓香官方旗舰店', imgurl: 'https://picasso.alicdn.com/imgextra/O1CNA1MBPOjT2MRRsY9qvuy_!!2207953779824-0-psf.jpg_580x580q90.jpg_.webp',data:'3/18',money:980 },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 134, del: 96, shop: '五粮浓香官方旗舰店', imgurl: 'https://picasso.alicdn.com/imgextra/O1CNA1GC4yhR2MRRsUW3Mzw_!!2207953779824-0-psf.jpg_580x580q90.jpg_.webp',data:'3/18',money:2880 },
+        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 南京', price: 35, del: 96, shop: '苏宁易购官方旗舰店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp',data:'3/18',money:5090 }
       ],
       coffee: [
         { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '福建 泉州', price: 999, del: 16, shop: 'Lantek兰泰克食品', imgurl: 'https://img.alicdn.com/imgextra/i4/314020065/O1CN011rlLuB1CLoUDxR5VH_!!0-saturn_solar.jpg_580x580q90.jpg_.webp',link:'上架中' },
@@ -159,16 +195,20 @@ export default {
         {area:'河北',avaPrice:'342'},
       ],
       lowerPrice: 21,//最低价
-      lowerNum:223 //最低数量
+      lowerNum: 223, //最低数量
+      goodsName:'瑞幸'
     };
   },
   created() {
     this.getlist=this.zhejiang
   },
   mounted() {
-    // 名称必须是 china ，否则南海岛屿无法展示
-    // this.echarts.registerMap('china', chinaJson);
-    // this.initChart();
+  //   autofit.init({
+  //   designHeight: 1080,
+  //   designWidth: 1920,
+  //   renderDom:"#app",
+  //   resize: true
+  //  })
     this.chartBingtu();
     this.chartZhuzhuangtu()
   },
@@ -194,7 +234,7 @@ export default {
             name: '区域销量占比分析',
             type: 'pie',
             radius: ['40','100'],
-            center: ['55%', '50%'],
+            center: ['45%', '50%'],
             // roseType: 'area',
             data: [
               { name: '吉林', value: 86,itemStyle:{color:'#84f1ff'}},
@@ -235,9 +275,10 @@ export default {
   },
   // legend: {},
   grid: {
-    left: '10%',
+    left: '4%',
     top: '5%',
-    bottom:'5%',
+    bottom: '5%',
+    right:'4%',
     containLabel: true
   },
   xAxis: {
@@ -282,8 +323,8 @@ export default {
             ],false)
             }
             return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color:'#15e2e4' },
-              { offset: 1, color:'#e8f549' },
+              { offset: 0, color:'#063980' },
+              { offset: 1, color:'#2feaff' },
             ],false)
               
           }
@@ -295,6 +336,11 @@ export default {
 };
 
 option && myChart.setOption(option);
+    },
+
+    //图片路径错误时换成指定图片
+    handleImageError(e) {
+      e.srcElement.src = require("@/assets/imgerro.jpg");
     },
   }
 };
@@ -308,35 +354,32 @@ option && myChart.setOption(option);
 .wrap {
   width: 100%;
   height: 100%;
-  background-image: url(@/assets/mapbgc.jpg);
-  // position: fixed;
+  background-image: url(@/assets/mapbgc.png);
+  position: absolute;
+  top: 0;
+  left: 0;
     background-repeat: no-repeat;
-    background-size: cover;
-    // background-position: center;
+    background-size: 100% 100%;
   .header {
-    width: 100%;
-    height: 110px;
-    // position: relative;
+    width: 927px;
+    height: 128px;
+    background-image: url(@/assets/maptitle.png);
+    margin-left: 551px;
     .title {
       width: 100%;
-      position: relative;
       display: flex;
       justify-content: center;
-      padding-top: 20px;
-      color: #fff; /* 将文本颜色设置为透明 */
+      padding-top: 40px;
+      color: transparent;
+      filter: blur(0.5px);
+      // text-shadow: 3px 3px 4px  rgba(0, 119, 255, 0.5), -3px -3px 4px  rgba(0, 119, 255, 0.5);
+      background: linear-gradient(to bottom, rgba(0, 119, 255, 0.5), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      /* 兼容不支持-webkit-text-fill-color的浏览器 */
+      background-clip: text;
       font-size: 45px;
-      text-shadow: 3px 3px 4px  rgba(0, 119, 255, 0.5), -3px -3px 4px  rgba(0, 119, 255, 0.5);
       font-weight: 400;
-      .white{
-        position: absolute;
-        top: 67px;
-        left: 760px;
-        width: 310px;
-        height: 33px; 
-        background: rgba(255, 255, 255, 0.75);
-        filter: blur(20px);
-        opacity: 1;
-      }
     }
   }
   .body {
@@ -346,23 +389,43 @@ option && myChart.setOption(option);
     // height: 100%;
     display: flex;
     .left {
-      margin-left: 30px;
-      margin-right: 30px;
+      margin-top: 10px;
+      padding-left: 135px;
+      width: 614px;
+      height: 686px;
+      background-image: url(@/assets/leftbgi.png);
       // position: relative;
         .circle{
-          background-image: url(@/assets/echarsBgi.png);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
-          width: 500px;
-          height: 383px;
-          p{
+          width: 440px;
+          height: 340px;
+          .circleTitle{
+            padding-top: 41px;
+            padding-left: 45px;
+            display: flex;
+            .line{
+              width: 56px;
+              height: 1px;
+              background-color: #fff;
+              margin: 15px 10px;
+            }
+            p{
+              color: #fff;
+              height: 35px;
+              font-size: 24px;
+              text-align: center;
+            }
+          }
+          .alasyle{
+            width: 263px;
+            height: 89px;
+            margin-top: 66px;
+            margin-left: 91px;
+            background-image: url(@/assets/buttonkuang.png);
             color: #fff;
-            height: 100px;
-            line-height: 150px;
-            font-size: 24px;
+            line-height: 89px;
             text-align: center;
-            text-shadow: -2px -2px 4px  rgba(29, 99, 191, 1), 2px 2px 4px  rgba(29, 99, 191, 1);
+            font-size: 36px;
+            font-weight: 400;
           }
           .bingtu{
             width: 450px;
@@ -370,182 +433,292 @@ option && myChart.setOption(option);
           }
         }
         .bar{
-          background-image: url(@/assets/echarsBgi.png);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
-          width: 500px;
+          width: 440px;
           height: 383px;
-          p{
-            color: #fff;
-            height: 100px;
-            line-height: 150px;
-            font-size: 24px;
-            text-align: center;
-            text-shadow: -2px -2px 4px  rgba(29, 99, 191, 1), 2px 2px 4px  rgba(29, 99, 191, 1);
+          .circleTitle{
+            padding-top: 30px;
+            padding-left: 25px;
+            display: flex;
+            .line{
+              width: 56px;
+              height: 1px;
+              background-color: #fff;
+              margin: 15px 10px;
+            }
+            p{
+              color: #fff;
+              height: 35px;
+              font-size: 24px;
+              text-align: center;
+            }
           }
           .bingtu{
-            width: 450px;
-            height: 270px;
+            width: 420px;
+            height: 260px;
           }
         }
       }
       .middle{
-        width: 750px;
-        .cellPrice{
-          background-image: url(@/assets/yuantai.png);
-          background-size: cover;
-          background-repeat: no-repeat;
-          width: 500px;
-          height: 263px;
-          margin-top: 10px;
-          margin-left: 120px;
-          .goodName{
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 24px;
-            padding-top: 10px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            span{
-              padding:15px 27px;
-            }
-          }
-          .goodNum{
-            height: 60px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 24px;
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 70px;
-          }
-        }
+        width: 762px;
+        height: 768px;
+        background-image: url(@/assets/middlebgi.png);
+        // .cellPrice{
+        //   width: 500px;
+        //   height: 263px;
+        //   margin-top: 10px;
+        //   margin-left: 120px;
+        //   .goodName{
+        //     color: rgba(255, 255, 255, 0.8);
+        //     font-size: 24px;
+        //     padding-top: 10px;
+        //     height: 60px;
+        //     display: flex;
+        //     justify-content: center;
+        //     span{
+        //       padding:15px 27px;
+        //     }
+        //   }
+        //   .goodNum{
+        //     height: 60px;
+        //     color: rgba(255, 255, 255, 0.5);
+        //     font-size: 24px;
+        //     display: flex;
+        //     justify-content: space-between;
+        //     padding: 20px 70px;
+        //   }
+        // }
         .map {
           // height: 625px;
           height: 500px;
-          width: 100%;
+          width: 762px;
+        }
+        .numtop{
+          margin-top: 20px;
+          display: flex;
+          color: #fff;
+          font-size: 15px;
+          text-align: center;
+          margin-left: 178px;
+          .numtext{
+            width: 131px;
+            height: 46px;
+            line-height: 50px;
+            background-image: url(@/assets/numtext.png);
+            margin-right: 9px;
+          }
+        }
+        .numbotton{
+          margin-top: 20px;
+          display: flex;
+          color: #fff;
+          font-size: 15px;
+          text-align: center;
+          margin-left: 178px;
+          .numbgi{
+            width: 130px;
+            height: 40px;
+            background-image: url(@/assets/numbgi.png);
+            margin-right: 9px;
+            line-height: 40px;
+          }
         }
       }
     .right {
-      width: 505px;
-      height: 100%;
+      margin-top: 10px;
+      width: 613px;
+      height: 671px;
+      background-image: url(@/assets/rightbgi.png);
+      background-position: right;
       .saleAvager{
-          background-image: url(@/assets/echarsBgi.png);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
           width: 500px;
-          height: 383px;
+          height: 327px;
           // height: 480px;
           // margin-bottom: 30px;
-          h4{
-            color: #fff;
-            height: 100px;
-            // line-height: 192px;
-            line-height: 150px;
-            font-size: 24px;
-            text-align: center;
-            text-shadow: -2px -2px 4px  rgba(29, 99, 191, 1), 2px 2px 4px  rgba(29, 99, 191, 1);
+          .circleTitle{
+            padding-top: 35px;
+            padding-left: 100px;
+            display: flex;
+            .line{
+              width: 56px;
+              height: 1px;
+              background-color: #fff;
+              margin: 15px 10px;
+            }
+            p{
+              color: #fff;
+              height: 35px;
+              font-size: 24px;
+              text-align: center;
+            }
           }
           .bingtu{
             padding: 10px 30px;
             .showGoods{
-        height:245px;
-        width:440px;
-        overflow-y: scroll;
-        &::-webkit-scrollbar {
-            width: 4px; /* 设置滚动条的宽度 */
-        }
-        &::-webkit-scrollbar-track {
-            background-color: #1d4366 !important; /* 设置背景色 */
-        }
-        &::-webkit-scrollbar-thumb {
-            background-color: #388fcd; /* 设置滑块的颜色 */
-        }
-        .shangpin{
-          display: flex;
-          width: 430px;
-          .s-left{
-            width: 100px;
-            height: 100px;
-            img{
-              width: 100px;
-              height: 100px;
-              border-radius: 5px;
-            }
-          }
-          .s-right{
-            width: 245px;
-            height: 100px;
-            margin-left: 10px;
-            p{
-              margin: 2px  !important;
-              font-size: 12px;
-              color: #dad4d4;
-              padding-top: 5px;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              overflow: hidden;
-              // &:hover{
-              //   overflow: visible;
-              // }
-            }
-            .s-title{
-              width: 245px;
-              color: #dad4d4;
-              font-size: 12px;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              overflow: hidden;
-            }
-            .price{
-              display: flex;
-              justify-content: space-between;
-            }
-          }
-          .link{
-            height: 100px;
-            width: 72px;
-            color: #fff;
-            font-size: 12px;
-            text-align: center;
-            line-height: 72px;
-          }
-        }
+              height:245px;
+              width:439px;
+              overflow-y: scroll;
+              &::-webkit-scrollbar {
+                  width: 4px; /* 设置滚动条的宽度 */
+              }
+              &::-webkit-scrollbar-track {
+                  background-color: #1d4366 !important; /* 设置背景色 */
+              }
+              &::-webkit-scrollbar-thumb {
+                  background-color: #388fcd; /* 设置滑块的颜色 */
+              }
+              .shangpin{
+                display: flex;
+                width: 435px;
+                .s-left{
+                  width: 100px;
+                  height: 100px;
+                  img{
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 5px;
+                  }
+                }
+                .s-right{
+                  width: 205px;
+                  height: 100px;
+                  margin-left: 10px;
+                  p{
+                    margin: 2px  !important;
+                    font-size: 12px;
+                    color: #dad4d4;
+                    padding-top: 5px;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    // &:hover{
+                    //   overflow: visible;
+                    // }
+                  }
+                  .s-title{
+                    width: 245px;
+                    color: #dad4d4;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                  }
+                  .price{
+                    display: flex;
+                    justify-content: space-between;
+                  }
+                }
+                .money{
+                  height: 100px;
+                  width: 55px;
+                  color: #fff;
+                  font-size: 12px;
+                  text-align: center;
+                  line-height: 72px;
+                }
+              }
 
-      }
+            }
           }
         }
         .priceAvager{
-          background-image: url(@/assets/echarsBgi.png);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
           width: 500px;
           height: 383px;
-          margin-bottom: 30px;
-          h4{
-            color: #fff;
-            height: 100px;
-            line-height: 150px;
-            font-size: 24px;
-            text-align: center;
-            text-shadow: -2px -2px 4px  rgba(29, 99, 191, 1), 2px 2px 4px  rgba(29, 99, 191, 1);
+          .circleTitle{
+            padding-top: 40px;
+            padding-left: 90px;
+            display: flex;
+            .line{
+              width: 56px;
+              height: 1px;
+              background-color: #fff;
+              margin: 15px 10px;
+            }
+            p{
+              color: #fff;
+              height: 35px;
+              font-size: 24px;
+              text-align: center;
+            }
           }
           .bingtu{
-            padding: 20px 30px;
-            .title{
-              width: 380px;
-              height: 30px;
-              display: flex;
-              justify-content: space-between;
-              color: #fff;
-              p{
-                width: 190px;
-                text-align: center;
-
+            padding: 10px 30px;
+            .showGoods{
+              height:245px;
+              width:439px;
+              overflow-y: scroll;
+              &::-webkit-scrollbar {
+                  width: 4px; /* 设置滚动条的宽度 */
               }
+              &::-webkit-scrollbar-track {
+                  background-color: #1d4366 !important; /* 设置背景色 */
+              }
+              &::-webkit-scrollbar-thumb {
+                  background-color: #388fcd; /* 设置滑块的颜色 */
+              }
+              .shangpin{
+                display: flex;
+                width: 435px;
+                .s-left{
+                  width: 100px;
+                  height: 100px;
+                  img{
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 5px;
+                  }
+                }
+                .s-right{
+                  width: 240px;
+                  height: 100px;
+                  margin-left: 10px;
+                  p{
+                    margin: 2px  !important;
+                    font-size: 12px;
+                    color: #dad4d4;
+                    padding-top: 5px;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    // &:hover{
+                    //   overflow: visible;
+                    // }
+                  }
+                  .s-title{
+                    width: 245px;
+                    color: #dad4d4;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                  }
+                  .price{
+                    display: flex;
+                    justify-content: space-between;
+                  }
+                }
+                .link{
+                  height: 100px;
+                  width: 75px;
+                  color: #fff;
+                  font-size: 12px;
+                  text-align: center;
+                  line-height: 72px;
+                }
+              }
+
             }
+            // .title{
+            //   width: 380px;
+            //   height: 30px;
+            //   display: flex;
+            //   justify-content: space-between;
+            //   color: #fff;
+            //   p{
+            //     width: 190px;
+            //     text-align: center;
+
+            //   }
+            // }
           }
         }
     }

@@ -2,29 +2,34 @@
   <div class="content">
     <sideNav />
     <div class="demo-input-suffix">
-     <div class="search">
+      <div class="top">
+        <div class="search">
       选择商品：
       <el-input
         placeholder="请输入内容"
         v-model="searchValue"  @input="changeGoods">
         <i slot="prefix" class="el-input__icon el-icon-search"></i>
       </el-input>
-     </div>
-     <div class="search">
-      最低价：<div class="lowerPrice">{{ lowerPrice }}</div>
-     </div>
-</div>
+        </div>
+        <div class="search">
+      最低价：<div class="lowerPrice" v-if="searchValue">{{ lowerPrice }}</div>
+      <div class="lowerPrice" v-else style="color: #ccc;font-size: 14px;">未显示</div>
+        </div>
+      </div>
+      <button @click="exportExcel">导出文件</button>
+    </div>
   <el-table
     :data="getlist"  
-    height="735"
+    height="730"
     border
-    style="width: 100%">
+    style="width: 100%"
+    :header-cell-style="{'text-align':'center'}">
     <el-table-column
       prop="imgurl"
       label="商品图片"
-      width="180">
+      width="100">
       <template slot-scope="scope">
-        <img :src="scope.row.imgurl" min-width="70" height="70"/>
+        <img :src="scope.row.imgurl" min-width="70" height="70" @error=handleImageError />
       </template>
     </el-table-column>
     <el-table-column
@@ -67,6 +72,8 @@
 </template>
 
 <script>
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 export default {
     name:'SaleAlayse',
     data() {
@@ -131,15 +138,43 @@ export default {
           console.log('没有该选项');
         }
       },300)
+    },
+    //图片路径错误时换成指定图片
+    handleImageError(e) {
+      e.srcElement.src = require("@/assets/imgerro.jpg");
+    },
+    //Excel表格导出功能
+     exportExcel() {
+      const data = [[
+        '标题',
+        '地址',
+        '价格',
+        '成交量',
+        '店铺名称',
+        '图片地址'
+      ]]
+        this.coffee.forEach(item => {
+          data.push([item.title,item.location,item.price,item.del,item.shop,item.imgurl])
+      })
+        // 将数据转换为工作表
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+      // 创建工作簿并添加工作表
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      
+      // 生成Excel文件并导出
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const dataBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      saveAs(dataBlob, '商品信息.xlsx');
+      }
     }
-  }
   }
 </script>
 
 
 <style lang="scss" scoped>
 .content{
-  padding:15px 20px 20px 20px;
+  padding:20px;
   .demo-input-suffix{
     padding-left: 40px;
     display: flex;
@@ -148,17 +183,30 @@ export default {
     .el-input{
       width: 200px;
     }
-    .search{
+    .top{
       display: flex;
-      align-items: center;
-      .lowerPrice{
-      width: 70px;
-      height: 36px;
-      border: 1px solid #ccc;
-      line-height: 36px;
-      text-align: center;
-      color: red;
+      justify-content: space-between;
+      .search{
+        display: flex;
+        align-items: center;
+        margin:0 20px;
+        .lowerPrice{
+        width: 70px;
+        height: 36px;
+        border: 1px solid #ccc;
+        line-height: 36px;
+        text-align: center;
+        color: red;
+      }
+      }
     }
+    button{
+      width: 100px;
+      height: 44px;
+      background-color: #3db3eb;
+      text-align: center;
+      color: #fff;
+      border: none;
     }
   }
   .block{
