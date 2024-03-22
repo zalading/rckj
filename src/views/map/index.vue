@@ -2,7 +2,7 @@
   <div class="wrap">
     <header class="header">
       <div class="title" >
-        商品区域分布展示
+        欣善怡商品数据展示
       </div>
       <sideNav />
     </header>
@@ -31,18 +31,28 @@
           <ThreeMap :price="lowerPrice"></ThreeMap>
         </div>
         <div class="numtop">
-          <div class="numtext">产品名称</div>
+          <div class="numtext">关键词</div>
           <div class="numtext">最低价</div>
-          <div class="numtext">数量</div>
+          <div class="numtext">低价商品数</div>
         </div>
         <div class="numbotton">
           <div class="numbgi">
-            <p>{{ goodsName }}</p>
+            <el-select v-model="value" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <!-- <p>{{ goodsName }}</p> -->
           </div>
           <div class="numbgi">
-            <p>￥
+            <input type="text" placeholder="最低价" v-model="lowerPrice">
+            <!-- <i class="el-icon-search"></i> -->
+            <!-- <p>￥
               <CountTo :start-val="0" :end-val="lowerPrice" :duration="1000"></CountTo>
-             </p>
+             </p> -->
           </div>
           <div class="numbgi">
             <p><CountTo :startVal='0' :endVal='lowerNum' :duration='1000' /></p>
@@ -51,16 +61,25 @@
       </div>
       <div class="right">
         <div class="saleAvager">
+          <div class="site">
+            <button @click="changeSite()">全部</button>
+            <button @click="changeSite('天猫')">天猫</button>
+            <button @click="changeSite('京东')">京东</button>
+            <button @click="changeSite('拼多多')">拼多多</button>
+            <i class="el-icon-search"></i>
+            <input type="text" placeholder="请输入" v-model="searchValue" @input="changeSite">
+          </div>
           <div class="circleTitle">
             <div class="line"></div>
-              <p>低价商品</p>
+              <p>全网最低价商品排序</p>
             <div class="line"></div>
           </div>
-          <div class="bingtu">
+          <div class="nodate" v-if="nodate">暂无数据</div>
+          <div class="bingtu" v-else>
             <div class="showGoods">
-              <div class="shangpin" v-for="(item,index) in wuliangye" :key="index">
+              <div class="shangpin" v-for="(item,index) in lowerlist" :key="index">
                 <div class="s-left">
-                  <img :src="item.imgurl" alt="" @error=handleImageError>
+                  <img :src="item.imgUrl" alt="" @error=handleImageError>
                 </div>
                 <div class="s-right">
                   <p>{{ item.title }}</p>
@@ -69,16 +88,19 @@
                   </div>
                   <div class="price">
                     <p>￥{{ item.price }}</p>
-                    <p>销售量{{ item.del }}</p>
+                    <!-- <p>销售量{{ item.del }}</p> -->
                   </div>
                   <p>地区：{{ item.location }}</p>
                 </div>
-                <div class="money">
+                <!-- <div class="money">
                   <p>{{ item.data }}</p>
-                </div>
+                </div> -->
                 <div class="money">
                   <!-- <p>盈利金额</p> -->
-                  <p>盈利￥{{ item.money }}</p>
+                  <!-- <h6>利润￥{{ item.money }}</h6> -->
+                  <a :href="item.url" target="_blank">
+                    <button>跳转详情</button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -87,7 +109,7 @@
         <div class="priceAvager">
           <div class="circleTitle">
             <div class="line"></div>
-              <p>链接上下架情况</p>
+              <p>重点店铺监控情况</p>
             <div class="line"></div>
           </div>
           <div class="bingtu">
@@ -103,7 +125,7 @@
                   </div>
                   <div class="price">
                     <p>￥{{ item.price }}</p>
-                    <p>销售量{{ item.del }}</p>
+                    <!-- <p>销售量{{ item.del }}</p> -->
                   </div>
                   <p>地区：{{ item.location }}</p>
                 </div>
@@ -122,6 +144,7 @@
 import * as echarts from 'echarts'
 import CountTo from 'vue-count-to';
 import ThreeMap from '@/views/map/components/Threemap' 
+import {lowerGoodsApi} from '@/apis/map'
 // import autofit from 'autofit.js'
 export default {
   name:'MapIndex',
@@ -166,13 +189,28 @@ export default {
         { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 南京', price: 35, del: 96, shop: '苏宁易购官方旗舰店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp',data:'3/18',money:5090 }
       ],
       coffee: [
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '福建 泉州', price: 999, del: 16, shop: 'Lantek兰泰克食品', imgurl: 'https://img.alicdn.com/imgextra/i4/314020065/O1CN011rlLuB1CLoUDxR5VH_!!0-saturn_solar.jpg_580x580q90.jpg_.webp',link:'上架中' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '福建 泉州', price: 399, del: 68, shop: 'Lantek兰泰克食品', imgurl: 'https://img.alicdn.com/imgextra/i1/314020065/O1CN0194jVQR1CLoZ2kHKGG_!!0-saturn_solar.jpg_580x580q90.jpg_.webp' ,link:'已下架'},
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '广东 广州', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i3/2070505646/O1CN01MC4moY1rZv6RmScFk_!!2070505646.jpg_580x580q90.jpg_.webp' ,link:'已下架' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '浙江 温州', price: 5.5, del: 96, shop: '毛球美食优惠', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' ,link:'未上架' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 134, del: 96, shop: '夸香特产直销', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i1/2215864919718/O1CN01GZ6Unp2LetpxbPM8u_!!2215864919718.jpg_580x580q90.jpg_.webp' ,link:'已下架' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 苏州', price: 35, del: 96, shop: '发财树树陆店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
+        { title:'现货澳洲进口欣善怡麦片低脂代餐健身原味即食麦片早餐饼干',location: '上海', price: 49.8, del: 16, shop: '瑞特滋欧洲精选巧克力', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i3/811299154/O1CN01FRDcQX2HUaOg0Uu4E_!!811299154.jpg_580x580q90.jpg_.webp',link:'上架中' },
+        { title:'澳洲进口欣善怡麦片营养早餐全麦谷物燕麦低脂无加糖即食冲饮',location: '江苏', price: 21.9, del: 68, shop: '目远食品专营店', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i1/431232653/O1CN017KRsIl1VT7hVQFB8X_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中'},
+        { title:'澳洲进口欣善怡麦片块全麦375g谷物早餐低脂代餐即食便携小盒装',location: '上海', price: 24.9, del: 4, shop: '三颗糖食品专营店', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i3/2096729075/O1CN01QxL6L42GuPDPSUJGw_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
+        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '山东', price: 25.9, del: 96, shop: '一向花商贸', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/2213815169438/O1CN01n83rCB2Jaf0N4N1Hn_!!2213815169438.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
+        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶块减无糖精低脂代餐早餐即食	',location: '浙江', price: 134, del: 96, shop: '目远食品专营店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2216632089112/O1CN01YMhBMu2HBLsudONPP_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
+        { title:'现货澳洲进口欣善怡麦片低脂代餐健身原味即食麦片早餐饼干',location: '江苏', price: 24.9, del: 96, shop: '三颗糖食品专营店', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i1/431232653/O1CN017KRsIl1VT7hVQFB8X_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
+        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '山东', price: 25.9, del: 96, shop: '一向花商贸', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i3/2096729075/O1CN01QxL6L42GuPDPSUJGw_!!0-item_pic.jpg_580x580q90.jpg_.webp	' ,link:'上架中' },
+        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '上海', price: 24.9, del: 96, shop: '三颗糖食品专营店', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i3/2096729075/O1CN01QxL6L42GuPDPSUJGw_!!0-item_pic.jpg_580x580q90.jpg_.webp	' ,link:'上架中' },
+        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '浙江', price: 24.9, del: 96, shop: '嘚巴嘚巴食品专营店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2216632089112/O1CN01YMhBMu2HBLsudONPP_!!0-item_pic.jpg_580x580q90.jpg_.webp		' ,link:'上架中' },
+        { title:'澳洲进口欣善怡麦片全麦饼干燕麦奶早餐块减无糖精低脂代餐便携	',location: '江苏', price: 26.9, del: 96, shop: '欣善怡旗舰店', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i2/2201313210774/O1CN01xtabqe1HaXRhZkfLd_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
+        { title:'	澳洲进口欣善怡麦片全麦脆燕麦块饼干早餐无糖精低脂代餐饱腹即食		',location: '广东', price: 67.9, del: 96, shop: '号召力食品专营店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2201221691081/O1CN01AwqtaI1Jr94RNyXgc_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
       ],
+      bingdata: [
+              { name: '吉林', value: 86,itemStyle:{color:'#84f1ff'}},
+              { name: '北京', value: 72,itemStyle:{color:'#6a92f5'} },
+              { name: '辽宁', value: 64,itemStyle:{color:'#513bff'} },
+              { name: '河北', value: 53,itemStyle:{color:'#7242f0'} },
+              { name: '天津', value: 48,itemStyle:{color:'#986cfd'} },
+              { name: '山西', value: 34,itemStyle:{color:'#3e6ff7'} },
+              { name: '浙江', value: 30,itemStyle:{color:'#62edfb'} },
+              { name: '内蒙古', value: 24,itemStyle:{color:'#4e6ebb'} }
+            ],
       getlist: [],
       searchValue: '',  //搜索名称
       // areaSale: [],
@@ -195,12 +233,34 @@ export default {
         {area:'河北',avaPrice:'342'},
       ],
       lowerPrice: 21,//最低价
-      lowerNum: 223, //最低数量
-      goodsName:'瑞幸'
+      lowerNum: 1223, //最低数量
+      goodsName: '瑞幸',
+      Timer: null,
+      site: '',
+      lowerlist: [],
+      nodate: false,
+      options: [{
+          value: '选项1',
+          label: '欣善怡全麦脆'
+        }, {
+          value: '选项2',
+          label: '欣善怡麦片'
+        }, {
+          value: '选项3',
+          label: '欣善怡燕麦块'
+        }, {
+          value: '选项4',
+          label: '欣善怡燕麦饼干'
+        }, {
+          value: '选项5',
+          label: '欣善怡麦片无糖'
+        }],
+        value: ''
     };
   },
   created() {
-    this.getlist=this.zhejiang
+    this.getlist = this.zhejiang
+    this.changeSite()
   },
   mounted() {
   //   autofit.init({
@@ -216,6 +276,30 @@ export default {
   //   window.removeEventListener('resize',this.adaptScreen);
   // },
   methods: {
+    async changeSite(val) {
+      this.site = val
+      console.log('this.site',this.site);
+      const res =await lowerGoodsApi({site:this.site,keyword:'欣善怡'})
+      console.log('res', res)
+      if (res.data.data.length>0) {
+        this.lowerlist = res.data.data
+        this.nodate=false
+      } else {
+        this.nodate=true
+      }
+      // clearTimeout(this.Timer)
+      // this.Timer = setTimeout(() => {
+        // if (this.searchValue === '') {
+          // this.getlist=this.zhejiang
+        // } else if (this.searchValue === '五粮醇') {
+          // this.getlist=this.wuliangye
+        // } else if(this.searchValue === '瑞幸咖啡') {
+          // this.getlist=this.coffee
+        // } else {
+          // console.log('没有该选项');
+        // }
+      // },300)
+    },
     handleClose(done) {
       done()
     },
@@ -236,16 +320,7 @@ export default {
             radius: ['40','100'],
             center: ['45%', '50%'],
             // roseType: 'area',
-            data: [
-              { name: '吉林', value: 86,itemStyle:{color:'#84f1ff'}},
-              { name: '北京', value: 72,itemStyle:{color:'#6a92f5'} },
-              { name: '辽宁', value: 64,itemStyle:{color:'#513bff'} },
-              { name: '河北', value: 53,itemStyle:{color:'#7242f0'} },
-              { name: '天津', value: 48,itemStyle:{color:'#986cfd'} },
-              { name: '山西', value: 34,itemStyle:{color:'#3e6ff7'} },
-              { name: '浙江', value: 30,itemStyle:{color:'#62edfb'} },
-              { name: '内蒙古', value: 24,itemStyle:{color:'#4e6ebb'} }
-            ],
+            data: this.bingdata,
             // data:this.areaSale,
             emphasis: {
                 itemStyle: {
@@ -517,9 +592,41 @@ option && myChart.setOption(option);
           .numbgi{
             width: 130px;
             height: 40px;
+            position: relative;
             background-image: url(@/assets/numbgi.png);
             margin-right: 9px;
             line-height: 40px;
+            input{
+              width: 80px;
+              height: 30px;
+              border-radius: 10px;
+              background-color: transparent;
+              border: 1px solid #287adf;
+              text-align: center;
+              color: #fff;
+              outline: none;
+              &:focus{
+                border: 1px solid #287adf;
+              }
+              &::placeholder{
+                color: #ccc;
+              }
+            }
+            ::v-deep .el-input__inner{
+              background-color: transparent;
+              border: 1px solid #287adf;
+              color: #fff;
+              height: 30px;
+              border-radius: 10px;
+            }
+            .el-select ::v-deep .popper-class {
+              width: 100px;
+            }
+            .iclass-text-ellipsis {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
           }
         }
       }
@@ -534,9 +641,39 @@ option && myChart.setOption(option);
           height: 327px;
           // height: 480px;
           // margin-bottom: 30px;
+          position: relative;
+          .site{
+            position: absolute;
+            top: -42px;
+            left: -3px;
+            button{
+              width: 70px;
+              height: 30px;
+              background-color: transparent;
+              color: #fff;
+              border: 1px solid #287adf;
+            }
+            i{
+              position: absolute;
+              top: 8px;
+              right: 11px;
+              color: #fff;
+            }
+            input{
+              height: 30px;
+              background-color: transparent;
+              color: #fff;
+              border:1px solid #287adf;
+              margin-left: 10px;
+              padding-left: 10px;
+              &::placeholder{
+                color: #fff;
+              }
+            }
+          }
           .circleTitle{
             padding-top: 35px;
-            padding-left: 100px;
+            padding-left: 40px;
             display: flex;
             .line{
               width: 56px;
@@ -550,6 +687,12 @@ option && myChart.setOption(option);
               font-size: 24px;
               text-align: center;
             }
+          }
+          .nodate{
+            display: flex;
+            justify-content: center;
+            margin-top: 100px;
+            color: #ccc;
           }
           .bingtu{
             padding: 10px 30px;
@@ -609,11 +752,22 @@ option && myChart.setOption(option);
                 }
                 .money{
                   height: 100px;
-                  width: 55px;
+                  width: 100px;
+                  // width: 55px;
                   color: #fff;
                   font-size: 12px;
-                  text-align: center;
-                  line-height: 72px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  h6{
+                    font-size: 12px;
+                    font-weight: normal;
+                  }
+                  button{
+                    width: 80px;
+                    height: 30px;
+                    background-color: #388fcd;
+                  }
                 }
               }
 
@@ -625,7 +779,7 @@ option && myChart.setOption(option);
           height: 383px;
           .circleTitle{
             padding-top: 40px;
-            padding-left: 90px;
+            padding-left: 55px;
             display: flex;
             .line{
               width: 56px;

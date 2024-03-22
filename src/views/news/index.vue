@@ -16,19 +16,25 @@
         </div>
         <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon">
       </div>
-      <img src="@/assets/shouye/newsimg.png" alt="">
+      <img src="@/assets/shouye/newsimg.png" alt="" class="image">
     </div>
     <div class="two">
       <h3>新闻中心：</h3>
       <div class="newsbox">
+        <a href="https://baijiahao.baidu.com/s?id=1792855845398717979&wfr=spider&for=pc" target="_blank">杭州苒辰科技：助力电商控价，让品牌“价”驭有道！</a>
+        <p>电商市场存在着低价乱价、假货等现象，它需要企业具备强大的市场洞察力和管理能力，管控得当才能维护市场价格稳定，保障消费者权益，保证品牌的声誉和形象。
+          在此背景下，杭州苒辰科技于2019年正式开始品牌服务,将战略重点转向价格管控，力求通过大数据系统研发进行渠道结构优化、渠道制度梳理、渠道流程推进以及渠道评价数据的输出，帮助客户更好的维护品牌形象和声誉，提升产品价值。通过整合母婴、食品、化妆品、服装、电器、成人用品、 乐器、药品、宠物用品、教育书籍、
+          家装、3C等类目，制定合理的价格体系，运用科技手段实时监控价格，并与经销商合作共同维护市场秩序，保护消费者权益。</p>
+          <p>杭州苒辰科技在金融、电商、软件开发等领域都有卓越成就，如今团队已经达150余人，90%以上本科学历，研发团队、处理团队120余人，集团旗下...</p>
+        <a href="https://baijiahao.baidu.com/s?id=1792855845398717979&wfr=spider&for=pc" target="_blank"><img src="@/assets/shouye/newsright.png" alt="" ></a>
+      </div>
+      <i>精彩进行中......</i>
+      <!-- <div class="newsbox">
         <img src="@/assets/shouye/newsright.png" alt="">
       </div>
       <div class="newsbox">
-        <img src="@/assets/shouye/newsright.png" alt="">
-      </div>
-      <div class="newsbox">
-        <img src="@/assets/shouye/newsright.png" alt="">
-      </div>
+        <img src="@/assets/shouye/newsright.png" alt=""> 
+      </div>-->
     </div>
   </div>
 </template>
@@ -58,7 +64,7 @@ export default {
       this.$router.push('/relate')
     },
     openLogin() {
-      this.$router.push('/login')
+      // this.$router.push('/login')
     },
   }
 }
@@ -79,7 +85,7 @@ export default {
     display: flex;
     justify-content: space-between;
     .logo{
-      margin-top: 54px;
+      margin-top: 24px;
       margin-left: 50px;
       width: 191px;
       height: 191px;
@@ -89,7 +95,7 @@ export default {
       height: 57px;
       ul{
         display: flex;
-        margin-top: 53px;
+        margin-top: 70px;
         border-bottom: 1px solid rgba(194, 194, 194, 1);
         padding:0 77px;
       }
@@ -135,12 +141,12 @@ export default {
     .loginicon{
       width: 52px;
       height: 49px;
-      margin-top: 54px;
+      margin-top: 70px;
       margin-right: 25px;
     }
   }
-  img{
-    margin-top: 5vh;
+  .image{
+    margin-top: 6vh;
     margin-left: 40px;
   }
 }
@@ -159,8 +165,21 @@ export default {
     width: 1527px;
     height: 227px;
     background-color: rgba(204, 204, 204, 1);
+    border-radius: 10px;
+    padding: 20px 40px;
     margin-top: 40px;
     margin-left: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    a{
+      // color: #000;
+      font-size: 28px;
+    }
+    p{
+      font-size: 20px;
+      text-indent: 2em;
+      margin-top: 10px;
+    }
     img{
       position: absolute;
       width: 37px;
@@ -168,6 +187,12 @@ export default {
       right: 47px;
       bottom: 13px;
     }
+  }
+  i{
+    color: #8f8d8d;
+    display: block;
+    margin-left: 900px;
+    margin-top: 100px;
   }
   
 }

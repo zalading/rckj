@@ -11,7 +11,7 @@ import sideNav from './components/sideNav.vue';  //全局注册侧边导航组�
 Vue.component('sideNav', sideNav)
 
 Vue.prototype.echarts=echarts
-Vue.config.productionTip = false
+// Vue.config.productionTip = false
 
 Vue.use(ElementUI);
 

@@ -3,8 +3,10 @@ import axios from 'axios'
 
 // 创建一个新的axios实例
 const request = axios.create({
-  baseURL: 'process.env.VUE_APP_BASEURL',
-  timeout: 5000
+  // baseURL: 'http://192.168.1.87:8080',
+  // baseURL:process.env.VUE_APP_BASE_API,
+  baseURL:'',
+  timeout: 60000
 })
 
 // 添加请求拦截器

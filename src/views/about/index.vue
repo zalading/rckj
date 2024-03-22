@@ -16,7 +16,7 @@
         </div>
         <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon">
       </div>
-      <img src="@/assets/shouye/aboutimg.png" alt="">
+      <img src="@/assets/shouye/aboutimg.png" alt="" class="image">
     </div>
     <div class="two">
       <h3>公司介绍</h3>
@@ -77,7 +77,7 @@ export default {
         this.$router.push('/relate')
       },
     openLogin() {
-        this.$router.push('/login')
+        // this.$router.push('/login')
       },
   }
 }
@@ -98,7 +98,7 @@ export default {
     display: flex;
     justify-content: space-between;
     .logo{
-      margin-top: 54px;
+      margin-top: 24px;
       margin-left: 50px;
       width: 191px;
       height: 191px;
@@ -108,7 +108,7 @@ export default {
       height: 57px;
       ul{
         display: flex;
-        margin-top: 53px;
+        margin-top: 70px;
         border-bottom: 1px solid rgba(194, 194, 194, 1);
         padding:0 77px;
       }
@@ -154,11 +154,11 @@ export default {
     .loginicon{
       width: 52px;
       height: 49px;
-      margin-top: 54px;
+      margin-top: 70px;
       margin-right: 25px;
     }
   }
-  img{
+  .image{
     margin-top: 5vh;
     margin-left: 40px;
   }

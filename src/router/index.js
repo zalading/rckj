@@ -62,7 +62,13 @@ const routes = [
   {
     path: '/saleAlayse',
     name: 'saleAlayse',
-    component: () => import( '../views/function/saleAlayse')
+    component: () => import('../views/function/saleAlayse'),
+    props: true
+  },
+  {
+    path: '/getdata',
+    name: 'getdata',
+    component: () => import( '../views/function/getdata')
   },
   {
     path: '/other',

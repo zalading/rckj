@@ -14,7 +14,8 @@ export default {
     data() {
       return {
         myChart: null,
-        num:21,
+        num: 21,
+        bingflag:false,
         provinceList: [
         { name: '吉林', value: 36, pos: [125.8154, 44.2584] },
         { name: '北京', value: 32, pos: [116.4551, 40.2539] },
@@ -192,7 +193,11 @@ export default {
     linstenProvinceClick() {
       // 接收一个对象， 解构出的data对象值为series数组中data数据源中的对象
       this.myChart.on('click', ({ data }) => {
-        console.log('this.price',this.price);
+        console.log('this.price', this.price);
+        console.log(data.name);
+        this.flag=!this.flag
+        this.$emit('changebing',this.bingflag)
+        this.$router.push({name:'saleAlayse',params:{name:data.name}})
         // if (data.name == '浙江') {
         //   this.getlist=this.zhejiang
         // } else if (data.name == '上海') {

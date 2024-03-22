@@ -12,6 +12,14 @@
       </el-input>
         </div>
         <div class="search">
+      选择地区：
+      <el-input
+        placeholder="请输入内容"
+        v-model="searchValue"  @input="changeGoods">
+        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+      </el-input>
+        </div>
+        <div class="search">
       最低价：<div class="lowerPrice" v-if="searchValue">{{ lowerPrice }}</div>
       <div class="lowerPrice" v-else style="color: #ccc;font-size: 14px;">未显示</div>
         </div>
@@ -22,6 +30,7 @@
     :data="getlist"  
     height="730"
     border
+    v-loading="loading"
     style="width: 100%"
     :header-cell-style="{'text-align':'center'}">
     <el-table-column
@@ -29,7 +38,14 @@
       label="商品图片"
       width="100">
       <template slot-scope="scope">
-        <img :src="scope.row.imgurl" min-width="70" height="70" @error=handleImageError />
+        <img :src="scope.row.img_url" min-width="70" height="70" @error=handleImageError />
+      </template>
+    </el-table-column>
+    <el-table-column
+      prop="url"
+      label="店铺图片">
+      <template slot-scope="scope">
+        <a :href="scope.row.url" target="_blank" class="buttonText" rel="noreferrer">{{scope.row.url}}</a>
       </template>
     </el-table-column>
     <el-table-column
@@ -41,20 +57,27 @@
       </template>
     </el-table-column>
     <el-table-column
-      prop="location"
-      label="地址">
+      prop="search_date"
+      label="搜索时间">
     </el-table-column>
     <el-table-column
       prop="shop"
       label="店铺名称">
     </el-table-column>
     <el-table-column
-      prop="del"
-      label="销量">
+      prop="site"
+      label="site">
     </el-table-column>
     <el-table-column
       prop="title"
       label="商品名称">
+    </el-table-column>
+    <el-table-column
+      prop="search_date"
+      label="搜索时间">
+      <template slot-scope="scope">
+        <p>{{ getTime(scope.row.search_date) }}</p>
+      </template>
     </el-table-column>
   </el-table>
   <div class="block">
@@ -62,7 +85,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
+      :page-sizes="[10, 15, 20, 30]"
       :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
       :total="400">
@@ -74,10 +97,13 @@
 <script>
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import axios from 'axios'
 export default {
-    name:'SaleAlayse',
+  name: 'SaleAlayse',
+    props:['name'],
     data() {
       return {
+        loading:true,
         getlist:[], //全部数据列表
         currentPage4: 4,
         lowerPrice: 0, //最低价
@@ -116,9 +142,37 @@ export default {
       }
   },
   created() {
-    this.getlist=this.zhejiang
+    console.log('this.$router.params', this.name);
+    // if (this.name) {
+    //   this.getlist=this.zhejiang
+    // } else {
+    //   this.getlist=this.zhejiang
+    // }
+    this.getallList()
   },
   methods: {
+    //时间戳转换
+    getTime(time) {
+      // eslint-disable-next-line no-undef
+      let date = new Date(time)
+      // console.log('date', date);
+      if (date) {
+        return date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);
+        
+      } else {
+        return
+      }
+    },
+    async getallList() {
+      const res= await axios({
+          url: 'http://192.168.1.84:9977',
+          method: 'get',
+        })
+      console.log(res);
+      this.loading=false
+      this.getlist = res.data.items
+        console.log('this.getlist',this.getlist);
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },

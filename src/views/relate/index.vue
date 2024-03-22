@@ -21,7 +21,7 @@
           <div class="callus">
             <div class="number">
               <i class="el-icon-phone"></i>
-              <p>联系电话：053-87654321</p>
+              <p>联系电话：15372004152</p>
             </div>
             <div class="number">
               <i class="el-icon-message"></i>
@@ -93,7 +93,7 @@ export default {
       this.$router.push('/news')
     },
     openLogin() {
-      this.$router.push('/login')
+      // this.$router.push('/login')
     },
   }
 }
@@ -114,7 +114,7 @@ export default {
     display: flex;
     justify-content: space-between;
     .logo{
-      margin-top: 54px;
+      margin-top: 24px;
       margin-left: 50px;
       width: 191px;
       height: 191px;
@@ -124,7 +124,7 @@ export default {
       height: 57px;
       ul{
         display: flex;
-        margin-top: 53px;
+        margin-top: 70px;
         border-bottom: 1px solid rgba(194, 194, 194, 1);
         padding:0 77px;
       }
@@ -170,7 +170,7 @@ export default {
     .loginicon{
       width: 52px;
       height: 49px;
-      margin-top: 54px;
+      margin-top: 70px;
       margin-right: 25px;
     }
   }

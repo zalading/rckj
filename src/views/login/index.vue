@@ -6,7 +6,7 @@
      <!-- 输入手机号和密码 -->
      <div class="phone">
       <img src="@/assets/phone.png" alt="">
-      <input type="phone" placeholder="请输入登录ID" v-model="formData.phone">
+      <input type="phone" placeholder="请输入账号" v-model="formData.phone">
      </div>
      <div class="password">
       <img src="@/assets/password.png" alt="">
@@ -52,13 +52,14 @@ export default {
   },
   methods: {
     login() {
-      console.log(this.formData.phone);
+      console.log(this.formData);
       let regExp = /^1[3456789]\d{9}$/
-        if (this.formData.password.length>=6&&regExp.test(this.formData.phone)) {
-          this.$message({
-            message: '登录成功！',
-            type:'success'
-          })
+      console.log(regExp.test(this.formData.phone));
+        if (this.formData.password=='rckj888'&&regExp.test(this.formData.phone)) {
+          // this.$message({
+          //   message: '登录成功！',
+          //   type:'success'
+          // })
           this.$router.push('/map')
           this.$store.commit('savePhone', this.formData.phone)
           this.$store.commit('savePassword',this.formData.password)

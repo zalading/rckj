@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="content">
     <div class="one">
     <div class="header">
         <div><img src="../../assets/shouye/logo.png" alt="" class="logo"></div>
@@ -22,10 +22,10 @@
       <div class="line"></div>
     </div>
     <div class="info">
-      <div class="moreinfo">
+      <!-- <div class="moreinfo">
         <span>了解更多</span>
         <img src="@/assets/shouye/single.png" alt="">
-      </div>
+      </div> -->
       <div class="moreinfo" @click="goabout">
         <span class="infospan">了解苒辰</span>
         <img src="@/assets/shouye/single2.png" alt="">
@@ -57,13 +57,48 @@
         <p>3.全面服务模式,全程跟踪服务，数据分析，给您最省心的服务体验。</p>
       </div>
     </div>
-    <div class="three">
-      <h3>服务范围</h3>
+    <div class="six">
+      <h3>部分服务平台</h3>
       <div class="blueline"></div>
-      <img src="@/assets/shouye/pinpai.png" alt="">
+      <ul>
+        <li><img src="@/assets/pinpai/ping1.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping2.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping3.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping10.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping4.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping5.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping6.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping11.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping7.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping8.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping9.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping12.png" alt=""></li>
+      </ul>
+    </div>
+    <div class="three">
+      <h3>部分合作品牌</h3>
+      <div class="blueline"></div>
+      <ul>
+        <li><img src="@/assets/pinpai/f1.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f2.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f3.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f4.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f5.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f6.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f7.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f8.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f9.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f10.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f11.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f12.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f13.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f14.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f15.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f16.png" alt=""></li>
+      </ul>
     </div>
     <div class="four">
-      <h3>合作案例</h3>
+      <h3>部分合作案例</h3>
       <div class="blueline"></div>
       <div class="cooperate">
         <div class="left"><img src="@/assets/shouye/cooperate1.png" alt=""></div>
@@ -81,7 +116,7 @@
           <div class="callus">
             <div class="number">
               <i class="el-icon-phone"></i>
-              <p>联系电话：053-87654321</p>
+              <p>联系电话：15372004152</p>
             </div>
             <div class="number">
               <i class="el-icon-message"></i>
@@ -131,7 +166,9 @@
       center
       :visible.sync="dialogVisible"
       width="425px"
-      :show-close="false">
+      :show-close="false"
+      :close-on-click-modal="false"
+      >
       <div class="heder">
         <i class="el-icon-close" @click="deliagClose"></i>
         <div class="contact">
@@ -143,7 +180,7 @@
       </div>
       <div class="phone">
         <p>您也可以留下您的电话号码，我们会最快时间联系您</p>
-        <input type="phone" placeholder="请输入您的电话号码"><button>提交</button>
+        <input type="phone" placeholder="请输入您的电话号码" v-model="phone" :disabled="true"><button @click="submit">提交</button>
         <div class="protect">
         <i class="el-icon-lock"></i><span>信息保护中请放心填写</span>
         </div>
@@ -160,19 +197,7 @@ export default {
       return {
         dialogVisible: false,
         // navopen:false,
-        formData: {
-          phone: '',
-          password:''
-        },
-        rules: {
-          phone: [
-            { required: true, message: '请输入手机号', trigger: 'blur' },
-            { pattern:/^[1][3,4,5,7,8,9][0-9]{9}$/, message:'请输入正确的手机号',trigger:'blur'}
-          ],
-          password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-          ]
-        }
+        phone: '',
       }
   },
   mounted() {
@@ -200,7 +225,7 @@ export default {
         this.$router.push('/relate')
       },
       openLogin() {
-        this.$router.push('/login')
+        // this.$router.push('/login')
       },
       login() {
         if (this.formData.password.length>=6) {
@@ -209,6 +234,19 @@ export default {
         } else {
           this.$message('手机号或密码不正确，请重新输入')
         }
+      },
+      //客户提交电话号码
+      submit() {
+        // let regExp = /^1[3456789]\d{9}$/
+        // if (regExp.test(this.phone)) {
+        //   this.$message({
+        //     message: '提交成功！',
+        //     type: 'success'
+        //   })
+        //   this.dialogVisible=false
+        // } else {
+        //   this.$message('手机号格式不正确')
+        // }
       },
       //导航栏下面的显示和隐藏
       enter() {
@@ -228,6 +266,11 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
+.content{
+  overflow-y: scroll;
+  &::-webkit-scrollbar{
+    width: 0;
+  }
 .one{
   width: 100%;
   height: 1080px;
@@ -237,7 +280,7 @@ export default {
     display: flex;
     justify-content: space-between;
     .logo{
-      margin-top: 54px;
+      margin-top: 24px;
       margin-left: 50px;
       width: 191px;
       height: 191px;
@@ -247,7 +290,7 @@ export default {
       height: 57px;
       ul{
         display: flex;
-        margin-top: 53px;
+        margin-top: 70px;
         border-bottom: 1px solid rgba(194, 194, 194, 1);
         padding:0 77px;
       }
@@ -292,7 +335,7 @@ export default {
     .loginicon{
       width: 52px;
       height: 49px;
-      margin-top: 54px;
+      margin-top: 70px;
       margin-right: 25px;
     }
   }
@@ -302,7 +345,7 @@ export default {
     height: 464px;
     background-repeat: no-repeat;
     background-size: center;
-    margin-top: 151px;
+    margin-top: 181px;
     margin-left: 239px;
     display: flex;
     margin-bottom: 108px;
@@ -321,7 +364,7 @@ export default {
   }
   .info{
     display: flex;
-    margin-left: 1299px;
+    margin-left: 1550px;
     .moreinfo{
       width: 202px;
       height: 61px;
@@ -461,6 +504,47 @@ export default {
     }
   }
 }
+.six{
+  background-image: url(@/assets/shouye/twobgi.png);
+  width: 100%;
+  height: 1080px;
+  h3{
+    font-size: 48px;
+    font-weight: normal;
+    padding-top: 71px;
+    text-align: center;
+    margin-bottom: 13px;
+  }
+  .blueline{
+    margin: auto;
+    width: 93px;
+    height: 5px;
+    background-color: rgba(31, 108, 196, 1);
+  }
+  ul{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 135px;
+    padding-left: 300px;
+    li{
+      width: 282px;
+      height: 173px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 95px;
+      margin-bottom: 70px;
+      &:nth-child(4n){
+        margin-right: 0;
+      }
+      img:hover{
+        margin-bottom: 10px;
+        margin-right: 10px;
+      }
+    }
+  }
+}
 .three{
   background-image: url(@/assets/shouye/threebgi.png);
   width: 100%;
@@ -479,11 +563,32 @@ export default {
     height: 5px;
     background-color: #fff;
   }
-  img{
-    width: 1649px;
-    height: 773px;
-    margin-top: 41px;
-    margin-left: 136px;
+  ul{
+    width: 1637px;
+    height: 820px;
+    background-color: rgba(204, 204, 204, 0.43);
+    display: flex;
+    flex-wrap: wrap;
+    // align-items: center;
+    margin-top: 38px;
+    margin-left: 141px;
+    padding: 20px 40px 0 40px;
+    li{
+      list-style: none;
+      width: 342px;
+      height: 200px;
+      margin-right: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &:nth-child(4n){
+        margin-right: 0;
+      }
+      img:hover{
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+    }
   }
 }
 .four{
@@ -601,6 +706,7 @@ export default {
   background-color: transparent;
   height: 250px;
   margin-top: 40vh !important;
+  box-shadow: none;
 }
 ::v-deep .el-dialog--center .el-dialog__body{
   
@@ -673,5 +779,7 @@ padding: 0;
     }
   }
 }
+}
+
 }
 </style>

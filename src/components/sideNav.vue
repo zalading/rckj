@@ -28,9 +28,9 @@
             <i class="el-icon-s-marketing"></i>
             <span>销量分析</span>
           </li>
-          <li>
+          <li @click="nav5">
             <i class="el-icon-s-marketing"></i>
-            <span>销量分析</span>
+            <span>数据获取</span>
           </li>
           <li>
             <i class="el-icon-s-marketing"></i>
@@ -77,6 +77,9 @@ export default {
     //跳转到销售分析
     nav4() {
       this.$router.push('/saleAlayse').catch(()=>{this.drawer=false})
+    },
+    nav5() {
+      // this.$router.push('/getdata').catch(()=>{this.drawer=false})
     }
   }
 }
