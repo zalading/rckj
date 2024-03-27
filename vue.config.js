@@ -6,7 +6,7 @@
 // 熟悉proxy 代理的用法
 module.exports = {
   devServer: {
-    proxy: 'http://192.168.1.87:8080'
+      proxy: 'http://192.168.1.116:8080'
     }
 }
 

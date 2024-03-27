@@ -17,9 +17,11 @@
         <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon">
     </div>
     <div class="ranchen">
-      <div class="line"></div>
-      <p>品牌维权控价，品牌电商数据，品牌内容营销，品牌商场注入</p>
-      <div class="line"></div>
+      <!-- <div class="line"></div> -->
+      <div><p>苒辰控价  &nbsp;专为品牌方处理低价乱价链接而生</p>
+      <h4>因为专注，所以专业！</h4>
+      </div>
+      <!-- <div class="line"></div> -->
     </div>
     <div class="info">
       <!-- <div class="moreinfo">
@@ -115,15 +117,15 @@
         <div class="left">
           <div class="callus">
             <div class="number">
-              <i class="el-icon-phone"></i>
+              <img src="@/assets/shouye/relatephone.png" alt="">
               <p>联系电话：15372004152</p>
             </div>
             <div class="number">
-              <i class="el-icon-message"></i>
+              <img src="@/assets/shouye/email.png" alt="">
               <p>联系邮箱：ranchenkeji@hanzghou.com</p>
             </div>
             <div class="number">
-              <i class="el-icon-location"></i>
+              <img src="@/assets/shouye/address.png" alt="">
               <p>联系地址：杭州运河万科中心B2幢8楼801</p>
             </div>
           </div>
@@ -170,9 +172,9 @@
       :close-on-click-modal="false"
       >
       <div class="heder">
-        <i class="el-icon-close" @click="deliagClose"></i>
+        <img src="@/assets/shouye/close.png" alt="" @click="deliagClose" class="close">
         <div class="contact">
-        <i class="el-icon-phone"></i>
+        <img src="@/assets/shouye/phone.png" alt="">
         <p>苒辰科技咨询热线</p>
         </div>
         <h2>15372004152</h2>
@@ -182,7 +184,7 @@
         <p>您也可以留下您的电话号码，我们会最快时间联系您</p>
         <input type="phone" placeholder="请输入您的电话号码" v-model="phone" :disabled="true"><button @click="submit">提交</button>
         <div class="protect">
-        <i class="el-icon-lock"></i><span>信息保护中请放心填写</span>
+        <img src="@/assets/shouye/lock.png" alt=""><span>信息保护中请放心填写</span>
         </div>
       </div>
     </el-dialog> 
@@ -346,20 +348,28 @@ export default {
     background-repeat: no-repeat;
     background-size: center;
     margin-top: 181px;
-    margin-left: 239px;
+    margin-left: 10vw;
     display: flex;
+    justify-content: center;
     margin-bottom: 108px;
     .line{
-      width: 151px;
+      width: 155px;
       height: 2px;
       background-color: #fff;
       margin-top: 230px;
     }
     p{
-      font-size: 45px;
-      font-weight: 400;
-      padding: 199px 36px 0 36px;
+      font-size: 66px;
+      font-weight: 600;
+      padding: 182px 36px 0 36px;
       color:#fff;
+    }
+    h4{
+      font-size: 66px;
+      font-weight: 600;
+      padding: 10px 36px 0 36px;
+      color:#fff;
+      margin-left: 2em;
     }
   }
   .info{
@@ -660,8 +670,7 @@ export default {
           display: flex;
           margin-bottom: 10px;
           font-size: 36px;
-          i{
-            font-size: 36px;
+          img{
             margin-right: 35px;
           }
         }
@@ -714,7 +723,7 @@ padding: 0;
 .heder{
   position: relative;
   padding: 0 40px;
-  .el-icon-close{
+  .close{
     position: absolute;
     top: -8px;
     right: 23px;
@@ -723,7 +732,9 @@ padding: 0;
   .contact{
     display: flex;
     align-items: center;
-    i{
+    img{
+      width: 11px;
+      height: 11px;
       margin-right: 5px;
       color: #000;
     }
@@ -777,6 +788,10 @@ padding: 0;
     span{
       color: #666;
     }
+  }
+  img{
+    vertical-align: text-top;
+    margin-right: 5px;
   }
 }
 }

@@ -4,24 +4,35 @@
     <div class="demo-input-suffix">
       <div class="top">
         <div class="search">
-      选择商品：
-      <el-input
-        placeholder="请输入内容"
-        v-model="params.Keyword"  @input="changeGoods">
-        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-      </el-input>
+          选择商品：
+          <el-input
+            placeholder="请输入内容"
+            v-model="params.keyword"  @input="changeGoods">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>
         </div>
         <div class="search">
-      选择平台：
-      <el-input
-        placeholder="请输入平台"
-        v-model="params.site"  @input="changeGoods">
-        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-      </el-input>
+          选择平台：
+          <el-input
+            placeholder="请输入平台"
+            v-model="params.site"  @input="changeGoods">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>
         </div>
         <div class="search">
-      最低价：<div class="lowerPrice" v-if="searchValue">{{ lowerPrice }}</div>
-      <div class="lowerPrice" v-else style="color: #ccc;font-size: 14px;">未显示</div>
+          选择地区：
+          <el-select v-model="params.location" placeholder="请选择地区" @change="changeGoods">
+              <el-option
+                v-for="item in options"
+                :key="item"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
+        </div>
+        <div class="search">
+          最低价：<div class="lowerPrice" v-if="searchValue">{{ lowerPrice }}</div>
+          <div class="lowerPrice" v-else style="color: #ccc;font-size: 14px;">未显示</div>
         </div>
       </div>
       <button @click="exportExcel">导出文件</button>
@@ -29,72 +40,86 @@
     <el-table
     :data="tableData"
     style="width: 100%;margin-bottom: 20px;"
-    row-key="id"
+    row-key="uniqueHashId"
     v-loading="loading"
+    :row-class-name="getRowClass"
     height="730"
-    border
-    default-expand-all
-    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+    :cell-style="{'text-align':'center'}"
+    :header-cell-style="{'text-align':'center'}"
+    border>
+    <el-table-column type="expand" >
+        <template slot-scope="{ row }" >
+          <el-table :data="row.productData" style="width: 100%" v-if="row.productData&&row.productData.length > 0">
+            <el-table-column prop="site" label="平台"></el-table-column>
+            <el-table-column prop="skuPropertiesName" label="sku标题"></el-table-column>
+            <el-table-column prop="skuPrice" label="到手价"></el-table-column>
+            <el-table-column prop="skuOrginalPrice" label="原价"></el-table-column>
+            <el-table-column prop="quantity" label="库存数量"></el-table-column>
+            <el-table-column prop="location" label="发货地址"></el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
     <el-table-column
-      prop="brand"
-      label="品牌"
-      width="120">
+      prop="site"
+      label="平台"
+      width="100">
     </el-table-column>
     <el-table-column
-      prop="picUrl"
+      prop="imgUrl"
       label="商品图片"
-      width="100">
+      width="110">
       <template slot-scope="scope">
-        <img :src="scope.row.picUrl" min-width="70" height="70" @error=handleImageError />
+        <a :href="scope.row.detailUrl" target="_blank">
+           <img :src="scope.row.imgUrl" min-width="80" height="80" @error=handleImageError /> 
+        </a>
       </template>
     </el-table-column>
     
     <el-table-column
       prop="price"
-      label="价格"
+      label="商品价格"
       sortable
       width="120">
     </el-table-column>
     <el-table-column
-      prop="orginalPrice"
-      label="原始价格"
-      sortable
+      prop="location"
+      label="地区"
       width="120">
     </el-table-column>
     <el-table-column
-      prop="nick"
-      label="店铺名称"
-      width="280">
+      prop="shop"
+      label="店铺名称">
+      <template slot-scope="scope">
+        <a :href="scope.row.shopUrl" target="_blank" style="text-decoration: none; color: #606266;">
+           <p >{{ scope.row.shop }}</p> 
+        </a>
+      </template>
     </el-table-column>
     <el-table-column
       prop="title"
-      label="商品标题"
-      width="180">
+      label="商品标题">
     </el-table-column>
     <el-table-column
-      prop="num"
-      label="销量"
-      width="180">
+      prop="deal"
+      label="付款人数"
+      sortable
+      width="110">
     </el-table-column>
-    <el-table-column
-      prop="detailUrl"
-      label="商品网址">
-      <template slot-scope="scope">
-        <a :href="scope.row.detailUrl" target="_blank" class="buttonText" rel="noreferrer">{{scope.row.detailUrl}}</a>
-      </template>
-    </el-table-column>
-    <el-table-column
-      prop="zhuy"
-      label="商店网址">
-      <template slot-scope="scope">
-        <a :href="scope.row.zhuy" target="_blank" class="buttonText" rel="noreferrer">{{scope.row.zhuy}}</a>
-      </template>
-    </el-table-column>
+    
     <el-table-column
       prop="secacheDate"
       label="搜索时间">
       <template slot-scope="scope">
         <p>{{ getTime(scope.row.secacheDate) }}</p>
+      </template>
+    </el-table-column>
+    <el-table-column
+      prop="isMonitored"
+      label="监控状态">
+      <template slot-scope="scope">
+        <el-switch
+            v-model="scope.row.isMonitored" @change="stateChange(scope.row)">
+        </el-switch>
       </template>
     </el-table-column>
   </el-table>
@@ -115,14 +140,15 @@
 <script>
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { AllGoodsApi,searchGoodApi } from '@/apis/goods'
+import { AllGoodsApi,updataGoodApi } from '@/apis/goods'
 
 export default {
-    name:'GoodsAlayse',
+  name: 'GoodsAlayse',
+  props:['name'],
     data() {
       return {
         hasChildren: true,
-        loading:true,
+        loading:false,
         params: {
           page: 1,
           size: 10
@@ -134,57 +160,28 @@ export default {
         lowerPrice: 0, //最低价
         searchValue: '', //搜索的数据
         Timer: null, //定时器
-        tableData: [{
-          id: 1,
-          date: '2016-05-02',
-          name: '王小',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          id: 2,
-          date: '2016-05-04',
-          name: '小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          id: 3,
-          date: '2016-05-01',
-          name: '王虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          children: [{
-              id: 31,
-              date: '2016-05-01',
-              name: '李四',
-              address: '上海市普陀区金沙江路 1519 弄'
-            }, {
-              id: 32,
-              date: '2016-05-01',
-              name: '张三',
-              address: '上海市普陀区金沙江路 1519 弄'
-          }]
-        }, {
-          id: 4,
-          date: '2016-05-03',
-          name: '二哥',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-       
+        tableData: [],
+        options:['全部','安徽','澳门','北京','重庆','福建','甘肃','广东','广西','贵州','海南','河北','河南','黑龙江','湖北','湖南','吉林','江苏','江西','辽宁','内蒙古','宁夏','青海','上海','陕西','山东','山西','四川','台湾','天津', '西藏','香港','新疆','云南','浙江']  //选择地区下拉框
       }
   },
   created() {
+    console.log('this.$router.params', this.name);
     this.getGoodslist()
     this.getlist=this.zhejiang
   },
   methods: {
     //时间戳转换
     getTime(time) {
-      // eslint-disable-next-line no-undef
-      let date = new Date(time)
-      // console.log('date', date);
-      if (date) {
-        return date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);
-        
-      } else {
-        return
+      if (time) {
+        let date = new Date(time)
+        if (date) {
+          return date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);
+          
+        } else {
+          return
+        }
       }
+      // console.log('date', date);
     },
     async getGoodslist() {
       const res = await AllGoodsApi(this.params)
@@ -193,6 +190,27 @@ export default {
       this.total=res.data.data.total
       this.size = res.data.data.size
       this.loading=false
+    },
+    //获取滑块的值
+    async stateChange(val) {
+      console.log(val);
+      let sort 
+      if (val.isMonitored === 'true') {
+        sort=0
+      } else {
+        sort=1
+      }
+       await updataGoodApi({
+         numIid: val.numIid,
+         isOFF:sort
+       })
+       this.$message({message:'链接监控状态更改成功',type:'success'})
+    },
+    //隐藏没有子节点的展开图标
+    getRowClass({row}) {
+      if (!row.productData||row.productData.length==0) {
+        return 'icon-no'
+      }
     },
     handleSizeChange(val) {
       this.params.size = val
@@ -206,19 +224,15 @@ export default {
     },
      changeGoods() {
        clearTimeout(this.Timer)
-       if (!this.params.Keyword && !this.params.site) {
-        this.getGoodslist()
-       } else {
-         this.Timer = setTimeout(async() => {
-           console.log(this.params);
-           const res = await searchGoodApi(this.params)
-           console.log(res);
-           this.tableData = res.data.data.list
-           this.total=res.data.data.total
-           this.size = res.data.data.size
-           this.loading=false
-         },300)
+       console.log('this.params.location',this.params.location);
+       if (this.params.location === '全部') {
+        this.params.location=''
+      } else {
+        return
       }
+         this.Timer = setTimeout(async() => {
+            this.getGoodslist()
+         },300)
     },
     //图片路径错误时换成指定图片
     handleImageError(e) {
@@ -228,29 +242,30 @@ export default {
     //Excel表格导出功能
      exportExcel() {
       const data = [[
-        '品牌',
+        '平台',
         '商品图片',
-        '价格',
-        '原始价格',
+        '商品价格',
+        '地区',
         '店铺名称',
         '商品标题',
-        '销量',
-        '商品网址',
-        '商店网址',
-        '搜索时间'
+        '付款人数',
+        '商品详情',
+        '店铺链接',
+        '搜索时间',
+        '监控状态'
        ]]
       
        this.tableData.forEach(item => {
-         if (item.children) {
-          data.push([item.date,item.name,item.address])
-           for (let i = 0; i < item.children.length; i++){
-            console.log(i);
-             data.push([item.children[i].date, item.children[i].name, item.children[i].address])
-            console.log('push',data);
-           }
-         } else {
-           data.push([item.brand,item.picUrl,item.price,item.orginalPrice,item.nick,item.title,item.num,item.detailUrl,item.zhuy,item.secacheDate])
-          }
+        //  if (item.productData) {
+        //   data.push([item.date,item.name,item.address])
+        //    for (let i = 0; i < item.children.length; i++){
+        //     console.log(i);
+        //      data.push([item.children[i].date, item.children[i].name, item.children[i].address])
+        //     console.log('push',data);
+        //    }
+        //  } else {
+           data.push([item.site,item.imgUrl,item.price,item.location,item.shop,item.title,item.deal,item.detailUrl,item.shopUrl,item.secacheDate,item.isMonitored])
+          // }
          })
       console.log('data',data);
         // 将数据转换为工作表
@@ -262,7 +277,7 @@ export default {
       // 生成Excel文件并导出
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const dataBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-      saveAs(dataBlob, '商品信息.xlsx');
+      saveAs(dataBlob, '商品信息详情表.xlsx');
     },
 
     }
@@ -271,19 +286,34 @@ export default {
 
 
 <style lang="scss" scoped>
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .content{
+  background-image: url(@/assets/tablebgi.png); 
+  width: 100%;   
+  height: 100vh;  
+  position: absolute;  
+  // top: 0;   
+  // left: 0;     
+  background-repeat: no-repeat;     
+  background-size: 100% 100%;
+  background-color: #0c234d;
   padding:20px;
   .demo-input-suffix{
     padding-left: 40px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 13px;
     .el-input{
       width: 200px;
     }
     .top{
       display: flex;
       justify-content: space-between;
+      color: #ccc;
       .search{
         display: flex;
         align-items: center;
@@ -305,6 +335,7 @@ export default {
       text-align: center;
       color: #fff;
       border: none;
+      
     }
   }
   .block{
@@ -312,5 +343,8 @@ export default {
     display: flex;
     justify-content: end;
   }
+}
+::v-deep .icon-no .el-table__expand-icon {
+display: none;
 }
 </style>

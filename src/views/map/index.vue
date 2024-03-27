@@ -20,7 +20,7 @@
         <div class="bar">
           <div class="circleTitle">
             <div class="line"></div>
-              <p>区域Top10商家数量</p>
+              <p>监控链接价格变动</p>
             <div class="line"></div>
           </div>
           <div class="bingtu" ref="linetu"></div>
@@ -28,7 +28,7 @@
       </div>
       <div class="middle">
         <div class="map" ref="mapRef">
-          <ThreeMap :price="lowerPrice"></ThreeMap>
+          <ThreeMap :price="lowerPrice" @lowProductfn="lowProductfn"></ThreeMap>
         </div>
         <div class="numtop">
           <div class="numtext">关键词</div>
@@ -37,7 +37,7 @@
         </div>
         <div class="numbotton">
           <div class="numbgi">
-            <el-select v-model="value" placeholder="请选择">
+            <el-select v-model="value" placeholder="请选择" >
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -48,14 +48,14 @@
             <!-- <p>{{ goodsName }}</p> -->
           </div>
           <div class="numbgi">
-            <input type="text" placeholder="最低价" v-model="lowerPrice">
+            <input type="number" placeholder="最低价" v-model="price" @input="changePrice">
             <!-- <i class="el-icon-search"></i> -->
             <!-- <p>￥
               <CountTo :start-val="0" :end-val="lowerPrice" :duration="1000"></CountTo>
              </p> -->
           </div>
           <div class="numbgi">
-            <p><CountTo :startVal='0' :endVal='lowerNum' :duration='1000' /></p>
+            <p><CountTo :startVal='0' :endVal='lowProduct' :duration='2000' /></p>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@
         <div class="priceAvager">
           <div class="circleTitle">
             <div class="line"></div>
-              <p>重点店铺监控情况</p>
+              <p>重点链接监控情况</p>
             <div class="line"></div>
           </div>
           <div class="bingtu">
@@ -125,7 +125,6 @@
                   </div>
                   <div class="price">
                     <p>￥{{ item.price }}</p>
-                    <!-- <p>销售量{{ item.del }}</p> -->
                   </div>
                   <p>地区：{{ item.location }}</p>
                 </div>
@@ -145,7 +144,6 @@ import * as echarts from 'echarts'
 import CountTo from 'vue-count-to';
 import ThreeMap from '@/views/map/components/Threemap' 
 import {lowerGoodsApi} from '@/apis/map'
-// import autofit from 'autofit.js'
 export default {
   name:'MapIndex',
   components: {
@@ -210,7 +208,14 @@ export default {
               { name: '山西', value: 34,itemStyle:{color:'#3e6ff7'} },
               { name: '浙江', value: 30,itemStyle:{color:'#62edfb'} },
               { name: '内蒙古', value: 24,itemStyle:{color:'#4e6ebb'} }
-            ],
+      ],
+      series: [
+        {name:'欣善怡全麦脆',data:[8,9,8,11,12,13,12],type:'line'},
+        {name:'欣善怡麦片',data:[21,29,28,21,22,23,22],type:'line'},
+        {name:'欣善怡燕麦块',data:[81,91,82,71,82,73,72],type:'line'},
+        {name:'欣善怡燕麦饼干',data:[45,49,48,41,42,43,42],type:'line'},
+        {name:'欣善怡麦片无糖',data:[68,69,68,56,78,45,24],type:'line'},
+      ],
       getlist: [],
       searchValue: '',  //搜索名称
       // areaSale: [],
@@ -232,8 +237,9 @@ export default {
         {area:'山西',avaPrice:'246'},
         {area:'河北',avaPrice:'342'},
       ],
-      lowerPrice: 21,//最低价
-      lowerNum: 1223, //最低数量
+      lowerPrice: 0,//最低价
+      lowerNum: 0, //最低数量
+      lowProduct:0,
       goodsName: '瑞幸',
       Timer: null,
       site: '',
@@ -255,27 +261,22 @@ export default {
           value: '选项5',
           label: '欣善怡麦片无糖'
         }],
-        value: ''
+      value: '',
+      price: null,
     };
   },
   created() {
     this.getlist = this.zhejiang
-    this.changeSite()
+    // this.changeSite()
   },
   mounted() {
-  //   autofit.init({
-  //   designHeight: 1080,
-  //   designWidth: 1920,
-  //   renderDom:"#app",
-  //   resize: true
-  //  })
     this.chartBingtu();
     this.chartZhuzhuangtu()
   },
-  // beforeDestroy() {
-  //   window.removeEventListener('resize',this.adaptScreen);
-  // },
   methods: {
+    lowProductfn(e) {
+      this.lowProduct=e.lowProduct
+    },
     async changeSite(val) {
       this.site = val
       console.log('this.site',this.site);
@@ -287,21 +288,14 @@ export default {
       } else {
         this.nodate=true
       }
-      // clearTimeout(this.Timer)
-      // this.Timer = setTimeout(() => {
-        // if (this.searchValue === '') {
-          // this.getlist=this.zhejiang
-        // } else if (this.searchValue === '五粮醇') {
-          // this.getlist=this.wuliangye
-        // } else if(this.searchValue === '瑞幸咖啡') {
-          // this.getlist=this.coffee
-        // } else {
-          // console.log('没有该选项');
-        // }
-      // },300)
     },
     handleClose(done) {
       done()
+    },
+    //设置最低价
+    changePrice() {
+      this.lowerPrice = this.price
+      this.$refs.mapRef.price=this.price
     },
     //饼图
     chartBingtu() {
@@ -313,12 +307,21 @@ export default {
         tooltip: {
           trigger: 'item'
         },
+        legend: {
+          top: 'center',
+          right: '5%',
+          orient: 'vertical',
+          textStyle: {
+            color: '#fff',
+            fontSize:16
+          }
+        },
         series: [
           {
             name: '区域销量占比分析',
             type: 'pie',
             radius: ['40','100'],
-            center: ['45%', '50%'],
+            center: ['39%', '50%'],
             // roseType: 'area',
             data: this.bingdata,
             // data:this.areaSale,
@@ -336,81 +339,45 @@ export default {
       option && myChart.setOption(option);
     },
 
-    //柱状图
+    //折线图
     chartZhuzhuangtu() {
       let myChart = echarts.init(this.$refs.linetu);
       let option;
       option = {
-  title: {},
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
-    }
-  },
-  // legend: {},
-  grid: {
-    left: '4%',
-    top: '5%',
-    bottom: '5%',
-    right:'4%',
-    containLabel: true
-  },
-  xAxis: {
-    type: 'value',
-    splitLine: {
-      show:false
-    },
-    boundaryGap: [0, 0.01],
-    axisLabel: {
-      color: '#fff',
-    }
-  },
-        yAxis: {
-    type: 'category',
-    axisTick: {
-      show:true
-    },
-    data: ['四川','吉林', '北京', '重庆', '安徽', '浙江','上海','内蒙古','大连','重庆'],
-    axisLine: {
-      lineStyle: {
-        color:'#fff'
-      }
-    },
-    axisLabel: {
-      color:'#fff'
-    }
-  },
-  series: [
-    {
-      name: '数量',
-      type: 'bar',
-      data: [23,89, 120, 199, 208, 269, 311, 322, 378, 546],
-      itemStyle: {
-        barBorderRadius: 6,
-        barWidth: '30px',
-        normal: {
-          color: function (params) {
-            if (params.data<= 200) {
-              return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color:'#e4265d' },
-              { offset: 1, color: '#e1c237' },
-            ],false)
-            }
-            return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color:'#063980' },
-              { offset: 1, color:'#2feaff' },
-            ],false)
-              
-          }
+        animationDuration: 7000,
+        tooltip: {
+          trigger:'axis',
+          // formatter:'{c}'+'元'
+      },
+      legend: {
+        data: ['欣善怡全麦脆', '欣善怡麦片', '欣善怡燕麦块', '欣善怡燕麦饼干', '欣善怡麦片无糖'],
+        textStyle: {
+          color: '#fff'
         }
-      }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      // toolbox: {
+      //   feature: {
+      //     saveAsImage: {}
+      //   },
+      // },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: ['0:00', '4:00', '8:00', '12:00', '16:00', '20:00', '24:00']
+      },
+      yAxis: {
+        type: 'value'
+      },
+        series:this.series
+    }
 
-    },
-  ]
-};
-
-option && myChart.setOption(option);
+    option && myChart.setOption(option);
     },
 
     //图片路径错误时换成指定图片
@@ -590,34 +557,36 @@ option && myChart.setOption(option);
           text-align: center;
           margin-left: 178px;
           .numbgi{
-            width: 130px;
+            width: 106px;
             height: 40px;
             position: relative;
             background-image: url(@/assets/numbgi.png);
-            margin-right: 9px;
+            margin:0 16px;
             line-height: 40px;
             input{
               width: 80px;
               height: 30px;
               border-radius: 10px;
               background-color: transparent;
-              border: 1px solid #287adf;
+              border: 1px solid transparent;
               text-align: center;
               color: #fff;
               outline: none;
               &:focus{
-                border: 1px solid #287adf;
+                border: 1px solid transparent;
               }
               &::placeholder{
                 color: #ccc;
               }
             }
             ::v-deep .el-input__inner{
+              width: 126px;
               background-color: transparent;
-              border: 1px solid #287adf;
+              border: 1px solid transparent;
               color: #fff;
               height: 30px;
               border-radius: 10px;
+              // padding: 0;
             }
             .el-select ::v-deep .popper-class {
               width: 100px;
@@ -652,6 +621,10 @@ option && myChart.setOption(option);
               background-color: transparent;
               color: #fff;
               border: 1px solid #287adf;
+              &:active{
+                      background-color: #fff;
+                      color: #3db3eb;
+                    }
             }
             i{
               position: absolute;
@@ -767,6 +740,7 @@ option && myChart.setOption(option);
                     width: 80px;
                     height: 30px;
                     background-color: #388fcd;
+                    
                   }
                 }
               }

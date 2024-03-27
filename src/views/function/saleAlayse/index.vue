@@ -143,12 +143,8 @@ export default {
   },
   created() {
     console.log('this.$router.params', this.name);
-    // if (this.name) {
-    //   this.getlist=this.zhejiang
-    // } else {
-    //   this.getlist=this.zhejiang
-    // }
-    this.getallList()
+   
+    // this.getallList()
   },
   methods: {
     //时间戳转换

@@ -4,10 +4,10 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    redirect: '/dashbord',
-  },
+   {
+     path: '/',
+     redirect: '/dashbord',
+   },
   //首页
   {
     path: '/dashbord',

@@ -20,15 +20,15 @@
         <div class="left">
           <div class="callus">
             <div class="number">
-              <i class="el-icon-phone"></i>
+              <img src="@/assets/shouye/relatephone.png" alt="">
               <p>联系电话：15372004152</p>
             </div>
             <div class="number">
-              <i class="el-icon-message"></i>
+              <img src="@/assets/shouye/email.png" alt="">
               <p>联系邮箱：ranchenkeji@hanzghou.com</p>
             </div>
             <div class="number">
-              <i class="el-icon-location"></i>
+              <img src="@/assets/shouye/address.png" alt="">
               <p>联系地址：杭州运河万科中心B2幢8楼801</p>
             </div>
           </div>
@@ -185,8 +185,7 @@ export default {
           display: flex;
           margin-bottom: 10px;
           font-size: 36px;
-          i{
-            font-size: 36px;
+          img{
             margin-right: 35px;
           }
         }

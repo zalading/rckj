@@ -38,7 +38,7 @@
           </li>
           <li>
             <i class="el-icon-s-marketing"></i>
-            <span>销量分析</span>
+            <span>设置中心</span>
           </li>
         </ul>
       </el-drawer>
