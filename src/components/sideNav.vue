@@ -17,11 +17,11 @@
             <span>数据展示</span>
           </li>
           <li>
-            <i class="el-icon-s-custom"></i>
-            <span>用户中心</span>
+            <i class="el-icon-menu"></i>
+            <span>商品类目</span>
           </li>
           <li @click="nav3">
-            <i class="el-icon-s-order"></i>
+            <i class="el-icon-s-goods"></i>
             <span>产品分析</span>
           </li>
           <li @click="nav4">
@@ -29,16 +29,16 @@
             <span>销量分析</span>
           </li>
           <li @click="nav5">
-            <i class="el-icon-s-marketing"></i>
-            <span>数据获取</span>
+            <i class="el-icon-share"></i>
+            <span>关键词管理</span>
           </li>
-          <li>
-            <i class="el-icon-s-marketing"></i>
-            <span>销量分析</span>
+          <li @click="nav6">
+            <i class="el-icon-s-custom"></i>
+            <span>用户管理</span>
           </li>
-          <li>
-            <i class="el-icon-s-marketing"></i>
-            <span>设置中心</span>
+          <li @click="nav7">
+            <i class="el-icon-s-home"></i>
+            <span>个人中心</span>
           </li>
         </ul>
       </el-drawer>
@@ -76,11 +76,17 @@ export default {
     },
     //跳转到销售分析
     nav4() {
-      this.$router.push('/saleAlayse').catch(()=>{this.drawer=false})
+      // this.$router.push('/saleAlayse').catch(()=>{this.drawer=false})
     },
     nav5() {
-      // this.$router.push('/getdata').catch(()=>{this.drawer=false})
-    }
+      this.$router.push('/keyword').catch(()=>{this.drawer=false})
+    },
+    nav6() {
+      this.$router.push('/userlist').catch(()=>{this.drawer=false})
+    },
+    nav7() {
+      this.$router.push('/usermanage').catch(()=>{this.drawer=false})
+    },
   }
 }
 </script>

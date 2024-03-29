@@ -66,9 +66,19 @@ const routes = [
     props: true
   },
   {
-    path: '/getdata',
-    name: 'getdata',
-    component: () => import( '../views/function/getdata')
+    path: '/keyword',
+    name: 'keyword',
+    component: () => import( '../views/function/keyword')
+  },
+  {
+    path: '/userlist',
+    name: 'userlist',
+    component: () => import( '../views/function/userlist')
+  },
+  {
+    path: '/usermanage',
+    name: 'usermanage',
+    component: () => import( '../views/function/usermanage')
   },
   {
     path: '/other',

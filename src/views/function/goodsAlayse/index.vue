@@ -105,12 +105,18 @@
       sortable
       width="110">
     </el-table-column>
-    
     <el-table-column
-      prop="secacheDate"
+      label="预估销售额"
+      sortable>
+      <template slot-scope="scope">
+        <p>{{Allsale(scope.row)}}</p>
+      </template>
+    </el-table-column>
+    <el-table-column
+      prop="searchDate"
       label="搜索时间">
       <template slot-scope="scope">
-        <p>{{ getTime(scope.row.secacheDate) }}</p>
+        <p>{{ getTime(scope.row.searchDate) }}</p>
       </template>
     </el-table-column>
     <el-table-column
@@ -183,7 +189,11 @@ export default {
       }
       // console.log('date', date);
     },
+    Allsale(row) {
+      return row.deal*row.price
+    },
     async getGoodslist() {
+      console.log('this.params',this.params);
       const res = await AllGoodsApi(this.params)
       console.log(res);
       this.tableData = res.data.data.list
@@ -224,15 +234,14 @@ export default {
     },
      changeGoods() {
        clearTimeout(this.Timer)
-       console.log('this.params.location',this.params.location);
        if (this.params.location === '全部') {
-        this.params.location=''
-      } else {
-        return
-      }
-         this.Timer = setTimeout(async() => {
-            this.getGoodslist()
-         },300)
+         this.params.location=''
+        } 
+        console.log('this.params.location',this.params.location);
+        this.Timer = setTimeout(async () => {
+          console.log(111);
+           this.getGoodslist()
+          },300)
     },
     //图片路径错误时换成指定图片
     handleImageError(e) {

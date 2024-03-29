@@ -23,7 +23,19 @@
               <p>监控链接价格变动</p>
             <div class="line"></div>
           </div>
-          <div class="bingtu" ref="linetu"></div>
+          <div class="select" v-if="selectProduct">
+            <el-select v-model="value1" multiple placeholder="请选择" :multiple-limit="3" >
+                <el-option
+                  v-for="item in options1"
+                  :key="item.numIid"
+                  :label="item.title"
+                  :value="item.numIid"> 
+                  </el-option>
+            </el-select>
+            <button @click="changeLinetu">确定</button>
+          </div>
+          <div class="bingtu" ref="linetu" v-if="series.length>0"></div>
+          <div class="nodata" v-else>暂无数据</div>
         </div>
       </div>
       <div class="middle">
@@ -49,10 +61,6 @@
           </div>
           <div class="numbgi">
             <input type="number" placeholder="最低价" v-model="price" @input="changePrice">
-            <!-- <i class="el-icon-search"></i> -->
-            <!-- <p>￥
-              <CountTo :start-val="0" :end-val="lowerPrice" :duration="1000"></CountTo>
-             </p> -->
           </div>
           <div class="numbgi">
             <p><CountTo :startVal='0' :endVal='lowProduct' :duration='2000' /></p>
@@ -67,7 +75,8 @@
             <button @click="changeSite('京东')">京东</button>
             <button @click="changeSite('拼多多')">拼多多</button>
             <i class="el-icon-search"></i>
-            <input type="text" placeholder="请输入" v-model="searchValue" @input="changeSite">
+            <input type="text" placeholder="请输入" v-model="searchValue" @input="changelowSite">
+            <!-- <input type="text" placeholder="请输入" v-model="searchValue" @input="changelowSite"> -->
           </div>
           <div class="circleTitle">
             <div class="line"></div>
@@ -79,7 +88,8 @@
             <div class="showGoods">
               <div class="shangpin" v-for="(item,index) in lowerlist" :key="index">
                 <div class="s-left">
-                  <img :src="item.imgUrl" alt="" @error=handleImageError>
+                  <img :src="item.imgUrl" alt="" @error=handleImageError v-if="item.imgUrl">
+                  <img src="@/assets/imgerro.jpg" alt="" v-else>
                 </div>
                 <div class="s-right">
                   <p>{{ item.title }}</p>
@@ -88,9 +98,12 @@
                   </div>
                   <div class="price">
                     <p>￥{{ item.price }}</p>
-                    <!-- <p>销售量{{ item.del }}</p> -->
+                    <p v-if="item.deal">销售量:{{ item.deal }}</p> 
                   </div>
-                  <p>地区：{{ item.location }}</p>
+                  <div class="price">
+                    <p>{{ item.site }}</p>
+                    <p v-if="item.location">地区：{{ item.location }}</p>
+                  </div>
                 </div>
                 <!-- <div class="money">
                   <p>{{ item.data }}</p>
@@ -98,7 +111,7 @@
                 <div class="money">
                   <!-- <p>盈利金额</p> -->
                   <!-- <h6>利润￥{{ item.money }}</h6> -->
-                  <a :href="item.url" target="_blank">
+                  <a :href="item.detailUrl" target="_blank">
                     <button>跳转详情</button>
                   </a>
                 </div>
@@ -114,9 +127,12 @@
           </div>
           <div class="bingtu">
             <div class="showGoods">
-              <div class="shangpin" v-for="(item,index) in coffee" :key="index">
+              <div class="shangpin" v-for="(item,index) in linkList" :key="index">
                 <div class="s-left">
-                  <img :src="item.imgurl" alt="" @error=handleImageError>
+                  <a :href="item.detailUrl" target="_blank">
+                    <img :src="item.imgUrl" alt="" @error=handleImageError v-if="item.imgUrl">
+                    <img src="@/assets/imgerro.jpg" alt="" v-else>
+                  </a>
                 </div>
                 <div class="s-right">
                   <p>{{ item.title }}</p>
@@ -125,11 +141,15 @@
                   </div>
                   <div class="price">
                     <p>￥{{ item.price }}</p>
+                    <p v-if="item.deal">{{ item.deal }}</p>
                   </div>
-                  <p>地区：{{ item.location }}</p>
+                  <div class="price">
+                    <p v-if="item.site">{{ item.site }}</p>
+                    <p v-if="item.location">地区：{{ item.location }}</p>
+                  </div>
                 </div>
                 <div class="link">
-                  <p>{{ item.link }}</p>
+                  <p>{{ getTime(item.searchDate) }}</p>
                 </div>
               </div>
             </div>
@@ -143,7 +163,7 @@
 import * as echarts from 'echarts'
 import CountTo from 'vue-count-to';
 import ThreeMap from '@/views/map/components/Threemap' 
-import {lowerGoodsApi} from '@/apis/map'
+import {lowerGoodsApi,linetuApi,lineDataApi,linkDetailApi} from '@/apis/map'
 export default {
   name:'MapIndex',
   components: {
@@ -152,6 +172,7 @@ export default {
   },
   data() {
     return {
+      myChart: null,
       zhejiang: [
         { title:'瑞幸拿铁咖啡速溶瑞星咖啡萃取液胶囊粒手冲生椰拿铁冰美式提神 咖啡 瑞星 咖啡',location: '浙江 温州', price: 127.7, del: 0, shop: '夸香特产直销', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' },
         { title:'瑞星速溶咖啡瑞幸咖啡速溶粉瑞幸即溶咖啡元气弹冷萃冻干美式拿铁 瑞星 咖啡 咖啡 咖啡',location: '浙江 金华', price: 21, del: 0, shop: '尚展裕腾', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2215787740617/O1CN01cospJk1GQdE4CefRJ_!!2215787740617.jpg_580x580q90.jpg_.webp' },
@@ -165,26 +186,6 @@ export default {
         { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 5.5, del: 96, shop: '冰美式yyds', imgurl: '' },
         { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 134, del: 96, shop: '美村集品食品专营店', imgurl: '' },
         { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 35, del: 96, shop: '中国杭州妙瑞餐饮管理有限公司', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' }
-      ],
-      shanghai: [
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 999, del: 16, shop: '天猫超市', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i2/6000000003499/O1CN01TIEHPM1bialbzPtAZ_!!6000000003499-0-sm.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 399, del: 68, shop: '炫品酒类专营店', imgurl: 'https://gw.alicdn.com/imgextra/O1CN01ohWmHB1f4WZypzCky_!!2762873953-0-picasso.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/6000000003630/O1CN01XO9X0D1cgaePiynYt_!!6000000003630-0-sm.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 5.5, del: 96, shop: '赛盼旗舰店', imgurl: '' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 134, del: 96, shop: '贝蒂威尔旗舰店', imgurl: '' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 35, del: 96, shop: '密果迷恋旗舰店', imgurl: '' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 999, del: 16, shop: '天猫超市', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i2/6000000003499/O1CN01TIEHPM1bialbzPtAZ_!!6000000003499-0-sm.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 399, del: 68, shop: '炫品酒类专营店', imgurl: 'https://gw.alicdn.com/imgextra/O1CN01ohWmHB1f4WZypzCky_!!2762873953-0-picasso.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/6000000003630/O1CN01XO9X0D1cgaePiynYt_!!6000000003630-0-sm.jpg_580x580q90.jpg_.webp' },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '上海', price: 5.5, del: 96, shop: '赛盼旗舰店', imgurl: '' }
-      ],
-      wuliangye: [
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 999, del: 16, shop: '五粮浓香官方旗舰店', imgurl: 'https://img.alicdn.com/imgextra/i2/1106960035/O1CN01QaLAcm1C84g5ESj4P_!!0-saturn_solar.jpg_580x580q90.jpg_.webp',data:'3/18',money:899 },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '辽宁 沈阳', price: 399, del: 68, shop: '酒富盛酩酒类专营店', imgurl: 'https://img.alicdn.com/imgextra/i2/120634331/O1CN01PgavvV1hreIDJ5HjR_!!0-saturn_solar.jpg_580x580q90.jpg_.webp',data:'3/18',money:1090},
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 25.9, del: 4, shop: '天猫超市', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/6000000003630/O1CN01XO9X0D1cgaePiynYt_!!6000000003630-0-sm.jpg_580x580q90.jpg_.webp',data:'3/18',money:2090 },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 5.5, del: 96, shop: '五粮浓香官方旗舰店', imgurl: 'https://picasso.alicdn.com/imgextra/O1CNA1MBPOjT2MRRsY9qvuy_!!2207953779824-0-psf.jpg_580x580q90.jpg_.webp',data:'3/18',money:980 },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '四川 宜宾', price: 134, del: 96, shop: '五粮浓香官方旗舰店', imgurl: 'https://picasso.alicdn.com/imgextra/O1CNA1GC4yhR2MRRsUW3Mzw_!!2207953779824-0-psf.jpg_580x580q90.jpg_.webp',data:'3/18',money:2880 },
-        { title:'宜宾五粮液股份出品五粮醇红淡雅浓香型42度白酒500ml*6收藏自饮 五粮醇',location: '江苏 南京', price: 35, del: 96, shop: '苏宁易购官方旗舰店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2616970884/O1CN01xoqlQN1IOv2tV4r5u_!!0-item_pic.jpg_580x580q90.jpg_.webp',data:'3/18',money:5090 }
       ],
       coffee: [
         { title:'现货澳洲进口欣善怡麦片低脂代餐健身原味即食麦片早餐饼干',location: '上海', price: 49.8, del: 16, shop: '瑞特滋欧洲精选巧克力', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i3/811299154/O1CN01FRDcQX2HUaOg0Uu4E_!!811299154.jpg_580x580q90.jpg_.webp',link:'上架中' },
@@ -210,9 +211,9 @@ export default {
               { name: '内蒙古', value: 24,itemStyle:{color:'#4e6ebb'} }
       ],
       series: [
-        {name:'欣善怡全麦脆',data:[8,9,8,11,12,13,12],type:'line'},
+        {name:'欣善怡全麦脆',data:[8,9,8,11,12,13],type:'line'},
         {name:'欣善怡麦片',data:[21,29,28,21,22,23,22],type:'line'},
-        {name:'欣善怡燕麦块',data:[81,91,82,71,82,73,72],type:'line'},
+        {name:'欣善怡燕麦块',data:[81,91,82,71,82],type:'line'},
         {name:'欣善怡燕麦饼干',data:[45,49,48,41,42,43,42],type:'line'},
         {name:'欣善怡麦片无糖',data:[68,69,68,56,78,45,24],type:'line'},
       ],
@@ -261,27 +262,78 @@ export default {
           value: '选项5',
           label: '欣善怡麦片无糖'
         }],
+      options1: [], //返回的监控对象
+      lineData:[], //  收集所有的折线图title
+      value1: '',
+      selectProduct:false,
       value: '',
       price: null,
+      linkList:[]   //监控链接详情
     };
   },
   created() {
-    this.getlist = this.zhejiang
-    // this.changeSite()
+    // this.getlist = this.zhejiang
+    this.changeSite()
+    this.getlineData()
+    this.getlink()
   },
   mounted() {
-    this.chartBingtu();
-    this.chartZhuzhuangtu()
+  this.chartBingtu();
+  if (this.series.length>0) {
+       this.chartZhuzhuangtu()
+    }
   },
   methods: {
+    //选择展示的折线图
+    changeLinetu() {
+      console.log('this.value1',this.value1);
+    },
+    //选择要展示的折线图数据
+     Productshow() {
+       if (this.options1.length > 5) {
+         this.selectProduct = true
+         console.log('this.options1.length',this.selectProduct);
+       } else {
+         this.selectProduct = false
+       }
+    },
+    //获取所有监控的折线图的title
+    async getlineData() {
+      const res=await linetuApi()
+      console.log('折线图', res.data.data);
+      this.options1 = res.data.data
+      this.options1.forEach((item) => {
+        this.lineData.push(item.numIid)  //传入numIid
+      })
+      this.lineData = this.lineData.toString()
+      console.log('this.lineData',this.lineData);
+      if (this.lineData) {
+        const res2 = await lineDataApi({numIids:this.lineData})
+        this.series=res2.data.data
+        console.log('this.lineData', this.series);
+      }
+      this.Productshow()
+     },
     lowProductfn(e) {
       this.lowProduct=e.lowProduct
     },
+    async changelowSite() {
+      clearTimeout(this.Timer)
+         this.Timer = setTimeout(async() => {
+           this.site = this.searchValue
+           const res =await lowerGoodsApi({site:this.site,keyword:'欣善怡'})
+          if (res.data.data.length>0) {
+            this.lowerlist = res.data.data
+            this.nodate=false
+          } else {
+            this.nodate=true
+          }
+         },500)
+    },
     async changeSite(val) {
-      this.site = val
-      console.log('this.site',this.site);
+        this.site = val
+        this.searchValue=''
       const res =await lowerGoodsApi({site:this.site,keyword:'欣善怡'})
-      console.log('res', res)
       if (res.data.data.length>0) {
         this.lowerlist = res.data.data
         this.nodate=false
@@ -289,9 +341,25 @@ export default {
         this.nodate=true
       }
     },
+    //监控链接详情
+    async getlink() {
+      const res = await linkDetailApi()
+      this.linkList=res.data.data
+    },
+     //时间戳转换
+    getTime(time) {
+      const time1 = Math.floor(time / (24 * 60 * 60 * 1000))
+      const time2 = Math.floor(new Date() / (24 * 60 * 60 * 1000))
+       if (time1===time2) {
+        return '上架中'
+       } else {
+        return '已下架'
+      }
+    },
     handleClose(done) {
       done()
     },
+
     //设置最低价
     changePrice() {
       this.lowerPrice = this.price
@@ -346,38 +414,38 @@ export default {
       option = {
         animationDuration: 7000,
         tooltip: {
-          trigger:'axis',
+          trigger: 'axis',
           // formatter:'{c}'+'元'
-      },
-      legend: {
-        data: ['欣善怡全麦脆', '欣善怡麦片', '欣善怡燕麦块', '欣善怡燕麦饼干', '欣善怡麦片无糖'],
-        textStyle: {
-          color: '#fff'
-        }
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      // toolbox: {
-      //   feature: {
-      //     saveAsImage: {}
-      //   },
-      // },
-      xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: ['0:00', '4:00', '8:00', '12:00', '16:00', '20:00', '24:00']
-      },
-      yAxis: {
-        type: 'value'
-      },
-        series:this.series
-    }
-
-    option && myChart.setOption(option);
+        },
+        legend: {
+          data: ['欣善怡全麦脆', '欣善怡麦片', '欣善怡燕麦块', '欣善怡燕麦饼干', '欣善怡麦片无糖'],
+          textStyle: {
+            color: '#fff'
+          },
+           selectedMode:'single'
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        // toolbox: {
+        //   feature: {
+        //     saveAsImage: {}
+        //   },
+        // },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: ['0:00', '4:00', '8:00', '12:00', '16:00', '20:00', '24:00']
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: this.series
+      }
+      option && myChart.setOption(option);
     },
 
     //图片路径错误时换成指定图片
@@ -469,12 +537,14 @@ export default {
             font-size: 36px;
             font-weight: 400;
           }
+          
           .bingtu{
             width: 450px;
             height: 270px;
           }
         }
         .bar{
+          position: relative;
           width: 440px;
           height: 383px;
           .circleTitle{
@@ -492,6 +562,28 @@ export default {
               height: 35px;
               font-size: 24px;
               text-align: center;
+            }
+          }
+          .select{
+            position: absolute;
+            left: 3px;
+            bottom: 3px;
+            width: 450px;
+            height: 27px;
+            margin-top: 20px;
+            margin-left: 45px;
+            button{
+              margin-left: 25px;
+              width: 70px;
+              height: 36px;
+              border-radius: 5px;
+              background-color: transparent;
+              color: #fff;
+              border: 1px solid #287adf;
+              &:active{
+                      background-color: #fff;
+                      color: #3db3eb;
+                    }
             }
           }
           .bingtu{
@@ -711,7 +803,7 @@ export default {
                     // }
                   }
                   .s-title{
-                    width: 245px;
+                    width: 205px;
                     color: #dad4d4;
                     font-size: 12px;
                     white-space: nowrap;
@@ -852,4 +944,8 @@ export default {
     }
   }
 }
+::v-deep .el-select-dropdown__list{
+  padding: 6px 15px;
+}
+
 </style>
