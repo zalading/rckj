@@ -71,14 +71,14 @@ const routes = [
     component: () => import( '../views/function/keyword')
   },
   {
-    path: '/userlist',
-    name: 'userlist',
-    component: () => import( '../views/function/userlist')
-  },
-  {
     path: '/usermanage',
     name: 'usermanage',
     component: () => import( '../views/function/usermanage')
+  },
+  {
+    path: '/usercenter',
+    name: 'usercenter',
+    component: () => import( '../views/function/usercenter')
   },
   {
     path: '/other',

@@ -40,7 +40,7 @@
     <el-table
     :data="tableData"
     style="width: 100%;margin-bottom: 20px;"
-    row-key="uniqueHashId"
+    row-key="numIid"
     v-loading="loading"
     :row-class-name="getRowClass"
     height="730"
@@ -77,7 +77,7 @@
     
     <el-table-column
       prop="price"
-      label="商品价格"
+      label="最新商品价格"
       sortable
       width="120">
     </el-table-column>
@@ -114,7 +114,7 @@
     </el-table-column>
     <el-table-column
       prop="searchDate"
-      label="搜索时间">
+      label="最新搜索时间">
       <template slot-scope="scope">
         <p>{{ getTime(scope.row.searchDate) }}</p>
       </template>

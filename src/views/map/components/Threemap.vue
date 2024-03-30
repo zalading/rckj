@@ -57,52 +57,57 @@ export default {
           keyword: '',
           lowPrice:0
         },
-        lowProduct:0,
-        provinceList: [
-        { name: '吉林',  pos: [125.8154, 44.2584] },
-        { name: '北京',  pos: [116.4551, 40.2539] },
-        { name: '辽宁',  pos: [123.1238, 42.1216] },
-        { name: '河北',  pos: [114.4995, 38.1006] },
-        { name: '天津',  pos: [117.4219, 39.4189] },
-        { name: '山西',  pos: [112.3352, 37.9413] },
-        { name: '陕西',  pos: [109.1162, 34.2004] },
-        { name: '甘肃',  pos: [103.5901, 36.3043] },
-        { name: '宁夏',  pos: [106.3586, 38.1775] },
-        { name: '四川',  pos: [103.9526, 30.7617] },
-        { name: '山东',  pos: [117.1582, 36.8701] },
-        { name: '河南',  pos: [113.4668, 34.6234] },
-        { name: '江苏',  pos: [118.8062, 31.9208] },
-        { name: '湖北',  pos: [114.3896, 30.6628] },
-        { name: '浙江',  pos: [119.5313, 29.8773] },
-        { name: '福建',  pos: [119.4543, 25.9222] },
-        { name: '江西',  pos: [116.0046, 28.6633] },
-        { name: '湖南',  pos: [113.0823, 28.2568] },
-        { name: '贵州',  pos: [106.6992, 26.7682] },
-        { name: '云南',  pos: [102.9199, 25.4663] },
-        { name: '海南',  pos: [110.3893, 19.8516] },
-        { name: '上海',  pos: [121.4648, 31.2891] },
-        { name: '香港',  pos: [114.16, 22.25] },
-        { name: '澳门',  pos: [113.5, 22.2] },
-        { name: '台湾',  pos: [121, 23] },
-        { name: '广东',  pos: [113.12244, 23.009505] },
-        { name: '安徽',  pos: [117.29, 32.0581] },
-        { name: '广西',  pos: [108.479, 23.1152] },
-        { name: '青海',  pos: [99.4038, 36.8207] },
-        { name: '新疆',  pos: [87.9236, 43.5883,30] },
-        { name: '西藏',  pos: [88.388277, 31.56375] },
-        { name: '重庆',  pos: [108.384366, 30.439702] },
-        { name: '黑龙江',  pos: [127, 48] },
-        { name: '内蒙古',  pos: [110.3467, 41.4899] }
-        ],
-        maplist: [],
-        lowshop:0
+        lowProduct:0,  //总商品数量
+        provinceList: [],
+        newMaplist: [
+          { name: '吉林', pos: [125.8154, 44.2584] },
+          { name: '北京',  pos: [116.4551, 40.2539] },
+          { name: '辽宁',  pos: [123.1238, 42.1216] },
+          { name: '河北',  pos: [114.4995, 38.1006] },
+          { name: '天津',  pos: [117.4219, 39.4189] },
+          { name: '山西',  pos: [112.3352, 37.9413] },
+          { name: '陕西',  pos: [109.1162, 34.2004] },
+          { name: '甘肃',  pos: [103.5901, 36.3043] },
+          { name: '宁夏',  pos: [106.3586, 38.1775] },
+          { name: '四川',  pos: [103.9526, 30.7617] },
+          { name: '山东',  pos: [117.1582, 36.8701] },
+          { name: '河南',  pos: [113.4668, 34.6234] },
+          { name: '江苏',  pos: [118.8062, 31.9208] },
+          { name: '湖北',  pos: [114.3896, 30.6628] },
+          { name: '浙江',  pos: [119.5313, 29.8773] },
+          { name: '福建',  pos: [119.4543, 25.9222] },
+          { name: '江西',  pos: [116.0046, 28.6633] },
+          { name: '湖南',  pos: [113.0823, 28.2568] },
+          { name: '贵州',  pos: [106.6992, 26.7682] },
+          { name: '云南',  pos: [102.9199, 25.4663] },
+          { name: '海南',  pos: [110.3893, 19.8516] },
+          { name: '上海',  pos: [121.4648, 31.2891] },
+          { name: '香港',  pos: [114.16, 22.25] },
+          { name: '澳门',  pos: [113.5, 22.2] },
+          { name: '台湾',  pos: [121, 23] },
+          { name: '广东',  pos: [113.12244, 23.009505] },
+          { name: '安徽',  pos: [117.29, 32.0581] },
+          { name: '广西',  pos: [108.479, 23.1152] },
+          { name: '青海',  pos: [99.4038, 36.8207] },
+          { name: '新疆',  pos: [87.9236, 43.5883,30] },
+          { name: '西藏',  pos: [88.388277, 31.56375] },
+          { name: '重庆',  pos: [108.384366, 30.439702] },
+          { name: '黑龙江',  pos: [127, 48] },
+          { name: '内蒙古', pos: [110.3467, 41.4899] }
+        ], //重置地图数据
+        maplist: [],  //返回的地图数据
+        lowshop:0  //总商家数量
         };
   },
   watch: {
     price(newvalue) {
       this.params.lowPrice=newvalue
-      console.log('newvalue',newvalue);
-      this.getlowerData()
+      console.log('输入最低价', newvalue);
+      if (this.params.lowPrice) {
+        this.getlowerData()
+      } else {
+        this.getinitData()
+      }
     }
   },
   mounted() {
@@ -130,9 +135,10 @@ export default {
         this.lowshop+=this.maplist[i].uniqueShopCount
       }
       this.$emit('lowProductfn', this.lowProduct)
-      this.handledata()
+      this.handlelowdata()
     },
     handledata() {
+      this.provinceList = cloneDeep(this.newMaplist)
       for (let i = 0; i < this.provinceList.length; i++){
       for (let j = 0; j < this.maplist.length; j++){
           if (this.maplist[j].location === this.provinceList[i].name) {
@@ -147,7 +153,25 @@ export default {
              this.provinceList[i].priceCount = 0
            }
          }
-        
+      }
+      this.initMap();
+    },
+    //处理低价地图数据
+    handlelowdata() {
+      for (let i = 0; i < this.provinceList.length; i++){
+      for (let j = 0; j < this.maplist.length; j++){
+          if (this.maplist[j].location === this.provinceList[i].name) {
+             this.provinceList[i].lowShopCount=this.maplist[j].uniqueShopCount
+             this.provinceList[i].lowProductCount=this.maplist[j].uniqueProductCount
+             this.provinceList[i].lowpriceCount = this.maplist[j].priceCount
+             break
+           }
+           else {
+             this.provinceList[i].lowShopCount=0
+             this.provinceList[i].lowProductCount=0
+             this.provinceList[i].lowpriceCount = 0
+           }
+         }
       }
       this.initMap();
       },
@@ -161,8 +185,13 @@ export default {
             let option = {
               tooltip: {
                 formatter: function (params) {
-                  return params.data.name + '<br/>' + '最低价商家总数量：' + params.data.uniqueShopCount + '<br/>' +
-                    '最低价商品总数量：' + params.data.uniqueProductCount 
+                  if (num) {
+                    return params.data.name + '<br/>' + '商家总数量：' + params.data.uniqueShopCount + '<br/>' +
+                      '商品总数量：' + params.data.uniqueProductCount +'<br/>' + '低价商家总数量：'+ params.data.lowShopCount+'<br/>' + '低价商品总数量：'+ params.data.lowProductCount
+                  } else {
+                    return params.data.name + '<br/>' + '商家总数量：' + params.data.uniqueShopCount + '<br/>' +
+                      '商品总数量：' + params.data.uniqueProductCount 
+                  }
                 }
               },//自定义代码
               layoutCenter: ['50%', '50%'],//设置地图在画布的位置
@@ -196,37 +225,37 @@ export default {
                       if (params.data.uniqueShopCount === 0) {
                         return '#4389ED'
                       }else if (params.data.uniqueShopCount/lower>0&&params.data.uniqueShopCount / lower <= 0.1) {
-                        if (params.data.priceCount < num) {
+                        if (params.data.lowpriceCount>0) {
                           return 'red'
                         } else {
                           return '#f9768d'
                         }
                       }else if (params.data.uniqueShopCount / lower <= 0.2&&params.data.uniqueShopCount/lower>0.1) {
-                         if (params.data.priceCount < num&&params.data.priceCount>0) {
+                         if (params.data.lowpriceCount>0) {
                            return 'red'
                          } else {
                            return '#fe7310'
                          }
                        } else if (params.data.uniqueShopCount / lower <= 0.3&&params.data.uniqueShopCount/lower>0.2) {
-                         if (params.data.priceCount < num&&params.data.priceCount>0) {
+                         if (params.data.lowpriceCount>0) {
                            return 'red'
                          } else {
                            return '#fc36fd'
                          }
                       } else if (params.data.uniqueShopCount / lower <= 0.4&&params.data.uniqueShopCount/lower>0.3) {
-                        if (params.data.priceCount < num && params.data.priceCount > 0) {
+                        if (params.data.lowpriceCount > 0) {
                           return 'red'
                         } else {
                           return '#fed116'
                         }
                       }else if (params.data.uniqueShopCount / lower <= 0.5&&params.data.uniqueShopCount/lower>0.4) {
-                        if (params.data.priceCount < num && params.data.priceCount > 0) {
+                        if (params.data.lowpriceCount > 0) {
                           return 'red'
                         } else {
                           return '#91ffff'
                         }
                       }else {
-                         if (params.data.uniqueShopCount/lower>0.5) {
+                         if (params.data.lowpriceCount > 0) {
                            return 'red'
                          } else {
                            return '#74cf1a'

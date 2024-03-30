@@ -1,23 +1,34 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import getters from './getters'
+import user from '@/store/modules/user'
+// import createPersistedState from "vuex-persistedstate"
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store= new Vuex.Store({
   state: {
     phone: null,
-    password:null
+    companyName: null,
+    token:''
   },
   mutations: {
+    saveToken(state, token) {
+      state.token=token
+    },
+    removeToken(state) {
+      state.token=null
+    },
     savePhone(state, phone) {
       state.phone=phone
     },
-    savePassword(state, password) {
-      state.password=password
+    removePhone(state) {
+      state.phone=null
+    },
+    saveCompanyName(state, companyName) {
+      state.companyName=companyName
     }
   },
-  actions: {
-  },
-  modules: {
-  }
+  user,
+  getters,
 })
+export default store

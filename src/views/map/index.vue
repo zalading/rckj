@@ -34,8 +34,8 @@
             </el-select>
             <button @click="changeLinetu">确定</button>
           </div>
-          <div class="bingtu" ref="linetu" v-if="series.length>0"></div>
-          <div class="nodata" v-else>暂无数据</div>
+          <div class="linetu" ref="linetu"></div>
+          <div class="nodata" v-if="series.length===0">暂无数据</div>
         </div>
       </div>
       <div class="middle">
@@ -45,7 +45,8 @@
         <div class="numtop">
           <div class="numtext">关键词</div>
           <div class="numtext">最低价</div>
-          <div class="numtext">低价商品数</div>
+          <div class="numtext" v-if="price">低价商品数</div>
+          <div class="numtext" v-else>总商品数</div>
         </div>
         <div class="numbotton">
           <div class="numbgi">
@@ -74,7 +75,8 @@
             <button @click="changeSite('天猫')">天猫</button>
             <button @click="changeSite('京东')">京东</button>
             <button @click="changeSite('拼多多')">拼多多</button>
-            <i class="el-icon-search"></i>
+            
+            <img src="@/assets/search.png" alt="">
             <input type="text" placeholder="请输入" v-model="searchValue" @input="changelowSite">
             <!-- <input type="text" placeholder="请输入" v-model="searchValue" @input="changelowSite"> -->
           </div>
@@ -173,33 +175,6 @@ export default {
   data() {
     return {
       myChart: null,
-      zhejiang: [
-        { title:'瑞幸拿铁咖啡速溶瑞星咖啡萃取液胶囊粒手冲生椰拿铁冰美式提神 咖啡 瑞星 咖啡',location: '浙江 温州', price: 127.7, del: 0, shop: '夸香特产直销', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' },
-        { title:'瑞星速溶咖啡瑞幸咖啡速溶粉瑞幸即溶咖啡元气弹冷萃冻干美式拿铁 瑞星 咖啡 咖啡 咖啡',location: '浙江 金华', price: 21, del: 0, shop: '尚展裕腾', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2215787740617/O1CN01cospJk1GQdE4CefRJ_!!2215787740617.jpg_580x580q90.jpg_.webp' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 嘉兴', price: 25.9, del: 4, shop: '发财树树陆店', imgurl: '' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 5.5, del: 96, shop: '冰美式yyds', imgurl: '' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 134, del: 96, shop: '美村集品食品专营店', imgurl: '' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 35, del: 96, shop: '中国杭州妙瑞餐饮管理有限公司', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 温州', price: 127.7, del: 0, shop: '夸香特产直销', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 金华', price: 21, del: 0, shop: '尚展裕腾', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2215787740617/O1CN01cospJk1GQdE4CefRJ_!!2215787740617.jpg_580x580q90.jpg_.webp' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 嘉兴', price: 25.9, del: 4, shop: '发财树树陆店', imgurl: '' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 5.5, del: 96, shop: '冰美式yyds', imgurl: '' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 134, del: 96, shop: '美村集品食品专营店', imgurl: '' },
-        { title:'瑞星咖啡优惠券瑞辛代下单非礼品卡卡券全国通用代下冰美式热拿铁 瑞星 咖啡',location: '浙江 杭州', price: 35, del: 96, shop: '中国杭州妙瑞餐饮管理有限公司', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i4/2209424462113/O1CN01fKFbaS1RTnftdh5rJ_!!2209424462113.jpg_580x580q90.jpg_.webp' }
-      ],
-      coffee: [
-        { title:'现货澳洲进口欣善怡麦片低脂代餐健身原味即食麦片早餐饼干',location: '上海', price: 49.8, del: 16, shop: '瑞特滋欧洲精选巧克力', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i3/811299154/O1CN01FRDcQX2HUaOg0Uu4E_!!811299154.jpg_580x580q90.jpg_.webp',link:'上架中' },
-        { title:'澳洲进口欣善怡麦片营养早餐全麦谷物燕麦低脂无加糖即食冲饮',location: '江苏', price: 21.9, del: 68, shop: '目远食品专营店', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i1/431232653/O1CN017KRsIl1VT7hVQFB8X_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中'},
-        { title:'澳洲进口欣善怡麦片块全麦375g谷物早餐低脂代餐即食便携小盒装',location: '上海', price: 24.9, del: 4, shop: '三颗糖食品专营店', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i3/2096729075/O1CN01QxL6L42GuPDPSUJGw_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
-        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '山东', price: 25.9, del: 96, shop: '一向花商贸', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i1/2213815169438/O1CN01n83rCB2Jaf0N4N1Hn_!!2213815169438.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
-        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶块减无糖精低脂代餐早餐即食	',location: '浙江', price: 134, del: 96, shop: '目远食品专营店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2216632089112/O1CN01YMhBMu2HBLsudONPP_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
-        { title:'现货澳洲进口欣善怡麦片低脂代餐健身原味即食麦片早餐饼干',location: '江苏', price: 24.9, del: 96, shop: '三颗糖食品专营店', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i1/431232653/O1CN017KRsIl1VT7hVQFB8X_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
-        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '山东', price: 25.9, del: 96, shop: '一向花商贸', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i3/2096729075/O1CN01QxL6L42GuPDPSUJGw_!!0-item_pic.jpg_580x580q90.jpg_.webp	' ,link:'上架中' },
-        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '上海', price: 24.9, del: 96, shop: '三颗糖食品专营店', imgurl: 'https://g-search1.alicdn.com/img/bao/uploaded/i4/i3/2096729075/O1CN01QxL6L42GuPDPSUJGw_!!0-item_pic.jpg_580x580q90.jpg_.webp	' ,link:'上架中' },
-        { title:'澳洲进口欣善怡麦片全麦饼干脆燕麦奶早餐块减无糖精低脂代餐饱腹	',location: '浙江', price: 24.9, del: 96, shop: '嘚巴嘚巴食品专营店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2216632089112/O1CN01YMhBMu2HBLsudONPP_!!0-item_pic.jpg_580x580q90.jpg_.webp		' ,link:'上架中' },
-        { title:'澳洲进口欣善怡麦片全麦饼干燕麦奶早餐块减无糖精低脂代餐便携	',location: '江苏', price: 26.9, del: 96, shop: '欣善怡旗舰店', imgurl: 'https://g-search2.alicdn.com/img/bao/uploaded/i4/i2/2201313210774/O1CN01xtabqe1HaXRhZkfLd_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
-        { title:'	澳洲进口欣善怡麦片全麦脆燕麦块饼干早餐无糖精低脂代餐饱腹即食		',location: '广东', price: 67.9, del: 96, shop: '号召力食品专营店', imgurl: 'https://g-search3.alicdn.com/img/bao/uploaded/i4/i2/2201221691081/O1CN01AwqtaI1Jr94RNyXgc_!!0-item_pic.jpg_580x580q90.jpg_.webp' ,link:'上架中' },
-      ],
       bingdata: [
               { name: '吉林', value: 86,itemStyle:{color:'#84f1ff'}},
               { name: '北京', value: 72,itemStyle:{color:'#6a92f5'} },
@@ -210,16 +185,9 @@ export default {
               { name: '浙江', value: 30,itemStyle:{color:'#62edfb'} },
               { name: '内蒙古', value: 24,itemStyle:{color:'#4e6ebb'} }
       ],
-      series: [
-        {name:'欣善怡全麦脆',data:[8,9,8,11,12,13],type:'line'},
-        {name:'欣善怡麦片',data:[21,29,28,21,22,23,22],type:'line'},
-        {name:'欣善怡燕麦块',data:[81,91,82,71,82],type:'line'},
-        {name:'欣善怡燕麦饼干',data:[45,49,48,41,42,43,42],type:'line'},
-        {name:'欣善怡麦片无糖',data:[68,69,68,56,78,45,24],type:'line'},
-      ],
+      series: [{name:'欣善怡麦片',data:[34,45],type:'line'}],
       getlist: [],
       searchValue: '',  //搜索名称
-      // areaSale: [],
       avasaleData: [
         {area:'新疆',avaSale:'345'},
         {area:'吉林',avaSale:'277'},
@@ -263,7 +231,8 @@ export default {
           label: '欣善怡麦片无糖'
         }],
       options1: [], //返回的监控对象
-      lineData:[], //  收集所有的折线图title
+      lineData: [], //  收集所有的折线图title
+      linePricedata:[], //处理后的折线图的数据
       value1: '',
       selectProduct:false,
       value: '',
@@ -272,27 +241,24 @@ export default {
     };
   },
   created() {
-    // this.getlist = this.zhejiang
     this.changeSite()
     this.getlineData()
     this.getlink()
   },
   mounted() {
   this.chartBingtu();
-  if (this.series.length>0) {
-       this.chartZhuzhuangtu()
-    }
+  // this.chartZhuzhuangtu()
+    
   },
   methods: {
     //选择展示的折线图
     changeLinetu() {
       console.log('this.value1',this.value1);
     },
-    //选择要展示的折线图数据
+    //显示选择折线图下拉框
      Productshow() {
-       if (this.options1.length > 5) {
+       if (this.linePricedata.length > 5) {
          this.selectProduct = true
-         console.log('this.options1.length',this.selectProduct);
        } else {
          this.selectProduct = false
        }
@@ -300,23 +266,42 @@ export default {
     //获取所有监控的折线图的title
     async getlineData() {
       const res=await linetuApi()
-      console.log('折线图', res.data.data);
       this.options1 = res.data.data
       this.options1.forEach((item) => {
         this.lineData.push(item.numIid)  //传入numIid
       })
       this.lineData = this.lineData.toString()
-      console.log('this.lineData',this.lineData);
       if (this.lineData) {
         const res2 = await lineDataApi({numIids:this.lineData})
-        this.series=res2.data.data
-        console.log('this.lineData', this.series);
+        this.linePricedata = res2.data.data
+        this.lineprice()
+        console.log('this.linePricedata', this.linePricedata);
       }
       this.Productshow()
-     },
+    },
+    //折线图数据处理
+    lineprice() {
+      this.series=[]
+      for (let i = 0; i < this.options1.length; i++){
+        for (let j = 0; j < this.linePricedata.length; j++){
+          if (this.linePricedata[j].numIid === this.options1[i].numIid) {
+            let obj = {
+              name: this.options1[i].title,
+              data: this.linePricedata[j].averagePrice.split(','),
+              type:'line'
+            }
+            this.series[j]=obj
+            this.chartZhuzhuangtu()
+          }
+        }
+      }
+      console.log('series', this.series);
+    },
+    //接收地图组件传回来的低价商品数量
     lowProductfn(e) {
       this.lowProduct=e.lowProduct
     },
+    //低价商品搜索平台数据
     async changelowSite() {
       clearTimeout(this.Timer)
          this.Timer = setTimeout(async() => {
@@ -330,6 +315,7 @@ export default {
           }
          },500)
     },
+    //低价商品平台切换数据
     async changeSite(val) {
         this.site = val
         this.searchValue=''
@@ -356,6 +342,7 @@ export default {
         return '已下架'
       }
     },
+    //关闭侧边栏弹窗
     handleClose(done) {
       done()
     },
@@ -409,20 +396,27 @@ export default {
 
     //折线图
     chartZhuzhuangtu() {
-      let myChart = echarts.init(this.$refs.linetu);
+      let myChart = echarts.init(document.querySelector('.linetu'));
       let option;
       option = {
         animationDuration: 7000,
         tooltip: {
           trigger: 'axis',
-          // formatter:'{c}'+'元'
+          position: function (point, params, dom, rect, size) {
+            if ((size.viewSize[0] / 2) >= point[0]) {
+              return [point[0]+50,'10%']
+            } else {
+              return [point[0]-200,'10%']
+            }
+          },
+          formatter:'{b}'+'<br/>'+'{a}'+':{c}'+'元'
         },
         legend: {
-          data: ['欣善怡全麦脆', '欣善怡麦片', '欣善怡燕麦块', '欣善怡燕麦饼干', '欣善怡麦片无糖'],
+          // data: ['欣善怡全麦脆', '欣善怡麦片', '欣善怡燕麦块', '欣善怡燕麦饼干', '欣善怡麦片无糖'],
           textStyle: {
             color: '#fff'
           },
-           selectedMode:'single'
+          //  selectedMode:'single'
         },
         grid: {
           left: '3%',
@@ -586,7 +580,13 @@ export default {
                     }
             }
           }
-          .bingtu{
+          .nodata{
+            position: absolute;
+            top: 150px;
+            left: 150px;
+            color: #ccc;
+          }
+          .linetu{
             width: 420px;
             height: 260px;
           }
@@ -718,11 +718,12 @@ export default {
                       color: #3db3eb;
                     }
             }
-            i{
+            img{
+              width: 20px;
+              height: 20px;
               position: absolute;
-              top: 8px;
+              top: 6px;
               right: 11px;
-              color: #fff;
             }
             input{
               height: 30px;

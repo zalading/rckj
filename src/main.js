@@ -4,7 +4,7 @@ import ElementUI from 'element-ui';
 import router from './router'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css';
-
+import '@/permission'
 import *as echarts from 'echarts'
 
 import sideNav from './components/sideNav.vue';  //全局注册侧边导航组件

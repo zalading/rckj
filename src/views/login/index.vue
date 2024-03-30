@@ -14,30 +14,19 @@
      </div>
      <p>修改密码</p>
      <button @click="login">登录</button>
-    <!-- <el-form :model="formData" status-icon :rules="rules" ref="ruleForm" label-position="top" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="账号" prop="phone">
-        <el-input type="phone" v-model="formData.phone" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input type="password" v-model="formData.password" autocomplete="off"></el-input>
-      </el-form-item>
-    </el-form>
-
-      <div class="dialog-footer">
-        <el-button type="primary" @click="login">登录</el-button>
-      </div> -->
    </div>
   </div>
 </template>
 
 <script>
+import {loginApi} from '@/apis/user'
 export default {
   name: 'LoginIndex',
   data() {
     return{
       formData: {
-          phone: '',
-          password:''
+          phone: '15058600815',
+          password:'123456'
         },
         rules: {
           phone: [
@@ -51,18 +40,21 @@ export default {
     }
   },
   methods: {
-    login() {
-      console.log(this.formData);
+    async login() {
       let regExp = /^1[3456789]\d{9}$/
-      console.log(regExp.test(this.formData.phone));
-        if (this.formData.password=='rckj888'&&regExp.test(this.formData.phone)) {
+      if (this.formData.password.length > 0 && regExp.test(this.formData.phone)) {
+        const res = await loginApi({
+          phone:this.formData.phone,
+          password:this.formData.password
+        })
           // this.$message({
           //   message: '登录成功！',
           //   type:'success'
           // })
           this.$router.push('/map')
           this.$store.commit('savePhone', this.formData.phone)
-          this.$store.commit('savePassword',this.formData.password)
+        this.$store.commit('saveToken', res.data.data)
+          console.log('1234567');
         }
         else if(!this.formData.phone&&!this.formData.password){
           this.$message({

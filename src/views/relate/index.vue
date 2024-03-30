@@ -93,7 +93,7 @@ export default {
       this.$router.push('/news')
     },
     openLogin() {
-      // this.$router.push('/login')
+      this.$router.push('/login')
     },
   }
 }
