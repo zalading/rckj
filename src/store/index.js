@@ -1,15 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
-import user from '@/store/modules/user'
-// import createPersistedState from "vuex-persistedstate"
+// import user from '@/store/modules/user'
+import createPersistedState from "vuex-persistedstate"
 Vue.use(Vuex)
 
-const store= new Vuex.Store({
+const store = new Vuex.Store({
+  plugins:[createPersistedState()],
   state: {
+    token: null,
+    id:null,
     phone: null,
     companyName: null,
-    token:''
+    keywordAll:null
   },
   mutations: {
     saveToken(state, token) {
@@ -17,6 +20,12 @@ const store= new Vuex.Store({
     },
     removeToken(state) {
       state.token=null
+    },
+    saveId(state, id) {
+      state.id=id
+    },
+    removeId(state) {
+      state.id=null
     },
     savePhone(state, phone) {
       state.phone=phone
@@ -26,9 +35,18 @@ const store= new Vuex.Store({
     },
     saveCompanyName(state, companyName) {
       state.companyName=companyName
+    },
+    removeCompanyName(state) {
+      state.companyName=null
+    },
+    saveKeywordAll(state, keywordAll) {
+      state.keywordAll=keywordAll
+    },
+    removeKeywordAll(state) {
+      state.keywordAll=null
     }
   },
-  user,
+  // user,
   getters,
 })
 export default store

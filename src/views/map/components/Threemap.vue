@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    
     <div class="maplabel">
       商家数量占比
       <div class="divcircle">
@@ -11,26 +12,33 @@
           <div class="circleitem" style="background-color: #f9768d;"></div>
           <p>0-10%</p>
         </div>
+        <!-- <div class="circle">
+          <div class="circleitem" style="background-color: #fe7310;"></div>
+          <p>10%-20%</p>
+        </div> -->
+      </div>
+      <div class="divcircle">
         <div class="circle">
           <div class="circleitem" style="background-color: #fe7310;"></div>
           <p>10%-20%</p>
         </div>
-      </div>
-      <div class="divcircle">
         <div class="circle">
           <div class="circleitem" style="background-color: #fc36fd;"></div>
           <p>20%-30%</p>
         </div>
+        
+      </div>
+      <div class="divcircle">
         <div class="circle">
           <div class="circleitem" style="background-color: #fed116;"></div>
           <p>30%-40%</p>
         </div>
-      </div>
-      <div class="divcircle">
         <div class="circle">
           <div class="circleitem" style="background-color:#91ffff;"></div>
           <p>40%-50%</p>
         </div>
+      </div>
+      <div class="divcircle">
         <div class="circle">
           <div class="circleitem" style="background-color: #74cf1a;"></div>
           <p>50%以上</p>
@@ -45,7 +53,8 @@
 import chinaJson from '@/utils/china.json';
 import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
 import "echarts-gl"
-import {maplistApi} from '@/apis/map'
+import { maplistApi, getPriceApi } from '@/apis/map'
+import store from '@/store';
 export default {
   name: 'ThreeMap',
   props: ['price'],
@@ -54,9 +63,10 @@ export default {
         myChart: null,
         num: 21,
         params: {
-          keyword: '',
+          keywordAll: store.getters.keywordAll,
           lowPrice:0
         },
+        mapkeyword:'', //地图关键词
         lowProduct:0,  //总商品数量
         provinceList: [],
         newMaplist: [
@@ -100,36 +110,63 @@ export default {
         };
   },
   watch: {
+    mapkeyword(newvalue) {
+      this.params.keyword = newvalue
+      if (this.params.keyword === '全部'||this.params.keyword==='') {
+        this.params.keyword = '欣善怡'
+        this.getinitData()
+      } else {
+        this.getlowerData()
+      }
+    },
     price(newvalue) {
       this.params.lowPrice=newvalue
-      console.log('输入最低价', newvalue);
       if (this.params.lowPrice) {
         this.getlowerData()
       } else {
         this.getinitData()
       }
-    }
+    },
+    
+  },
+  created() {
+    this.getPrice()
   },
   mounted() {
     this.getinitData()
   },
   methods: {
+    async getPrice() {
+      const res = await getPriceApi({ userId: store.getters.id })
+      this.params.lowPrice = res.minimumPrice
+      this.$emit('lowerpricefn',{lowerprice: this.params.lowPrice})
+      if (this.params.lowPrice) {
+        this.getlowerData()
+      } else {
+        this.getinitData()
+      }
+    },
+
     //第一次获取全部地图数据
     async getinitData() {
-      const res = await maplistApi()
-      this.maplist = res.data.data
+      const res = await maplistApi({keywordAll:store.getters.keywordAll})
+      this.lowProduct=0
+      this.maplist=[]
+      this.maplist = res
       for (let i = 0; i < this.maplist.length; i++){
         this.lowProduct += this.maplist[i].uniqueProductCount
         this.lowshop += this.maplist[i].uniqueShopCount
       }
-      this.$emit('lowProductfn',{lowProduct:this.lowProduct})
+      this.$emit('lowProductfn', { lowProduct: this.lowProduct })
+      this.$emit('allProductfn', { allProduct: this.lowProduct })
       this.handledata()
     },
     //输入最低价后全部数据
     async getlowerData() {
-      console.log(this.params);
+      this.maplist=[]
       const res = await maplistApi(this.params)
-      this.maplist = res.data.data
+      this.maplist = res
+      this.lowProduct=0
       for (let i = 0; i < this.maplist.length; i++){
         this.lowProduct += this.maplist[i].uniqueProductCount
         this.lowshop+=this.maplist[i].uniqueShopCount
@@ -173,6 +210,7 @@ export default {
            }
          }
       }
+      console.log(this.provinceList);
       this.initMap();
       },
       initMap() {
@@ -221,7 +259,6 @@ export default {
                   data: this.provinceList,
                   itemStyle: {
                     color: function (params) {
-                      console.log('params.data.uniqueShopCount/lower', lower);
                       if (params.data.uniqueShopCount === 0) {
                         return '#4389ED'
                       }else if (params.data.uniqueShopCount/lower>0&&params.data.uniqueShopCount / lower <= 0.1) {
@@ -277,7 +314,7 @@ export default {
                             }
                             },
                             itemStyle: {
-                                color: '#388fcd', // 地图高亮颜色
+                                color: '#a776ff', // 地图高亮颜色
                                 borderWidth: 10, // 分界线wdith
                                 borderColor: '#6BECF5'// 分界线颜色
                             }
@@ -298,49 +335,6 @@ export default {
                         }
                     },
               ],
-              // series: [{
-              //   type: 'bar3D',
-              //   coordinateSystem: 'geo3D',
-              // barSize: 1, //柱子粗细
-              // shading: 'lambert',
-              // opacity: .7, // 柱子透明度
-              //   bevelSize: 0.1,
-              //   minHeight: 1,
-              // height:1,
-              // // 柱子上标签样式
-              // label: {
-              //     show: true,
-              //     distance: 0, //文字离柱子的距离
-              //     formatter(param) {
-              //         let num = param.data.value[2]
-              //         return param.name + num;
-              //     },
-              //     // 文字样式
-              //     textStyle: {
-              //        color: '#efa352',
-              //        fontSize: 12,
-              //     }
-              // },
-              // emphasis: {//柱子高亮状态的标签和样式配置。
-              //     label: {
-              //        show: false,
-              //        textStyle: {
-              //            fontSize: 14,
-              //        }
-              //     }
-              // },
-              // // 柱子样式
-              //   itemStyle: {
-              //     color: '#efa352',
-              //     opacity: 1
-              //   },
-              //   data: [
-              //     {value:[125.8154, 44.2584,6]},
-              //     {value:[116.4551, 40.2539,5]},
-              //     {value:[113.0823, 28.2568,3]},
-              //     {value:[119.5313, 29.8773,8]},
-              //   ]
-              // }],
              
             };
             this.linstenProvinceClick()
@@ -357,8 +351,7 @@ export default {
       // 接收一个对象， 解构出的data对象值为series数组中data数据源中的对象
       this.myChart.on('click', ({ data }) => {
         console.log('this.price', this.price);
-        console.log(data.name);
-        this.$router.push({name:'goodsAlayse',params:{name:data.name}})
+        this.$router.push({name:'goodsAlayse',params:{location:data.name}}).catch(err=>err)
         if (!data || !data.name) return;
         const provinceName = data.name;
         const provinceList = cloneDeep(this.provinceList);
@@ -386,6 +379,7 @@ export default {
   position: relative;
   width: 762px;
   height: 500px;
+  
   .maplabel{
     position: absolute;
     top: -20px;

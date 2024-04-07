@@ -17,35 +17,36 @@
             <img src="@/assets/sidenav12.png" alt="" class="icon2">
             <span>数据展示</span>
           </li>
-          <li>
+          <!-- <li>
             <img src="@/assets/sidenav21.png" alt="" class="icon1">
             <img src="@/assets/sidenav22.png" alt="" class="icon2">
             <span>商品类目</span>
-          </li>
+          </li> -->
           <li @click="nav3">
             <img src="@/assets/sidenav31.png" alt="" class="icon1">
             <img src="@/assets/sidenav32.png" alt="" class="icon2">
-            <span>产品分析</span>
+            <span>产品列表</span>
           </li>
-          <li @click="nav4">
+          <!-- <li @click="nav4">
             <img src="@/assets/sidenav41.png" alt="" class="icon1">
             <img src="@/assets/sidenav42.png" alt="" class="icon2">
             <span>销量分析</span>
-          </li>
+          </li> -->
           <li @click="nav5">
             <img src="@/assets/sidenav51.png" alt="" class="icon1">
             <img src="@/assets/sidenav52.png" alt="" class="icon2">
             <span>关键词管理</span>
           </li>
-          <li @click="nav6">
+          <!-- <li @click="nav6">
             <img src="@/assets/sidenav61.png" alt="" class="icon1">
             <img src="@/assets/sidenav62.png" alt="" class="icon2">
             <span>用户管理</span>
-          </li>
+          </li> -->
           <li @click="nav7">
             <img src="@/assets/sidenav71.png" alt="" class="icon1">
             <img src="@/assets/sidenav72.png" alt="" class="icon2">
-            <span>个人中心</span>
+            <!-- <span>个人中心</span> -->
+            <span>退出登录</span>
           </li>
         </ul>
       </el-drawer>
@@ -53,6 +54,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import store from '@/store'
 export default {
   name: 'SideNav',
   data() {
@@ -60,19 +63,12 @@ export default {
       drawer: false,
     }
   },
-  computed: {
-    currentPath(){
-      // console.log('this.$route.path' ,this.$route.path);
-      return this.$route.push
-    }
-  },
+  computed:mapState({
+    phone:'phone',
+  }) ,
   methods: {
     handleClose(done) {
       done()
-    },
-    getPath() {
-      this.currentPath()
-      console.log('currentPath',this.currentPath);
     },
     //跳转到大屏
     nav1() {
@@ -92,7 +88,17 @@ export default {
       this.$router.push('/usermanage').catch(()=>{this.drawer=false})
     },
     nav7() {
-      this.$router.push('/usercenter').catch(()=>{this.drawer=false})
+      // console.log(phone.substring(7));
+      // this.$router.push('/usercenter').catch(()=>{this.drawer=false})
+      this.$confirm(`用户${store.getters.phone.substring(7)}确认退出？`).then(() => {
+        console.log('退出成功');
+        this.$router.push('/login')
+        this.$store.commit('removePhone')
+        this.$store.commit('removeToken')
+        this.$store.commit('removeId')
+        this.$store.commit('removeCompanyName')
+        this.$store.commit('removeKeywordAll')
+      }).catch(()=>{})
     },
   }
 }

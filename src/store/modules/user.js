@@ -1,16 +1,16 @@
 const state = {
-  token: null,
-  phone: null,
-  companyName:null
+  // token: null,
+  // phone: null,
+  // companyName:null
 }
 
 const mutations = {
-  updateToken(state, token) {
-    state.token=token
-  },
-  removeToken(state) {
-    state.token=null
-  },
+  // updateToken(state, token) {
+  //   state.token=token
+  // },
+  // removeToken(state) {
+  //   state.token=null
+  // },
   // savePhone(state, phone) {
   //   state.phone=phone
   // },

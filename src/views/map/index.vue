@@ -11,11 +11,46 @@
         <div class="circle">
           <div class="circleTitle">
             <div class="line"></div>
-              <p>区域销量占比分析</p>
+              <p>监控商家信息</p>
             <div class="line"></div>
           </div>
-          <!-- <div class="alasyle" v-if="showalasyle" @click="showbingtu">占比分析</div> -->
-          <div class="bingtu" ref="bingtu"></div>
+          <div class="nodata" v-if="false">暂无数据</div>
+          <div class="bingtu">
+            <div class="showGoods">
+              <div class="shangpin" v-for="(item,index) in superData" :key="index">
+                <div class="s-left">
+                  <a v-if="item.response.seller.pcShopUrl" :href="item.response.seller.pcShopUrl" target="_blank">
+                    <img :src="item.response.seller.shopIcon" alt="" @error=handleImageError v-if="item.response.seller.shopIcon">
+                    <img src="@/assets/imgerro.jpg" alt="" v-else>
+                  </a>
+                </div>
+                <div class="s-right">
+                 <p>店铺名称：{{ item.response.seller.sellerNick }}</p>
+                  <div class="price">
+                    <p>宝贝描述：{{ item.response.seller.evaluates[0].score }}</p>
+                    <p>卖家服务：{{ item.response.seller.evaluates[1].score }}</p>
+                    <p>物流服务：{{ item.response.seller.evaluates[2].score }}</p>
+                  </div>
+                  <div class="priceinfo" >
+                    <p v-if="item.response.componentsVO.extensionInfoVO.infos[0].items">优惠信息:
+                      <template v-if="item.response.componentsVO.extensionInfoVO.infos[0].title=='优惠'">
+                        <span v-for="(item1,ind) in item.response.componentsVO.extensionInfoVO.infos[0].items" :key="ind">
+                          <!-- {{ 99 }} {{ item1 }} -->
+                          <i v-if="item1.text">
+                          <span v-for="(item2,index2) in item1.text" :key="index2" > {{ item2 }}  </span>
+                          </i>
+                        </span>
+                      </template>
+                      <i v-else>暂无优惠</i>
+                    </p>
+                  </div>
+                  <div class="price">
+                    <p>发货信息：{{ item.response.componentsVO.deliveryVO.deliveryFromAddr }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="bar">
           <div class="circleTitle">
@@ -24,23 +59,23 @@
             <div class="line"></div>
           </div>
           <div class="select" v-if="selectProduct">
-            <el-select v-model="value1" multiple placeholder="请选择" :multiple-limit="3" >
+            <el-select v-model="value1" @change="changevalue" multiple collapse-tags placeholder="请选择" :multiple-limit="5" >
                 <el-option
                   v-for="item in options1"
-                  :key="item.numIid"
+                  :key="item.uniqueHashId"
                   :label="item.title"
                   :value="item.numIid"> 
                   </el-option>
             </el-select>
             <button @click="changeLinetu">确定</button>
           </div>
-          <div class="linetu" ref="linetu"></div>
           <div class="nodata" v-if="series.length===0">暂无数据</div>
+          <div class="linetu" ref="linetu"></div>
         </div>
       </div>
       <div class="middle">
         <div class="map" ref="mapRef">
-          <ThreeMap :price="lowerPrice" @lowProductfn="lowProductfn"></ThreeMap>
+          <ThreeMap :price="lowerPrice" @allProductfn="allProductfn" @lowProductfn="lowProductfn" @lowerpricefn="lowerpricefn" ref="map"></ThreeMap>
         </div>
         <div class="numtop">
           <div class="numtext">关键词</div>
@@ -50,35 +85,36 @@
         </div>
         <div class="numbotton">
           <div class="numbgi">
-            <el-select v-model="value" placeholder="请选择" >
+            <el-select v-model="mapkeyword" placeholder="请选择" @change="changePrice">
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item"
+                :label="item"
+                :value="item" style="text-align: center;">
               </el-option>
             </el-select>
-            <!-- <p>{{ goodsName }}</p> -->
           </div>
           <div class="numbgi">
             <input type="number" placeholder="最低价" v-model="price" @input="changePrice">
           </div>
           <div class="numbgi">
-            <p><CountTo :startVal='0' :endVal='lowProduct' :duration='2000' /></p>
+            <input type="number" v-model="lowProduct" disabled>
+            <!-- <p>{{this.lowProduct}}</p> -->
+            <!-- <p><CountTo :startVal='0' :endVal='lowProduct' :duration='2000' /></p> -->
           </div>
         </div>
+        <div class="allnum">总商品数量<p>{{allproduct  }}</p></div>
       </div>
       <div class="right">
         <div class="saleAvager">
           <div class="site">
             <button @click="changeSite()">全部</button>
-            <button @click="changeSite('天猫')">天猫</button>
+            <button @click="changeSite('淘宝')">淘宝</button>
             <button @click="changeSite('京东')">京东</button>
             <button @click="changeSite('拼多多')">拼多多</button>
             
             <img src="@/assets/search.png" alt="">
-            <input type="text" placeholder="请输入" v-model="searchValue" @input="changelowSite">
-            <!-- <input type="text" placeholder="请输入" v-model="searchValue" @input="changelowSite"> -->
+            <input type="text" placeholder="请输入" v-model="searchValue">
           </div>
           <div class="circleTitle">
             <div class="line"></div>
@@ -151,7 +187,7 @@
                   </div>
                 </div>
                 <div class="link">
-                  <p>{{ getTime(item.searchDate) }}</p>
+                  <p>{{ item.sj }}</p>
                 </div>
               </div>
             </div>
@@ -163,97 +199,113 @@
 </template>
 <script>
 import * as echarts from 'echarts'
-import CountTo from 'vue-count-to';
+// import CountTo from 'vue-count-to';
 import ThreeMap from '@/views/map/components/Threemap' 
-import {lowerGoodsApi,linetuApi,lineDataApi,linkDetailApi} from '@/apis/map'
+import { lowerGoodsApi, linetuApi, lineDataApi, linkDetailApi,storeInfoApi,updataPriceApi } from '@/apis/map'
+import { getInfoApi } from '@/apis/user'
+import store from '@/store'
+// import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
 export default {
   name:'MapIndex',
   components: {
-    CountTo,
+    // CountTo,
     ThreeMap,
   },
   data() {
     return {
       myChart: null,
-      bingdata: [
-              { name: '吉林', value: 86,itemStyle:{color:'#84f1ff'}},
-              { name: '北京', value: 72,itemStyle:{color:'#6a92f5'} },
-              { name: '辽宁', value: 64,itemStyle:{color:'#513bff'} },
-              { name: '河北', value: 53,itemStyle:{color:'#7242f0'} },
-              { name: '天津', value: 48,itemStyle:{color:'#986cfd'} },
-              { name: '山西', value: 34,itemStyle:{color:'#3e6ff7'} },
-              { name: '浙江', value: 30,itemStyle:{color:'#62edfb'} },
-              { name: '内蒙古', value: 24,itemStyle:{color:'#4e6ebb'} }
-      ],
       series: [{name:'欣善怡麦片',data:[34,45],type:'line'}],
       getlist: [],
       searchValue: '',  //搜索名称
-      avasaleData: [
-        {area:'新疆',avaSale:'345'},
-        {area:'吉林',avaSale:'277'},
-        {area:'安徽',avaSale:'422'},
-        {area:'浙江',avaSale:'123'},
-        {area:'安庆',avaSale:'232'},
-        {area:'山西',avaSale:'246'},
-        {area:'河北',avaSale:'342'},
-      ],
-      avapriceData: [
-        {area:'新疆',avaPrice:'345'},
-        {area:'吉林',avaPrice:'277'},
-        {area:'安徽',avaPrice:'422'},
-        {area:'浙江',avaPrice:'123'},
-        {area:'安庆',avaPrice:'232'},
-        {area:'山西',avaPrice:'246'},
-        {area:'河北',avaPrice:'342'},
-      ],
       lowerPrice: 0,//最低价
       lowerNum: 0, //最低数量
+      allproduct:0,
       lowProduct:0,
-      goodsName: '瑞幸',
       Timer: null,
       site: '',
       lowerlist: [],
       nodate: false,
-      options: [{
-          value: '选项1',
-          label: '欣善怡全麦脆'
-        }, {
-          value: '选项2',
-          label: '欣善怡麦片'
-        }, {
-          value: '选项3',
-          label: '欣善怡燕麦块'
-        }, {
-          value: '选项4',
-          label: '欣善怡燕麦饼干'
-        }, {
-          value: '选项5',
-          label: '欣善怡麦片无糖'
-        }],
+      options: ['全部'],
       options1: [], //返回的监控对象
       lineData: [], //  收集所有的折线图title
       linePricedata:[], //处理后的折线图的数据
       value1: '',
       selectProduct:false,
       value: '',
-      price: null,
-      linkList:[]   //监控链接详情
+      price: null,  //最低价
+      mapkeyword:'', //地图关键词
+      linkList: [],  //监控链接详情
+      id:'', //获取用户id
+      lowPrice: 0, //获取地图最低价,
+      infoshow: [],
+      superData: [], //优惠商家,
+      detailinfo: [],
+      xdata:[] , //折线图x轴数据
+      keywordAll:[] //关键词
     };
   },
   created() {
     this.changeSite()
     this.getlineData()
     this.getlink()
-  },
-  mounted() {
-  this.chartBingtu();
-  // this.chartZhuzhuangtu()
-    
+    this.getinfo()
+    this.storeInfo()
+    // this.getPrice()
   },
   methods: {
+    //获取监控商家店铺信息
+    async storeInfo() {
+      const res = await storeInfoApi()
+      this.superData = res
+      for(let i=0;i<this.superData.length;i++){
+        if(this.superData[i].site==='淘宝'){
+          i++
+        }else{
+          this.superData.splice(i,1)
+          i--
+        }
+      }
+      for (let i = 0; i < this.superData.length;i++){
+        for (let j = i + 1; j < this.superData.length;j++){
+          if (this.superData[i].response.seller.shopId&&this.superData[i].response.seller.shopId === this.superData[j].response.seller.shopId) {
+            this.superData.splice(j,1)
+            j--
+          }
+        }
+      }
+      this.infoshow = []
+      for (let i = 0; i < this.superData.length; i++){
+        let obj = { value: false }
+        this.infoshow.push(obj)
+      }
+    },
+    //获取关键词
+    async getinfo() {
+      const res = await getInfoApi({ userId: store.getters.id })
+      res.forEach(item => {
+        this.options.push(item.keyword)
+      })
+      for (let i = 0; i < this.options.length; i++){
+        if (i > 0) {
+          this.keywordAll.push(this.options[i])
+        }
+      }
+      this.$store.commit('saveKeywordAll', this.keywordAll.join(','))
+    },
     //选择展示的折线图
-    changeLinetu() {
-      console.log('this.value1',this.value1);
+    async changeLinetu() {
+      if (this.value1.length>0) {
+        this.lineData=this.value1.toString()
+        const res2 = await lineDataApi({numIids:this.lineData})
+          this.linePricedata = res2
+          this.lineprice()
+      }
+    },
+    //折线图下拉框空时
+    changevalue() {
+      if (this.value1.length === 0) {
+        this.getlineData()
+      }
     },
     //显示选择折线图下拉框
      Productshow() {
@@ -265,41 +317,143 @@ export default {
     },
     //获取所有监控的折线图的title
     async getlineData() {
-      const res=await linetuApi()
-      this.options1 = res.data.data
+      this.lineData=[]
+      const res=await linetuApi({keywordAll:store.getters.keywordAll})
+      this.options1 = res
       this.options1.forEach((item) => {
         this.lineData.push(item.numIid)  //传入numIid
       })
       this.lineData = this.lineData.toString()
       if (this.lineData) {
         const res2 = await lineDataApi({numIids:this.lineData})
-        this.linePricedata = res2.data.data
+        this.linePricedata = res2
         this.lineprice()
-        console.log('this.linePricedata', this.linePricedata);
       }
       this.Productshow()
+      console.log('this.linePricedata',this.linePricedata);
     },
     //折线图数据处理
     lineprice() {
       this.series=[]
-      for (let i = 0; i < this.options1.length; i++){
-        for (let j = 0; j < this.linePricedata.length; j++){
-          if (this.linePricedata[j].numIid === this.options1[i].numIid) {
-            let obj = {
-              name: this.options1[i].title,
-              data: this.linePricedata[j].averagePrice.split(','),
-              type:'line'
-            }
-            this.series[j]=obj
-            this.chartZhuzhuangtu()
+      let newlinePrice = []
+      this.linePricedata.forEach((item) => {
+        let isExists = newlinePrice.some((newItem) => {
+          if (item.searchDate.slice(0, 3).join() === newItem.searchDate.slice(0, 3).join()) {
+            return true
+          } else {
+            return false
           }
+        })
+        if (!isExists) {
+          newlinePrice.push({
+            searchDate: item.searchDate.slice(0,3),
+            data: []
+          })
+        }
+      })  
+         if (newlinePrice.length > 0) {
+           for(let n=0;n<newlinePrice.length;n++){
+             let arr3=newlinePrice[n].searchDate
+             for(let k=0;k<this.linePricedata.length;k++){
+               let arr4=this.linePricedata[k].searchDate
+               let obj2={
+               numIid:this.linePricedata[k].numIid,
+               response:this.linePricedata[k].response,
+               site:this.linePricedata[k].site
+               }
+               if(arr3[0]===arr4[0]&&arr3[1]===arr4[1]&&arr3[2]===arr4[2]){
+                 newlinePrice[n].data.push(obj2)
+              }
+             }
+           }
+       }
+    
+      let itemsava = []
+      this.xdata = []
+      let long
+       console.log('newlinePrice',newlinePrice);
+       for (let a = 0; a < newlinePrice.length; a++){
+         this.xdata.push(newlinePrice[a].searchDate.slice(1, 3).join('/'))
+      }
+      let temp
+      for (let ia = 0; ia < this.xdata.length; ia++){
+        for (let ib = ia + 1; ib < this.xdata.length; ib++){
+            if (this.xdata[ia].split('/')[1] >= this.xdata[ib].split('/')[1]) {
+              if (this.xdata[ia].split('/')[0] >=this.xdata[ib].split('/')[0]) {
+                temp = this.xdata[ia]
+                this.xdata[ia] = this.xdata[ib]
+                this.xdata[ib]=temp
+              }
+            }
         }
       }
-      console.log('series', this.series);
+      this.xdata.slice(-7)
+      long = this.xdata.length
+      console.log('long',long);
+      // console.log('xdata', this.xdata);
+      // for (let i1 = 0; i1 < this.xdata.length; i1++){
+        for (let i2 = 0; i2 < newlinePrice.length; i2++){
+      //     // console.log(this.xdata[i1] == newlinePrice[i2].searchDate.splice(1, 2).join('/'));
+       for (let i4 = 0; i4 < newlinePrice[i2].data.length; i4++){
+         for (let i3 = 0; i3 < newlinePrice[i2].data[i4].response.items.length; i3++){
+            // console.log('this.xdata[i1]',this.xdata[i1]);
+            // if (this.xdata[i1] == newlinePrice[i2].searchDate.splice(1, 2).join('/')) {
+           itemsava.push({
+                data:newlinePrice[i2].searchDate,
+                numIid: newlinePrice[i2].data[i4].numIid,
+                sku_id:newlinePrice[i2].data[i4].response.items[i3].sku_id,
+                // ydata: Array.from({ length: long }, () => NaN),
+             ydata: newlinePrice[i2].data[i4].response.items[i3].sku_price,
+             sku_properties_name:newlinePrice[i2].data[i4].response.items[i3].sku_properties_name
+              })
+            // }
+          //  itemsava.ydata[i3]=newlinePrice[i2].data[i4].response.items[i3].sku_price
+           }
+            
+          }
+        }
+      // }
+      console.log('itemsava',itemsava);
+      //    for (let n = 0; n < itemsava.length; n++){
+      //      for (let m = n + 1; m < itemsava.length; m++){
+      //        if (itemsava[n].numIid === itemsava[m].numIid) {
+      //          itemsava[n].avag.push(itemsava[m].avag[0])
+      //          itemsava.splice(m, 1)
+      //          m--
+      //        }
+      //      }
+      //    }
+      //    console.log('itemsava',itemsava);
+      //     for (let x = 0; x < this.options1.length; x++){
+      //       for (let y = 0; y < itemsava.length; y++){
+      //         if (itemsava[y].numIid === this.options1[x].numIid) {
+      //           let obj = {
+      //             name: this.options1[x].title,
+      //             data: itemsava[y].avag,
+      //             type:'line'
+      //           }
+      //           this.series[y]=obj
+      //         }
+      //       }
+      //  }
+      //  console.log('this',this.series);
+        this.chartZhuzhuangtu()
+      
     },
     //接收地图组件传回来的低价商品数量
     lowProductfn(e) {
-      this.lowProduct=e.lowProduct
+        if(this.price==''){
+          this.lowProduct = e.lowProduct
+        }else{
+          this.lowProduct=e
+        }
+    },
+    allProductfn(e) {
+      this.allproduct=e.allProduct
+    },
+    //回显最低价到页面
+    lowerpricefn(e) {
+      this.price=e.lowerprice
     },
     //低价商品搜索平台数据
     async changelowSite() {
@@ -307,8 +461,8 @@ export default {
          this.Timer = setTimeout(async() => {
            this.site = this.searchValue
            const res =await lowerGoodsApi({site:this.site,keyword:'欣善怡'})
-          if (res.data.data.length>0) {
-            this.lowerlist = res.data.data
+          if (res.data.length>0) {
+            this.lowerlist = res.data
             this.nodate=false
           } else {
             this.nodate=true
@@ -319,9 +473,9 @@ export default {
     async changeSite(val) {
         this.site = val
         this.searchValue=''
-      const res =await lowerGoodsApi({site:this.site,keyword:'欣善怡'})
-      if (res.data.data.length>0) {
-        this.lowerlist = res.data.data
+      const res =await lowerGoodsApi({site:this.site,keywordAll:store.getters.keywordAll})
+      if (res.length>0) {
+        this.lowerlist = res
         this.nodate=false
       } else {
         this.nodate=true
@@ -329,79 +483,29 @@ export default {
     },
     //监控链接详情
     async getlink() {
-      const res = await linkDetailApi()
-      this.linkList=res.data.data
-    },
-     //时间戳转换
-    getTime(time) {
-      const time1 = Math.floor(time / (24 * 60 * 60 * 1000))
-      const time2 = Math.floor(new Date() / (24 * 60 * 60 * 1000))
-       if (time1===time2) {
-        return '上架中'
-       } else {
-        return '已下架'
-      }
+      const res = await linkDetailApi({keywordAll:store.getters.keywordAll})
+      this.linkList = res
     },
     //关闭侧边栏弹窗
     handleClose(done) {
       done()
     },
 
-    //设置最低价
+    //设置最低价、选择关键词
     changePrice() {
       this.lowerPrice = this.price
-      this.$refs.mapRef.price=this.price
-    },
-    //饼图
-    chartBingtu() {
-      let myChart = echarts.init(this.$refs.bingtu);
-      let option;
-
-      option = {
-        title: {},
-        tooltip: {
-          trigger: 'item'
-        },
-        legend: {
-          top: 'center',
-          right: '5%',
-          orient: 'vertical',
-          textStyle: {
-            color: '#fff',
-            fontSize:16
-          }
-        },
-        series: [
-          {
-            name: '区域销量占比分析',
-            type: 'pie',
-            radius: ['40','100'],
-            center: ['39%', '50%'],
-            // roseType: 'area',
-            data: this.bingdata,
-            // data:this.areaSale,
-            emphasis: {
-                itemStyle: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              },
-          }
-        ]
-      };
-
-      option && myChart.setOption(option);
+      // this.$refs.map.mapkeyword=this.mapkeyword
     },
 
     //折线图
     chartZhuzhuangtu() {
       let myChart = echarts.init(document.querySelector('.linetu'));
+      myChart.clear()
       let option;
       option = {
         animationDuration: 7000,
         tooltip: {
-          trigger: 'axis',
+          // trigger: 'axis',
           position: function (point, params, dom, rect, size) {
             if ((size.viewSize[0] / 2) >= point[0]) {
               return [point[0]+50,'10%']
@@ -412,16 +516,26 @@ export default {
           formatter:'{b}'+'<br/>'+'{a}'+':{c}'+'元'
         },
         legend: {
-          // data: ['欣善怡全麦脆', '欣善怡麦片', '欣善怡燕麦块', '欣善怡燕麦饼干', '欣善怡麦片无糖'],
+          top:'0%',
+          left:'2%',
           textStyle: {
-            color: '#fff'
+            color: '#fff',
+            fontSize:'10'
           },
-          //  selectedMode:'single'
+          itemGap: 0,
+          formatter: function (name) {
+            return name.length > 42 ? name.substr(0, 42) + '...' : name;
+          },
+          tooltip: {
+            show: true,
+            trigger:'item'
+          }
         },
         grid: {
+          // top:'30%',
           left: '3%',
-          right: '4%',
-          bottom: '3%',
+          right: '6%',
+          bottom: '1%',
           containLabel: true
         },
         // toolbox: {
@@ -432,7 +546,7 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['0:00', '4:00', '8:00', '12:00', '16:00', '20:00', '24:00']
+          data:this.xdata
         },
         yAxis: {
           type: 'value'
@@ -440,12 +554,28 @@ export default {
         series: this.series
       }
       option && myChart.setOption(option);
+      if (this.series.length <= 5) {
+        myChart.setOption({legend:{show:true}})
+        myChart.setOption({grid:{top:'35%'}})
+      } else {
+        myChart.setOption({ legend: { show: false } })
+        myChart.setOption({grid:{top:'10%'}})
+      }
     },
 
     //图片路径错误时换成指定图片
     handleImageError(e) {
       e.srcElement.src = require("@/assets/imgerro.jpg");
     },
+  },
+  async beforeRouteLeave(to,from,next) {
+     this.id = String(store.getters.id)
+      this.lowPrice=Number(this.price)
+       await updataPriceApi({
+         userId: this.id,
+         lowPrice:this.lowPrice
+       })
+    next()
   }
 };
 </script>
@@ -485,6 +615,7 @@ export default {
       font-size: 45px;
       font-weight: 400;
     }
+    
   }
   .body {
     background-size: cover;
@@ -493,12 +624,12 @@ export default {
     // height: 100%;
     display: flex;
     .left {
+      // position: relative;
       margin-top: 10px;
       padding-left: 135px;
       width: 614px;
       height: 686px;
       background-image: url(@/assets/leftbgi.png);
-      // position: relative;
         .circle{
           width: 440px;
           height: 340px;
@@ -519,22 +650,79 @@ export default {
               text-align: center;
             }
           }
-          .alasyle{
-            width: 263px;
-            height: 89px;
-            margin-top: 66px;
-            margin-left: 91px;
-            background-image: url(@/assets/buttonkuang.png);
-            color: #fff;
-            line-height: 89px;
-            text-align: center;
-            font-size: 36px;
-            font-weight: 400;
+          .nodata{
+            color: #ccc;
+            margin-left: 140px;
+            margin-top: 110px;
           }
-          
           .bingtu{
-            width: 450px;
-            height: 270px;
+            padding: 10px;
+            .showGoods{
+              height:245px;
+              width:400px;
+              overflow-y: scroll;
+              &::-webkit-scrollbar {
+                  width: 4px; /* 设置滚动条的宽度 */
+              }
+              &::-webkit-scrollbar-track {
+                  background-color: #1d4366 !important; /* 设置背景色 */
+              }
+              &::-webkit-scrollbar-thumb {
+                  background-color: #388fcd; /* 设置滑块的颜色 */
+              }
+              .shangpin{
+                display: flex;
+                width: 395px;
+                .s-left{
+                  width: 100px;
+                  height: 100px;
+                  img{
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 5px;
+                  }
+                }
+                .s-right{
+                  width: 275px;
+                  height: 100px;
+                  margin-left: 10px;
+                  p{
+                    margin: 2px  !important;
+                    font-size: 12px;
+                    color: #dad4d4;
+                    padding-top: 5px;
+                    // white-space: nowrap;
+                    // text-overflow: ellipsis;
+                    // overflow: hidden;
+                    // &:hover{
+                    //   overflow: visible;
+                    // }
+                  }
+                  .s-title{
+                    width: 245px;
+                    color: #dad4d4;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                  }
+                  .price{
+                    display: flex;
+                    justify-content: space-between;
+                  }
+                  .priceinfo{
+                    width: 275px;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    span{
+                      color: #dad4d4;
+                    }
+                  }
+                }
+              }
+
+            }
           }
         }
         .bar{
@@ -591,11 +779,26 @@ export default {
             height: 260px;
           }
         }
+        
       }
       .middle{
+        position: relative;
         width: 762px;
         height: 768px;
         background-image: url(@/assets/middlebgi.png);
+        .allnum{
+          position: absolute;
+          bottom:  139px;
+          right: 60px;
+          width: 100px;
+          text-align: center;
+          color: #fff;
+          p{
+            font-size: 36px;
+            color: yellow;
+            margin-top: 30px;
+          }
+        }
         // .cellPrice{
         //   width: 500px;
         //   height: 263px;
@@ -641,6 +844,7 @@ export default {
             margin-right: 9px;
           }
         }
+        
         .numbotton{
           margin-top: 20px;
           display: flex;
@@ -928,18 +1132,6 @@ export default {
               }
 
             }
-            // .title{
-            //   width: 380px;
-            //   height: 30px;
-            //   display: flex;
-            //   justify-content: space-between;
-            //   color: #fff;
-            //   p{
-            //     width: 190px;
-            //     text-align: center;
-
-            //   }
-            // }
           }
         }
     }

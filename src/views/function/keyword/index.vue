@@ -15,7 +15,7 @@
           </el-input>
         </div>
         <div class="search">
-          <button @click="handleEdit()">新增关键词</button>
+          <!-- <button @click="handleEdit()">新增关键词</button> -->
         </div>
       </div>
     </div>
@@ -58,12 +58,12 @@
       prop="isMonitored"
       label="状态">
       <template slot-scope="scope">
-        <el-switch
+        <el-switch disabled
             v-model="scope.row.isMonitored" @change="stateChange(scope.row)">
         </el-switch>
       </template>
     </el-table-column>
-    <el-table-column label="操作">
+    <!-- <el-table-column label="操作">
       <template slot-scope="scope">
         <el-button
           @click="handleEdit(scope.row)" style="padding: 10px 15px;">编辑</el-button>
@@ -71,7 +71,7 @@
           type="danger"
           @click="handleDelete(scope.index,scope.row.id)" style="padding: 10px 15px;">删除</el-button>
       </template>
-    </el-table-column>
+    </el-table-column> -->
   </el-table>
   <div class="block">
     <el-pagination
@@ -119,11 +119,11 @@ export default {
         },
         loading:false,
         tableData: [
-          { keyword: '欣善怡全麦脆', shopNum: 23, productNum: '345',productDel:778,jiank:10, isMonitored:true},
-          { keyword: '欣善怡麦片', shopNum:45, productNum: '564', productDel:778,jiank:10, isMonitored:true},
-          { keyword: '欣善怡燕麦块', shopNum:45,productNum: '345',productDel:778, jiank:10, isMonitored:false},
-          { keyword: '欣善怡燕麦饼干', shopNum:45, productNum: '345', productDel:778,jiank:10, isMonitored:true},
-          { keyword: '欣善怡麦片无糖', shopNum:45, productNum: '345', productDel:778,jiank:10, isMonitored:true},
+          { keyword: '欣善怡', shopNum: 233, productNum: '575',productDel:712779,jiank:19, isMonitored:true},
+          // { keyword: '欣善怡麦片', shopNum:45, productNum: '564', productDel:778,jiank:10, isMonitored:true},
+          // { keyword: '欣善怡燕麦块', shopNum:45,productNum: '345',productDel:778, jiank:10, isMonitored:false},
+          // { keyword: '欣善怡燕麦饼干', shopNum:45, productNum: '345', productDel:778,jiank:10, isMonitored:true},
+          // { keyword: '欣善怡麦片无糖', shopNum:45, productNum: '345', productDel:778,jiank:10, isMonitored:true},
         ],
         currentPage4: 4,
         size:0,

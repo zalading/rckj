@@ -4,20 +4,26 @@
     <div class="demo-input-suffix">
       <div class="top">
         <div class="search">
-          选择商品：
-          <el-input
-            placeholder="请输入内容"
-            v-model="params.keyword"  @input="changeGoods">
-            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-          </el-input>
+          选择关键词：
+          <el-select v-model="params.keyword" placeholder="请选择关键词" @change="changeGoods">
+              <el-option
+                v-for="item in optionkeyword"
+                :key="item"
+                :label="item"
+                :value="item" style="text-align: center;">
+              </el-option>
+            </el-select>
         </div>
         <div class="search">
           选择平台：
-          <el-input
-            placeholder="请输入平台"
-            v-model="params.site"  @input="changeGoods">
-            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-          </el-input>
+          <el-select v-model="params.site" placeholder="请选择平台" @change="changeGoods">
+              <el-option
+                v-for="item in optionsite"
+                :key="item"
+                :label="item"
+                :value="item" style="text-align: center;">
+              </el-option>
+            </el-select>
         </div>
         <div class="search">
           选择地区：
@@ -26,16 +32,16 @@
                 v-for="item in options"
                 :key="item"
                 :label="item"
-                :value="item">
+                :value="item" style="text-align: center;">
               </el-option>
             </el-select>
         </div>
-        <div class="search">
+        <!-- <div class="search">
           最低价：<div class="lowerPrice" v-if="searchValue">{{ lowerPrice }}</div>
           <div class="lowerPrice" v-else style="color: #ccc;font-size: 14px;">未显示</div>
-        </div>
+        </div> -->
       </div>
-      <button @click="exportExcel">导出文件</button>
+      <button @click="exportExcel">导出当页文件</button>
     </div>
     <el-table
     :data="tableData"
@@ -56,6 +62,11 @@
             <el-table-column prop="skuOrginalPrice" label="原价"></el-table-column>
             <el-table-column prop="quantity" label="库存数量"></el-table-column>
             <el-table-column prop="location" label="发货地址"></el-table-column>
+            <el-table-column prop="secacheDate" label="搜索时间">
+              <template slot-scope="scope">
+              <p>{{ getTime(scope.row.secacheDate) }}</p>
+            </template>
+            </el-table-column>
           </el-table>
         </template>
       </el-table-column>
@@ -70,7 +81,8 @@
       width="110">
       <template slot-scope="scope">
         <a :href="scope.row.detailUrl" target="_blank">
-           <img :src="scope.row.imgUrl" min-width="80" height="80" @error=handleImageError /> 
+          <img src="@/assets/imgerro.jpg" alt="" v-if="!scope.row.imgUrl" min-width="80" height="80">
+          <img :src="scope.row.imgUrl" min-width="80" height="80" @error=handleImageError v-else /> 
         </a>
       </template>
     </el-table-column>
@@ -147,17 +159,19 @@
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { AllGoodsApi,updataGoodApi } from '@/apis/goods'
-
+import { getInfoApi } from '@/apis/user'
+import store from '@/store'
 export default {
   name: 'GoodsAlayse',
   props:['name'],
     data() {
       return {
         hasChildren: true,
-        loading:false,
+        loading:true,
         params: {
           page: 1,
-          size: 10
+          size: 10,
+          keywordAll:store.getters.keywordAll
         },
         total: 0,
         size:0,
@@ -167,54 +181,70 @@ export default {
         searchValue: '', //搜索的数据
         Timer: null, //定时器
         tableData: [],
-        options:['全部','安徽','澳门','北京','重庆','福建','甘肃','广东','广西','贵州','海南','河北','河南','黑龙江','湖北','湖南','吉林','江苏','江西','辽宁','内蒙古','宁夏','青海','上海','陕西','山东','山西','四川','台湾','天津', '西藏','香港','新疆','云南','浙江']  //选择地区下拉框
+        options:['全部','安徽','澳门','北京','重庆','福建','甘肃','广东','广西','贵州','海南','河北','河南','黑龙江','湖北','湖南','吉林','江苏','江西','辽宁','内蒙古','宁夏','青海','上海','陕西','山东','山西','四川','台湾','天津', '西藏','香港','新疆','云南','浙江'],  //选择地区下拉框
+        optionsite: ['全部', '淘宝', '京东', '拼多多'],
+        optionkeyword: ['全部'],
       }
   },
   created() {
-    console.log('this.$router.params', this.name);
-    this.getGoodslist()
-    this.getlist=this.zhejiang
+    if (this.$route.params.location) {
+      this.params.location = this.$route.params.location
+    }
+    this.getinfo()
+    
   },
   methods: {
+    //获取关键词
+     async getinfo() {
+       const res = await getInfoApi({ userId: store.getters.id })
+        res.forEach(item => {
+          this.optionkeyword.push(item.keyword)
+          this.key=item.keyword
+        })
+      console.log(this.optionkeyword);
+      this.getGoodslist()
+     },
     //时间戳转换
     getTime(time) {
       if (time) {
         let date = new Date(time)
         if (date) {
           return date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);
-          
         } else {
           return
         }
       }
-      // console.log('date', date);
     },
     Allsale(row) {
       return row.deal*row.price
     },
     async getGoodslist() {
-      console.log('this.params',this.params);
+      
+      // this.params.keyword=this.key
+      // console.log('this.params',this.key);
       const res = await AllGoodsApi(this.params)
       console.log(res);
-      this.tableData = res.data.data.list
-      this.total=res.data.data.total
-      this.size = res.data.data.size
+      this.tableData = res.list
+      this.total=res.total
+      this.size = res.size
       this.loading=false
     },
     //获取滑块的值
     async stateChange(val) {
       console.log(val);
-      let sort 
-      if (val.isMonitored === 'true') {
-        sort=0
+      let sort=''
+      if (val.isMonitored ==true) {
+        sort='1'
       } else {
-        sort=1
+        sort='0'
       }
        await updataGoodApi({
-         numIid: val.numIid,
+         numIid: val.uniqueHashId,
          isOFF:sort
        })
        this.$message({message:'链接监控状态更改成功',type:'success'})
+       
+         this.getGoodslist()
     },
     //隐藏没有子节点的展开图标
     getRowClass({row}) {
@@ -236,8 +266,13 @@ export default {
        clearTimeout(this.Timer)
        if (this.params.location === '全部') {
          this.params.location=''
-        } 
-        console.log('this.params.location',this.params.location);
+       }
+       if (this.params.site === '全部') {
+          this.params.site=''
+       } 
+       if (this.params.keyword === '全部') {
+          this.params.keyword=''
+        }
         this.Timer = setTimeout(async () => {
           console.log(111);
            this.getGoodslist()
@@ -355,5 +390,14 @@ export default {
 }
 ::v-deep .icon-no .el-table__expand-icon {
 display: none;
+}
+// ::v-deep .el-select-dropdown__list{
+//   text-align: center !important;
+// }
+// ::v-deep .el-select-dropdown__item{
+//   text-align: center !important;
+// }
+.el-scrollbar .el-select-group__wrap ::v-deep .el-select-dropdown__item{
+    text-align: center !important;
 }
 </style>

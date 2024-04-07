@@ -6,7 +6,16 @@
       <button @click="loginout">退出登录</button>
     </div>
     <div class="demo-input-suffix">
-      <div class="avatar"><img src="@/assets/avatar.png" alt=""></div>
+      <!-- <div class="avatar"><img src="@/assets/avatar.png" alt=""></div> -->
+      <el-upload
+      class="avatar-uploader"
+      action="#"
+      :show-file-list="false"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload">
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <img src="@/assets/avatar.png" alt="" v-else>
+    </el-upload>
       <div class="nickname">{{ phone.substring(0,3)+'****'+phone.substring(7) }}</div>
     </div>
     <div class="history">
@@ -25,6 +34,7 @@ export default {
     data() {
       return {
         companyName: '欣善怡有限公司',
+        imageUrl:''
        }
   },
   created() {
@@ -36,7 +46,24 @@ export default {
     loginout() {
       this.$store.commit('removePhone')
       this.$router.push('/login')
-    }
+    },
+    handleAvatarSuccess(res, file) {
+      console.log('file',file);
+        // this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG =file.type === 'image/png'
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG||!isPNG) {
+          this.$message.error('上传头像图片只能是 JPG或PNG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      }
   }
 }
 </script>
@@ -121,4 +148,24 @@ export default {
     }
   }
 }
+::v-deep .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 49px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin:0 auto;
+  width: 98px;
+  height: 98px;
+  margin-bottom: 20px;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar {
+    width: 98px;
+    height: 98px;
+    display: block;
+  }
 </style>

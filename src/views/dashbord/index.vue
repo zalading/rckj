@@ -227,7 +227,7 @@ export default {
         this.$router.push('/relate')
       },
       openLogin() {
-        this.$router.push('/login')
+        this.$router.push('/login').catch(()=>{this.drawer=false})
       },
       login() {
         if (this.formData.password.length>=6) {

@@ -25,8 +25,8 @@ export default {
   data() {
     return{
       formData: {
-          phone: '15058600815',
-          password:'123456'
+          phone: '',
+          password:''
         },
         rules: {
           phone: [
@@ -43,6 +43,7 @@ export default {
     async login() {
       let regExp = /^1[3456789]\d{9}$/
       if (this.formData.password.length > 0 && regExp.test(this.formData.phone)) {
+
         const res = await loginApi({
           phone:this.formData.phone,
           password:this.formData.password
@@ -50,11 +51,13 @@ export default {
           // this.$message({
           //   message: '登录成功！',
           //   type:'success'
-          // })
-          this.$router.push('/map')
+        // })
+          console.log('token,id',res);
           this.$store.commit('savePhone', this.formData.phone)
-        this.$store.commit('saveToken', res.data.data)
-          console.log('1234567');
+          this.$store.commit('saveToken', res.token)
+          this.$store.commit('saveId', res.id)
+        this.$router.push('/map').catch(()=>{this.drawer=false})
+          
         }
         else if(!this.formData.phone&&!this.formData.password){
           this.$message({
