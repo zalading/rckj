@@ -29,7 +29,7 @@ router.beforeEach(async(to, from, next) => {
       next()
       nprogress.done()
     } else {
-      next('/dash') // 中转到登录页
+      next('/login') // 中转到登录页
       nprogress.done()
     }
   }

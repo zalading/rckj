@@ -60,9 +60,14 @@ const routes = [
     component: () => import( '../views/function/goodsAlayse')
   },
   {
-    path: '/saleAlayse',
-    name: 'saleAlayse',
-    component: () => import('../views/function/saleAlayse'),
+    path: '/dataScreen',
+    name: 'dataScreen',
+    component: () => import( '../views/function/dataScreen')
+  },
+  {
+    path: '/newlowPrice',
+    name: 'newlowPrice',
+    component: () => import('../views/function/newlowPrice'),
     props: true
   },
   {
@@ -88,7 +93,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  // mode: 'hash',
+  // mode: 'history',
   base: process.env.BASE_URL,
   routes
 })

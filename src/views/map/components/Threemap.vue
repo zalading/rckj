@@ -54,6 +54,7 @@ import chinaJson from '@/utils/china.json';
 import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
 import "echarts-gl"
 import { maplistApi, getPriceApi } from '@/apis/map'
+import {getInfoApi} from '@/apis/user'
 import store from '@/store';
 export default {
   name: 'ThreeMap',
@@ -63,9 +64,10 @@ export default {
         myChart: null,
         num: 21,
         params: {
-          keywordAll: store.getters.keywordAll,
+          keywordAll: '',
           lowPrice:0
         },
+        options:[],
         mapkeyword:'', //地图关键词
         lowProduct:0,  //总商品数量
         provinceList: [],
@@ -113,8 +115,8 @@ export default {
     mapkeyword(newvalue) {
       this.params.keyword = newvalue
       if (this.params.keyword === '全部'||this.params.keyword==='') {
-        this.params.keyword = '欣善怡'
-        this.getinitData()
+        this.params.keyword = ''
+        this.getlowerData()
       } else {
         this.getlowerData()
       }
@@ -129,13 +131,23 @@ export default {
     },
     
   },
-  created() {
+  async created() {
+    await  this.getinfo()
     this.getPrice()
+    this.getinitData()
   },
   mounted() {
     this.getinitData()
   },
   methods: {
+       //获取关键词
+       async getinfo() {
+      const res = await getInfoApi({ userId: store.getters.id })
+      res.forEach(item => {
+        this.options.push(item.keyword)
+      })
+      this.params.keywordAll = this.options.join(',')
+    },
     async getPrice() {
       const res = await getPriceApi({ userId: store.getters.id })
       this.params.lowPrice = res.minimumPrice
@@ -149,7 +161,7 @@ export default {
 
     //第一次获取全部地图数据
     async getinitData() {
-      const res = await maplistApi({keywordAll:store.getters.keywordAll})
+      const res = await maplistApi({keywordAll:this.params.keywordAll})
       this.lowProduct=0
       this.maplist=[]
       this.maplist = res
@@ -210,11 +222,10 @@ export default {
            }
          }
       }
-      console.log(this.provinceList);
       this.initMap();
       },
       initMap() {
-        let num = this.price
+        // let num = this.price
         let lower=this.lowshop
             this.myChart = this.echarts.init(this.$refs.myMap);
             this.myChart.showLoading();
@@ -223,7 +234,7 @@ export default {
             let option = {
               tooltip: {
                 formatter: function (params) {
-                  if (num) {
+                  if (params.data.lowShopCount) {
                     return params.data.name + '<br/>' + '商家总数量：' + params.data.uniqueShopCount + '<br/>' +
                       '商品总数量：' + params.data.uniqueProductCount +'<br/>' + '低价商家总数量：'+ params.data.lowShopCount+'<br/>' + '低价商品总数量：'+ params.data.lowProductCount
                   } else {

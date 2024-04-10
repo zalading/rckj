@@ -17,11 +17,11 @@
             <img src="@/assets/sidenav12.png" alt="" class="icon2">
             <span>数据展示</span>
           </li>
-          <!-- <li>
+          <li @click="nav2">
             <img src="@/assets/sidenav21.png" alt="" class="icon1">
             <img src="@/assets/sidenav22.png" alt="" class="icon2">
-            <span>商品类目</span>
-          </li> -->
+            <span>数据大屏</span>
+          </li>
           <li @click="nav3">
             <img src="@/assets/sidenav31.png" alt="" class="icon1">
             <img src="@/assets/sidenav32.png" alt="" class="icon2">
@@ -30,7 +30,7 @@
           <!-- <li @click="nav4">
             <img src="@/assets/sidenav41.png" alt="" class="icon1">
             <img src="@/assets/sidenav42.png" alt="" class="icon2">
-            <span>销量分析</span>
+            <span>低价链接</span>
           </li> -->
           <li @click="nav5">
             <img src="@/assets/sidenav51.png" alt="" class="icon1">
@@ -74,12 +74,15 @@ export default {
     nav1() {
       this.$router.push('/map').catch(()=>{this.drawer=false})
     },
+    nav2() {
+      this.$router.push('/dataScreen').catch(()=>{this.drawer=false})
+    },
     nav3() {
       this.$router.push('/goodsAlayse').catch(()=>{this.drawer=false})
     },
     //跳转到销售分析
     nav4() {
-      // this.$router.push('/saleAlayse').catch(()=>{this.drawer=false})
+      this.$router.push('/newlowPrice').catch(()=>{this.drawer=false})
     },
     nav5() {
       this.$router.push('/keyword').catch(()=>{this.drawer=false})
@@ -92,9 +95,9 @@ export default {
       // this.$router.push('/usercenter').catch(()=>{this.drawer=false})
       this.$confirm(`用户${store.getters.phone.substring(7)}确认退出？`).then(() => {
         console.log('退出成功');
+        this.$store.commit('removeToken')
         this.$router.push('/login')
         this.$store.commit('removePhone')
-        this.$store.commit('removeToken')
         this.$store.commit('removeId')
         this.$store.commit('removeCompanyName')
         this.$store.commit('removeKeywordAll')

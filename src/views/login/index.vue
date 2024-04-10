@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import {loginApi} from '@/apis/user'
+import { loginApi } from '@/apis/user'
 export default {
   name: 'LoginIndex',
   data() {
@@ -55,7 +55,8 @@ export default {
           console.log('token,id',res);
           this.$store.commit('savePhone', this.formData.phone)
           this.$store.commit('saveToken', res.token)
-          this.$store.commit('saveId', res.id)
+        this.$store.commit('saveId', res.id)
+        this.$store.commit('saveCompanyName', res.companyName)
         this.$router.push('/map').catch(()=>{this.drawer=false})
           
         }
@@ -69,7 +70,7 @@ export default {
           this.$message.error('手机号或密码不正确，请重新输入！')
           
         }
-      },
+    },
   }
 }
 </script>

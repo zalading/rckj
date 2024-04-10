@@ -7,7 +7,7 @@
 module.exports = {
   devServer: {
     proxy: 'http://192.168.1.116:8080'
-    // proxy:'http://www.ranchenkj.com:8080'
+    // proxy:'http://www.ranchenkj.com'
     }
 }
 

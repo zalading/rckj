@@ -2,7 +2,7 @@
   <div class="wrap">
     <header class="header">
       <div class="title" >
-        欣善怡商品数据展示
+        {{companyName}}商品数据展示
       </div>
       <sideNav />
     </header>
@@ -143,12 +143,7 @@
                     <p v-if="item.location">地区：{{ item.location }}</p>
                   </div>
                 </div>
-                <!-- <div class="money">
-                  <p>{{ item.data }}</p>
-                </div> -->
                 <div class="money">
-                  <!-- <p>盈利金额</p> -->
-                  <!-- <h6>利润￥{{ item.money }}</h6> -->
                   <a :href="item.detailUrl" target="_blank">
                     <button>跳转详情</button>
                   </a>
@@ -201,7 +196,7 @@
 import * as echarts from 'echarts'
 // import CountTo from 'vue-count-to';
 import ThreeMap from '@/views/map/components/Threemap' 
-import { lowerGoodsApi, linetuApi, lineDataApi, linkDetailApi,storeInfoApi,updataPriceApi } from '@/apis/map'
+import { lowerGoodsApi, linetuApi, lineDataApi, linkDetailApi,storeInfoApi } from '@/apis/map'
 import { getInfoApi } from '@/apis/user'
 import store from '@/store'
 // import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
@@ -237,22 +232,25 @@ export default {
       linkList: [],  //监控链接详情
       id:'', //获取用户id
       lowPrice: 0, //获取地图最低价,
-      infoshow: [],
+      // infoshow: [],
       superData: [], //优惠商家,
       detailinfo: [],
       xdata:[] , //折线图x轴数据
-      keywordAll:[] //关键词
+      keywordAll: [], //关键词
+      companyName:store.getters.companyName
     };
   },
-  created() {
+  async created() {
+    
+    await this.getinfo()
     this.changeSite()
     this.getlineData()
     this.getlink()
-    this.getinfo()
     this.storeInfo()
     // this.getPrice()
   },
   methods: {
+    
     //获取监控商家店铺信息
     async storeInfo() {
       const res = await storeInfoApi()
@@ -265,33 +263,37 @@ export default {
           i--
         }
       }
-      for (let i = 0; i < this.superData.length;i++){
-        for (let j = i + 1; j < this.superData.length;j++){
-          if (this.superData[i].response.seller.shopId&&this.superData[i].response.seller.shopId === this.superData[j].response.seller.shopId) {
+      // console.log('superData1',this.superData);
+      for (let i = 0; i < this.superData.length; i++){
+        // console.log('i',i);
+        for (let j = i + 1; j < this.superData.length; j++){
+          // console.log('j',j);
+          if (this.superData[i].response.seller.shopId&&(this.superData[i].response.seller.shopId === this.superData[j].response.seller.shopId)) {
             this.superData.splice(j,1)
             j--
           }
         }
       }
-      this.infoshow = []
-      for (let i = 0; i < this.superData.length; i++){
-        let obj = { value: false }
-        this.infoshow.push(obj)
-      }
+      // this.infoshow = []
+      // for (let i = 0; i < this.superData.length; i++){
+      //   let obj = { value: false }
+      //   this.infoshow.push(obj)
+      // }
     },
     //获取关键词
-    async getinfo() {
-      const res = await getInfoApi({ userId: store.getters.id })
-      res.forEach(item => {
-        this.options.push(item.keyword)
-      })
+     async getinfo() {
+       const res = await getInfoApi({ userId: store.getters.id })
+       res.forEach(item => {
+         this.options.push(item.keyword)
+       })
       for (let i = 0; i < this.options.length; i++){
-        if (i > 0) {
-          this.keywordAll.push(this.options[i])
-        }
-      }
-      this.$store.commit('saveKeywordAll', this.keywordAll.join(','))
-    },
+         if (i > 0) {
+           this.keywordAll.push(this.options[i])
+         }
+       }
+       await this.$store.commit('saveKeywordAll', this.keywordAll.join(','))
+       this.onshow=true
+     },
     //选择展示的折线图
     async changeLinetu() {
       if (this.value1.length>0) {
@@ -330,7 +332,7 @@ export default {
         this.lineprice()
       }
       this.Productshow()
-      console.log('this.linePricedata',this.linePricedata);
+      // console.log('this.linePricedata',this.linePricedata);
     },
     //折线图数据处理
     lineprice() {
@@ -367,53 +369,94 @@ export default {
              }
            }
        }
-    
-      let itemsava = []
-      this.xdata = []
-      let long
-       console.log('newlinePrice',newlinePrice);
-       for (let a = 0; a < newlinePrice.length; a++){
-         this.xdata.push(newlinePrice[a].searchDate.slice(1, 3).join('/'))
+      let t
+      for (let ja = 0; ja < newlinePrice.length; ja++){
+        for (let jb = ja + 1; jb < newlinePrice.length; jb++){
+          if (newlinePrice[ja].searchDate[2] >= newlinePrice[jb].searchDate[2]) {
+               if (newlinePrice[ja].searchDate[1] >= newlinePrice[jb].searchDate[1]) {
+                 if (newlinePrice[ja].searchDate[0] >=newlinePrice[jb].searchDate[0]) {
+                   t =newlinePrice[ja]
+                   newlinePrice[ja] = newlinePrice[jb]
+                   newlinePrice[jb]=t
+                 }
+               }
+               }
+         }
       }
-      let temp
-      for (let ia = 0; ia < this.xdata.length; ia++){
-        for (let ib = ia + 1; ib < this.xdata.length; ib++){
-            if (this.xdata[ia].split('/')[1] >= this.xdata[ib].split('/')[1]) {
-              if (this.xdata[ia].split('/')[0] >=this.xdata[ib].split('/')[0]) {
-                temp = this.xdata[ia]
-                this.xdata[ia] = this.xdata[ib]
-                this.xdata[ib]=temp
-              }
+      newlinePrice=newlinePrice.slice(-7)
+      console.log('newlinePrice',newlinePrice);
+       let itemsava = []
+       this.xdata = []
+        for (let a = 0; a < newlinePrice.length; a++){
+          this.xdata.push(newlinePrice[a].searchDate.slice(1, 3).join('/'))
+       }
+      this.xdata=this.xdata.slice(-7)
+      let shijian
+       let ab=0
+       // console.log('xdata', this.xdata);
+       // for (let i1 = 0; i1 < this.xdata.length; i1++){
+         for (let i2 = 0; i2 < newlinePrice.length; i2++){
+       //     // console.log(this.xdata[i1] == newlinePrice[i2].searchDate.splice(1, 2).join('/'));
+           for (let i4 = 0; i4 < newlinePrice[i2].data.length; i4++){
+         let arr=Array(this.xdata.length).fill(NaN)
+          for (let i1 = 0; i1 < this.xdata.length; i1++) {
+            if (this.xdata[i1] === newlinePrice[i2].searchDate.slice(1, 3).join('/')) {
+             shijian=i1
             }
+             }
+             let avag = 0
+             newlinePrice[i2].data[i4].response.items.forEach(item => {
+              //每个sku都添加进去
+              // let sindex --numIid+sku_id
+              //  let flag = itemsava.some((newitem,index) => {
+              //    if (item.sku_id == newitem.sku_id) {
+              //     sindex=index
+              //    return true
+              //    } else {
+              //    return false
+              //  }
+              //  })
+              //  if (!flag) {
+              //    itemsava[ab] = { data: arr, sku_id: item.sku_id,numIid:newlinePrice[i2].data[i4].numIid }
+              //    itemsava[ab].data[shijian]=Number(item.sku_price)
+              //    ab++
+              //  } else {
+              //   itemsava[sindex].data[shijian]=Number(item.sku_price)
+              //  }
+
+
+               //只计算spu---numIid
+               
+              avag+=Number(item.sku_price)
+             })
+             let sindex
+             avag =(avag/ newlinePrice[i2].data[i4].response.items.length).toFixed(2)
+             let flag = itemsava.some((item,index) => {
+                if ( newlinePrice[i2].data[i4].numIid== item.numIid) {
+                 sindex=index
+                return true
+                } else {
+                return false
+              }
+              })
+              if (!flag) {
+                itemsava[ab] = { data: arr,numIid:newlinePrice[i2].data[i4].numIid }
+                itemsava[ab].data[shijian]=Number(avag)
+                ab++
+              } else {
+               itemsava[sindex].data[shijian]=Number(avag)
+              }
+         }
+       }
+      console.log('itemsava', itemsava);
+      for (let n = 0; n < itemsava.length; n++){
+        for (let m = 1; m < itemsava[n].data.length; m++){
+           if (itemsava[n].data[m - 1] && !(itemsava[n].data[m])) {
+             itemsava[n].data[m]=itemsava[n].data[m-1]
+           }
         }
       }
-      this.xdata.slice(-7)
-      long = this.xdata.length
-      console.log('long',long);
-      // console.log('xdata', this.xdata);
-      // for (let i1 = 0; i1 < this.xdata.length; i1++){
-        for (let i2 = 0; i2 < newlinePrice.length; i2++){
-      //     // console.log(this.xdata[i1] == newlinePrice[i2].searchDate.splice(1, 2).join('/'));
-       for (let i4 = 0; i4 < newlinePrice[i2].data.length; i4++){
-         for (let i3 = 0; i3 < newlinePrice[i2].data[i4].response.items.length; i3++){
-            // console.log('this.xdata[i1]',this.xdata[i1]);
-            // if (this.xdata[i1] == newlinePrice[i2].searchDate.splice(1, 2).join('/')) {
-           itemsava.push({
-                data:newlinePrice[i2].searchDate,
-                numIid: newlinePrice[i2].data[i4].numIid,
-                sku_id:newlinePrice[i2].data[i4].response.items[i3].sku_id,
-                // ydata: Array.from({ length: long }, () => NaN),
-             ydata: newlinePrice[i2].data[i4].response.items[i3].sku_price,
-             sku_properties_name:newlinePrice[i2].data[i4].response.items[i3].sku_properties_name
-              })
-            // }
-          //  itemsava.ydata[i3]=newlinePrice[i2].data[i4].response.items[i3].sku_price
-           }
-            
-          }
-        }
-      // }
-      console.log('itemsava',itemsava);
+      console.log('itemsava2', itemsava);
       //    for (let n = 0; n < itemsava.length; n++){
       //      for (let m = n + 1; m < itemsava.length; m++){
       //        if (itemsava[n].numIid === itemsava[m].numIid) {
@@ -423,20 +466,20 @@ export default {
       //        }
       //      }
       //    }
-      //    console.log('itemsava',itemsava);
-      //     for (let x = 0; x < this.options1.length; x++){
-      //       for (let y = 0; y < itemsava.length; y++){
-      //         if (itemsava[y].numIid === this.options1[x].numIid) {
-      //           let obj = {
-      //             name: this.options1[x].title,
-      //             data: itemsava[y].avag,
-      //             type:'line'
-      //           }
-      //           this.series[y]=obj
-      //         }
-      //       }
-      //  }
-      //  console.log('this',this.series);
+          // console.log('itemsava',itemsava);
+        for (let x = 0; x < this.options1.length; x++){
+          for (let y = 0; y < itemsava.length; y++){
+            if (itemsava[y].numIid === this.options1[x].numIid) {
+              let obj = {
+                name: this.options1[x].title,
+                data: itemsava[y].data,
+                type:'line'
+              }
+              this.series[y]=obj
+            }
+           }
+       }
+       console.log('this',this.series);
         this.chartZhuzhuangtu()
       
     },
@@ -460,7 +503,7 @@ export default {
       clearTimeout(this.Timer)
          this.Timer = setTimeout(async() => {
            this.site = this.searchValue
-           const res =await lowerGoodsApi({site:this.site,keyword:'欣善怡'})
+           const res =await lowerGoodsApi({site:this.site,keywordAll:store.getters.keywordAll})
           if (res.data.length>0) {
             this.lowerlist = res.data
             this.nodate=false
@@ -494,7 +537,7 @@ export default {
     //设置最低价、选择关键词
     changePrice() {
       this.lowerPrice = this.price
-      // this.$refs.map.mapkeyword=this.mapkeyword
+      this.$refs.map.mapkeyword=this.mapkeyword
     },
 
     //折线图
@@ -568,15 +611,15 @@ export default {
       e.srcElement.src = require("@/assets/imgerro.jpg");
     },
   },
-  async beforeRouteLeave(to,from,next) {
-     this.id = String(store.getters.id)
-      this.lowPrice=Number(this.price)
-       await updataPriceApi({
-         userId: this.id,
-         lowPrice:this.lowPrice
-       })
-    next()
-  }
+  // async beforeRouteLeave(to,from,next) {
+  //    this.id = String(store.getters.id)
+  //     this.lowPrice=Number(this.price)
+  //      await updataPriceApi({
+  //        userId: this.id,
+  //        lowPrice:this.lowPrice
+  //      })
+  //   next()
+  // }
 };
 </script>
 <style lang="scss" scoped>
@@ -590,17 +633,18 @@ export default {
   height: 100%;
   background-image: url(@/assets/mapbgc.png);
   position: absolute;
-  top: 0;
-  left: 0;
+  // top: 0;
+  // left: 0;
     background-repeat: no-repeat;
     background-size: 100% 100%;
   .header {
-    width: 927px;
+    width: 559.783rpx;
+    background-repeat: no-repeat;
     height: 128px;
     background-image: url(@/assets/maptitle.png);
     margin-left: 551px;
     .title {
-      width: 100%;
+      width: 70%;
       display: flex;
       justify-content: center;
       padding-top: 40px;
@@ -627,7 +671,7 @@ export default {
       // position: relative;
       margin-top: 10px;
       padding-left: 135px;
-      width: 614px;
+      width: 370.773rpx;
       height: 686px;
       background-image: url(@/assets/leftbgi.png);
         .circle{
@@ -783,7 +827,7 @@ export default {
       }
       .middle{
         position: relative;
-        width: 762px;
+        width: 460.145rpx;
         height: 768px;
         background-image: url(@/assets/middlebgi.png);
         .allnum{
@@ -897,7 +941,7 @@ export default {
       }
     .right {
       margin-top: 10px;
-      width: 613px;
+      width: 582px;
       height: 671px;
       background-image: url(@/assets/rightbgi.png);
       background-position: right;

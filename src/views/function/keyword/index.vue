@@ -2,18 +2,18 @@
   <div class="content">
     <sideNav />
     <div class="company">
-      {{ companyName }}
+      {{ companyName }}有限公司
     </div>
     <div class="demo-input-suffix">
       <div class="top">
-        <div class="search">
+        <!-- <div class="search">
           选择关键词：
           <el-input
             placeholder="请输入关键词"
             v-model="params.keyword"  @input="changeGoods">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
-        </div>
+        </div> -->
         <div class="search">
           <!-- <button @click="handleEdit()">新增关键词</button> -->
         </div>
@@ -24,7 +24,7 @@
     style="width: 100%;margin-bottom: 20px;"
     row-key="id"
     v-loading="loading"
-    height="660"
+    height="760"
     :cell-style="{'text-align':'center'}"
     :header-cell-style="{'text-align':'center'}"
     border>
@@ -39,27 +39,53 @@
       label="关键词">
     </el-table-column>
     <el-table-column
-      prop="shopNum"
+      prop="keyword"
+      label="低价">
+    </el-table-column>
+    <el-table-column
+      prop="merchantCount"
       label="商家数量">
     </el-table-column>
     <el-table-column
-      prop="productNum"
+      prop="productCount"
       label="商品数量">
     </el-table-column>
     <el-table-column
-      prop="productDel"
+      prop="productSales"
       label="商品销量">
     </el-table-column>
     <el-table-column
-      prop="jiank"
+      prop="linkMonitorCount"
       label="链接监控数量">
     </el-table-column>
     <el-table-column
-      prop="isMonitored"
+      prop=" createTime"
+      label="创建时间">
+      <template slot-scope="scope">
+        <p>{{ getTime(scope.row.createTime)}}</p>
+      </template>
+    </el-table-column>
+    <el-table-column
+      prop="updateTime"
+      label="更新时间">
+      <template slot-scope="scope">
+        <p>{{ getTime(scope.row.updateTime)  }}</p>
+      </template>
+    </el-table-column>
+    <el-table-column
+      prop="linkUpCount"
+      label="监控链接上架数量">
+    </el-table-column>
+    <el-table-column
+      prop="linkDownCount"
+      label="监控链接下架数量">
+    </el-table-column>
+    <el-table-column
+      prop="status"
       label="状态">
       <template slot-scope="scope">
-        <el-switch disabled
-            v-model="scope.row.isMonitored" @change="stateChange(scope.row)">
+        <el-switch disabled :active-value="1" :inactive-value="0"
+            v-model="scope.row.status" @change="stateChange(scope.row)">
         </el-switch>
       </template>
     </el-table-column>
@@ -73,17 +99,6 @@
       </template>
     </el-table-column> -->
   </el-table>
-  <div class="block">
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="size"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
-  </div>
 
   <!-- 编辑/新增员工弹窗 -->
   <el-dialog :title="handleTitle" :visible.sync="usershow" center :before-close="closehandle" width="450px">
@@ -106,24 +121,20 @@
 </template>
 
 <script>
-
+import { getInfoApi,statisticsApi } from '@/apis/user'
+import store from '@/store'
 export default {
   name: 'KeyWord',
     data() {
       return {
-        companyName:'欣善怡有限公司',
+        companyName:store.getters.companyName,
         total: 0,
         params: {
-          page: 1,
-          size: 10
+          userId: store.getters.id
         },
         loading:false,
         tableData: [
-          { keyword: '欣善怡', shopNum: 233, productNum: '575',productDel:712779,jiank:19, isMonitored:true},
-          // { keyword: '欣善怡麦片', shopNum:45, productNum: '564', productDel:778,jiank:10, isMonitored:true},
-          // { keyword: '欣善怡燕麦块', shopNum:45,productNum: '345',productDel:778, jiank:10, isMonitored:false},
-          // { keyword: '欣善怡燕麦饼干', shopNum:45, productNum: '345', productDel:778,jiank:10, isMonitored:true},
-          // { keyword: '欣善怡麦片无糖', shopNum:45, productNum: '345', productDel:778,jiank:10, isMonitored:true},
+          { keyword: '欣善怡', merchantCount: 233, productCount: '575',productSales:712779,linkMonitorCount:19,createTime:[2024,4,7], updateTime:[2024,4,7],status:1},
         ],
         currentPage4: 4,
         size:0,
@@ -137,24 +148,28 @@ export default {
         handleTitle:''
        }
   },
-  created() {
+  async created() {
+    await this.getStatistics()
+    this.getGoodslist()
   },
   methods: {
+    //统计数据
+    async getStatistics() {
+      const res = await statisticsApi({ userId: store.getters.id })
+      console.log(res);
+    },
+    //时间处理
+    getTime(time) {
+      if (time) {
+        return time.slice(0,3).join('/')
+      }
+    },
     indexMethod(index) {
       return `${index+1}`
     },
     async getGoodslist() {
-      
-    },
-    handleSizeChange(val) {
-      this.params.size = val
-      this.getGoodslist()
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      this.params.page = val
-      this.getGoodslist()
-      console.log(`当前页: ${val}`);
+      const res = await getInfoApi(this.params)
+      this.tableData=res
     },
      changeGoods() {
        clearTimeout(this.Timer)
@@ -162,6 +177,11 @@ export default {
              this.getGoodslist()
          },300)
     },
+    //状态变化
+    stateChange(val) {
+      console.log('statechange',val);
+    },
+
     //新增、编辑关键词
     handleEdit(val) {
       this.usershow = true

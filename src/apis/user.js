@@ -9,5 +9,8 @@ import request from '@/utils/request'
     }
   })
 
+//统计相关数据
+export const statisticsApi=params=>request.get('/getKeyword/statistics',{params})
+
 //获取用户关键词
   export const getInfoApi=params=>request.get('/shop/area/getInfo',{params})

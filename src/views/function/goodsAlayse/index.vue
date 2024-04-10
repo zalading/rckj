@@ -36,12 +36,21 @@
               </el-option>
             </el-select>
         </div>
-        <!-- <div class="search">
-          最低价：<div class="lowerPrice" v-if="searchValue">{{ lowerPrice }}</div>
-          <div class="lowerPrice" v-else style="color: #ccc;font-size: 14px;">未显示</div>
-        </div> -->
+        <!-- <button @click="sortPrice" style="margin:0 15px">价格排序</button> -->
+        
       </div>
-      <button @click="exportExcel">导出当页文件</button>
+      <!-- <button @click="exportExcel">导出当页文件</button> -->
+    </div>
+    <div class="demo-input" style="position: relative;">
+      (默认升序)
+      <button @click="sortPrice(0)" style="margin:0 15px">价格升序 <img src="@/assets/up.png" alt=""></button>
+      <button @click="sortPrice(1)" style="margin:0 15px">价格降序 <img src="@/assets/down.png" alt=""></button>
+      <!-- <i class="el-icon-d-caret" @click="sortPrice"></i> -->
+      <div class="search">
+          价格区间：<input type="number" v-model.number="minPrice" placeholder="最小价格" /> &nbsp;-&nbsp;
+                    <input type="number" v-model.number="maxPrice" placeholder="最大价格" />
+                    <button @click="filterPrice">筛选</button>
+      </div>
     </div>
     <el-table
     :data="tableData"
@@ -52,7 +61,7 @@
     height="730"
     :cell-style="{'text-align':'center'}"
     :header-cell-style="{'text-align':'center'}"
-    border>
+    border >
     <el-table-column type="expand" >
         <template slot-scope="{ row }" >
           <el-table :data="row.productData" style="width: 100%" v-if="row.productData&&row.productData.length > 0">
@@ -69,7 +78,7 @@
             </el-table-column>
           </el-table>
         </template>
-      </el-table-column>
+    </el-table-column>
     <el-table-column
       prop="site"
       label="平台"
@@ -86,12 +95,13 @@
         </a>
       </template>
     </el-table-column>
-    
     <el-table-column
       prop="price"
       label="最新商品价格"
-      sortable
-      width="120">
+      width="130">
+      <template slot-scope="scope">
+        {{ scope.row.price }}
+      </template>
     </el-table-column>
     <el-table-column
       prop="location"
@@ -114,19 +124,17 @@
     <el-table-column
       prop="deal"
       label="付款人数"
-      sortable
       width="110">
     </el-table-column>
     <el-table-column
-      label="预估销售额"
-      sortable>
+      label="预估销售额">
       <template slot-scope="scope">
         <p>{{Allsale(scope.row)}}</p>
       </template>
     </el-table-column>
     <el-table-column
       prop="searchDate"
-      label="最新搜索时间">
+      label="最新搜索时间" >
       <template slot-scope="scope">
         <p>{{ getTime(scope.row.searchDate) }}</p>
       </template>
@@ -149,7 +157,7 @@
       :page-sizes="[5, 10, 15, 20]"
       :page-size="size"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
+      :total="total" >
     </el-pagination>
   </div>
   </div>
@@ -171,7 +179,8 @@ export default {
         params: {
           page: 1,
           size: 10,
-          keywordAll:store.getters.keywordAll
+          keywordAll:store.getters.keywordAll,
+          sort:0
         },
         total: 0,
         size:0,
@@ -184,6 +193,9 @@ export default {
         options:['全部','安徽','澳门','北京','重庆','福建','甘肃','广东','广西','贵州','海南','河北','河南','黑龙江','湖北','湖南','吉林','江苏','江西','辽宁','内蒙古','宁夏','青海','上海','陕西','山东','山西','四川','台湾','天津', '西藏','香港','新疆','云南','浙江'],  //选择地区下拉框
         optionsite: ['全部', '淘宝', '京东', '拼多多'],
         optionkeyword: ['全部'],
+        minPrice: null,
+        maxPrice:null
+        
       }
   },
   created() {
@@ -201,7 +213,6 @@ export default {
           this.optionkeyword.push(item.keyword)
           this.key=item.keyword
         })
-      console.log(this.optionkeyword);
       this.getGoodslist()
      },
     //时间戳转换
@@ -216,22 +227,30 @@ export default {
       }
     },
     Allsale(row) {
-      return row.deal*row.price
+      return (row.deal*row.price).toFixed(2)
     },
     async getGoodslist() {
       
       // this.params.keyword=this.key
       // console.log('this.params',this.key);
       const res = await AllGoodsApi(this.params)
-      console.log(res);
       this.tableData = res.list
       this.total=res.total
       this.size = res.size
       this.loading=false
     },
+    //价格排序
+    sortPrice() {
+      console.log('this.params.sort',this.params.sort);
+      if (this.params.sort === 0) {
+        this.params.sort=1
+      } else {
+        this.params.sort=0
+      }
+      this.getGoodslist()
+    },
     //获取滑块的值
     async stateChange(val) {
-      console.log(val);
       let sort=''
       if (val.isMonitored ==true) {
         sort='1'
@@ -252,15 +271,18 @@ export default {
         return 'icon-no'
       }
     },
+    //价格区间查找
+    filterPrice() {
+      console.log('minPrice',this.minPrice);
+      console.log('maxPrice',this.maxPrice);
+    },
     handleSizeChange(val) {
       this.params.size = val
       this.getGoodslist()
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       this.params.page = val
       this.getGoodslist()
-      console.log(`当前页: ${val}`);
     },
      changeGoods() {
        clearTimeout(this.Timer)
@@ -274,7 +296,6 @@ export default {
           this.params.keyword=''
         }
         this.Timer = setTimeout(async () => {
-          console.log(111);
            this.getGoodslist()
           },300)
     },
@@ -350,7 +371,7 @@ export default {
     padding-left: 40px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 13px;
+    margin-bottom: 10px;
     .el-input{
       width: 200px;
     }
@@ -369,12 +390,22 @@ export default {
         line-height: 36px;
         text-align: center;
         color: red;
-      }
+        }
+        input{
+          width: 100px;
+          height: 30px;
+        }
+        button{
+          width: 70px;
+          height: 30px;
+          margin-left: 10px;
+        }
       }
     }
     button{
-      width: 100px;
-      height: 44px;
+      // width: 100px;
+      height: 40px;
+      padding: 0 15px;
       background-color: #3db3eb;
       text-align: center;
       color: #fff;
@@ -382,10 +413,69 @@ export default {
       
     }
   }
+  .demo-input{
+    padding-left: 89px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #ccc;
+    font-size: 12px;
+    .search{
+      padding-left: 8px;
+        display: flex;
+        align-items: center;
+        margin:0 20px;
+        .lowerPrice{
+        width: 70px;
+        height: 36px;
+        border: 1px solid #ccc;
+        line-height: 36px;
+        text-align: center;
+        color: red;
+        }
+        input{
+          width: 100px;
+          height: 30px;
+        }
+        button{
+          width: 70px;
+          height: 30px;
+          margin-left: 10px;
+          img{
+            width: 11px;
+            height: 9px;
+          }
+        }
+      }
+    button{
+      height: 33px;
+      padding: 0 10px;
+      background-color: #3db3eb;
+      text-align: center;
+      color: #fff;
+      border: none;
+      &:active{
+        background-color: #8aceee;
+      }
+    }
+  }
+  .el-icon-d-caret{
+    position: absolute;
+    bottom: -42px;
+    left: 370px;
+    color: #ad9399;
+    z-index: 10;
+  }
   .block{
-    padding: 20px;
+    padding: 10px;
     display: flex;
     justify-content: end;
+    ::v-deep .el-pagination__total{
+      color: #ccc;
+    }
+    ::v-deep .el-pagination__jump{
+      color: #ccc;
+    }
   }
 }
 ::v-deep .icon-no .el-table__expand-icon {
