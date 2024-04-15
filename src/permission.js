@@ -8,7 +8,7 @@ import store from '@/store'
  *
 */
 
-const whiteList = ['/login','/dashbord','/about','/business','/news','relate','/technology']
+const whiteList = ['/login','/dashbord','/about','/business','/news','/relate','/technology']
 router.beforeEach(async(to, from, next) => {
   nprogress.start()
   if (store.getters.token) {

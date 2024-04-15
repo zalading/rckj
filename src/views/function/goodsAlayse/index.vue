@@ -199,8 +199,29 @@ export default {
       }
   },
   created() {
-    if (this.$route.params.location) {
+    console.log('this.$route.params',this.$route.params);
+    if (this.$route.params.location&&this.$route.params.wordprice) {
       this.params.location = this.$route.params.location
+      this.params.keyword = this.$route.params.keyword
+      this.minPrice=0
+      this.maxPrice=this.$route.params.wordprice
+      this.params.priceRange = this.minPrice+','+this.maxPrice
+    } else if (this.$route.params.location && this.$route.params.wordprice2) {
+      this.params.location = this.$route.params.location
+      this.params.keyword = this.$route.params.keyword
+      this.minPrice=this.$route.params.wordprice2
+      this.params.priceRange = this.minPrice
+    }
+    else if (this.$route.params.location && !this.$route.params.wordprice) {
+      this.params.location = this.$route.params.location
+      this.params.keyword = this.$route.params.keyword
+    }
+    if (this.$route.params.rangeprice) {
+      this.params.keyword = this.$route.params.keyword
+      this.minPrice=this.$route.params.rangeprice.slice(1).split('~')[0]
+      this.maxPrice = this.$route.params.rangeprice.slice(1).split('~')[1]
+      this.params.priceRange = this.minPrice+','+this.maxPrice
+      console.log('his.$route.params.wordprice', this.minPrice);
     }
     this.getinfo()
     
@@ -273,8 +294,23 @@ export default {
     },
     //价格区间查找
     filterPrice() {
-      console.log('minPrice',this.minPrice);
-      console.log('maxPrice',this.maxPrice);
+      if (!this.minPrice && !this.maxPrice) {
+        this.$message('请输入价格范围')
+      } else if (this.maxPrice&&this.minPrice > this.maxPrice) {
+        this.$message('请输入正确的价格区间')
+      } else if (this.minPrice && !this.maxPrice) {
+        this.params.priceRange=this.minPrice
+      } else if (!this.minPrice && this.maxPrice) {
+        this.params.priceRange='0,'+this.maxPrice
+      } else if (this.minPrice == this.maxPrice) {
+        this.params.priceRange=this.minPrice+','+this.maxPrice
+      }else {
+        this.params.priceRange=this.minPrice+','+this.maxPrice
+      }
+      console.log('this.minprice',this.minPrice);
+      console.log('this.maxprice',this.maxPrice);
+      console.log('this.params.priceRange', this.params.priceRange);
+      this.getGoodslist()
     },
     handleSizeChange(val) {
       this.params.size = val
@@ -383,6 +419,7 @@ export default {
         display: flex;
         align-items: center;
         margin:0 20px;
+        font-size: 16px;
         .lowerPrice{
         width: 70px;
         height: 36px;
@@ -425,6 +462,7 @@ export default {
         display: flex;
         align-items: center;
         margin:0 20px;
+        font-size: 16px;
         .lowerPrice{
         width: 70px;
         height: 36px;

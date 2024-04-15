@@ -6,19 +6,8 @@
       {{ companyName }}有限公司
     </div>
     <div class="search">
-          选择关键词：
-          <el-select v-model="params.keyword" placeholder="请选择关键词" @change="changeGoods">
-              <el-option
-                v-for="item in optionkeyword"
-                :key="item"
-                :label="item"
-                :value="item" style="text-align: center;">
-              </el-option>
-            </el-select>
-        </div>
-    <div class="search">
         选择平台：
-        <el-select v-model="params.site" placeholder="请选择平台" @change="changeGoods">
+        <el-select v-model="params.site" placeholder="请选择平台" @change="changeDatas">
             <el-option
               v-for="item in optionsite"
               :key="item"
@@ -27,21 +16,37 @@
             </el-option>
           </el-select>
       </div>
+      <div class="search">
+        选择关键词：
+        <el-select v-model="params.keyword" placeholder="请选择关键词" @change="changeall">
+            <el-option
+              v-for="item in optionkeyword"
+              :key="item"
+              :label="item"
+              :value="item" style="text-align: center;">
+            </el-option>
+          </el-select>
+      </div>
+      <p class="pirce">低价：<i>￥{{ this.params.lowPrice }}</i></p>
     </div>
     <div class="part">
       <div class="part1">
-        <h3>链接总数量</h3>
+        <h3>总链接地区分布</h3>
         <div class="partbody">
+         <div class="allbox">
           <div class="left">
             <div class="box">
               <p>链接总数</p>
-            <p>{{this.allLinknum}}</p>
+            <!-- <p>{{this.allLinknum}}</p> -->
+            <p><CountTo :startVal='0' :endVal='allLinknum' :duration='1000' /></p>
             </div>
-            <div class="box">
-              <p>暂无地区</p>
-              <p>{{this.unlinknum}}</p>
+            <div class="box" v-if="this.unlinknum">
+              <p>暂无地区数</p>
+              <!-- <p>{{this.unlinknum}}</p> -->
+              <p><CountTo :startVal='0' :endVal='unlinknum' :duration='1000' /></p>
             </div>
           </div>
+         </div>
           <div class="linknum" ref="linknum"></div>
         </div>
       </div>
@@ -53,15 +58,22 @@
           <div class="left">
             <div class="box">
               <p>总卖家</p>
-              <p>1222</p>
+              <!-- <p>{{this.allsale}}</p> -->
+              <p><CountTo :startVal='0' :endVal='allsale' :duration='1000' /></p>
             </div>
             <div class="box">
               <p>总低价卖家</p>
-              <p>1222</p>
+              <!-- <p>{{this.alllowsale}}</p> -->
+              <p><CountTo :startVal='0' :endVal='alllowsale' :duration='1000' /></p>
             </div>
             <div class="box">
               <p>占比</p>
-              <p>22%</p>
+              <p>{{(((this.alllowsale/this.allsale)*100).toFixed(2))}}%</p>
+            </div>
+            <div class="box">
+              <p>暂无地区数</p>
+              <!-- <p>{{ this.unallowsale }}/{{this.unallsale}}</p> -->
+              <p><CountTo :startVal='0' :endVal='unallowsale' :duration='1000' />/<CountTo :startVal='0' :endVal='unallsale' :duration='1000' /></p>
             </div>
           </div>
         </div>
@@ -89,22 +101,25 @@
     </div>
     <div class="part">
       <div class="part5">
-        <h3>低价正价链接数量</h3>
+        <h3>低价正价链接分布</h3>
         <div class="partbody">
           <div class="linknum" ref="lowNormal"></div>
           <div class="bottom">
             <div class="left">
             <p>总低价链接数</p>
-            <p>222</p>
+            <p><CountTo :startVal='0' :endVal='lowlinkstate' :duration='1000' /></p>
           </div>
           <div class="left">
             <p>总正价链接数</p>
-            <p>890</p>
+            <p><CountTo :startVal='0' :endVal='normallinkstate' :duration='1000' /></p>
+          </div>
+          <div class="left">
+            <p>暂无地区数</p>
+            <p><CountTo :startVal='0' :endVal='unlowlinkstate' :duration='1000' />/<CountTo :startVal='0' :endVal='unnormallinkstate' :duration='1000' /></p>
           </div>
           </div>
         </div>
       </div>
-      
       <div class="part2">
         <h3>低价销售额占比</h3>
         <div class="partbody">
@@ -112,35 +127,47 @@
           <div class="left">
             <div class="box2">
               <p>总销售额</p>
-              <p>1222</p>
+              <p><CountTo :startVal='0' :endVal='totalsales' :duration='1000' /></p>
             </div>
             <div class="box2">
               <p>总低价销售额</p>
-              <p>1222</p>
+              <p><CountTo :startVal='0' :endVal='somesales' :duration='1000' /></p>
             </div>
             <div class="box2">
               <p>占比</p>
-              <p>22%</p>
+              <p>{{((this.somesales/this.totalsales)*100).toFixed(2)}}%</p>
             </div>
           </div>
         </div>
       </div>
       <div class="part4">
-        <h3>监控链接销售额</h3>
+        <h3>监控链接销售额
+          <!-- <p>总:￥<CountTo :startVal='0' :endVal='allsaleprice' :duration='2000' /></p> -->
+          <p>总:￥{{ allsaleprice.toFixed(2) }}</p>
+        </h3>
         <div class="link">
           <div class="link-title">
             <p>商品图片</p>
-            <p>店铺名称</p>
-            <p>价格</p>
-            <p>销量</p>
-            <p>总销售额</p>
+            <h4>店铺名称</h4>
+            <h4>商品名称</h4>
+            <span>价格</span>
+            <span>销量</span>
+            <span>销售额</span>
           </div>
-          <div class="link-body">
-            <p>商品图片</p>
-            <p>店铺名称</p>
-            <p>价格</p>
-            <p>销量</p>
-            <p>总销售额</p>
+          <div class="linkbox">
+            <div class="link-body"  v-for="(item,index) in linksaleList" :key="index">
+              <p >
+                <a :href="item.shopUrl" target="_blank">
+                  <img :src="item.imgUrl" alt="" v-if="item.imgUrl" @error=handleImageError>
+                  <img src="@/assets/imgerro.jpg" alt="" v-else>
+                </a>
+              </p>
+            <h4 :title="item.shop">{{item.shop}}</h4>
+            <h4 :title="item.title">{{item.title}}</h4>
+            <span>￥{{Number(item.price)}}</span>
+            <span>{{item.deal}}</span>
+            <span>￥{{(Number(item.price)*item.deal).toFixed(2)}}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -150,36 +177,74 @@
 
 <script>
 import { maplistApi } from '@/apis/map'
+import {linkSalesApi,lowsalesApi,totalpriceApi,linkStatisticsApi} from '@/apis/dataScreen'
 import store from '@/store'
+import CountTo from 'vue-count-to';
 export default {
   name: 'DataScreen',
+  components: {
+    CountTo,
+  },
     data() {
       return {
+        myChart1:null, //总链接地区分布图
         companyName: store.getters.companyName,
         optionsite: ['全部', '淘宝', '京东', '拼多多'],
         optionkeyword:store.getters.keywordAll.split(','),
-        params: {
-          site: '',
-          keyword:''
+        allparams: {   //总链接地区参数
+          // lowestPrice: 0,
+          isArea: '1',
+          keywordAll: store.getters.keywordAll
         },
-
-        linknum: [], //链接数量
-        allLinknum: 0,//链接总数量
-        unlinknum:0 //未知地区
+        params: {  //低价卖家占比参数
+          // lowestPrice: 0,
+          keyword: store.getters.keywordPrice[0].word,
+          isArea: '1',
+          keywordAll: store.getters.keywordAll
+        },
+        linkparams: {  //链接监控销售额参数
+          keywordAll: store.getters.keywordAll
+        },
+        linkstateparams: { //低价正价链接分布销售--低价参数
+          isFlag:0
+        },
+        linkstateparams2: { //低价正价链接分布销售--正价参数
+          isFlag:1
+        },
+        salesparams: { //低价销售额占比参数
+          keyword: store.getters.keywordPrice[0].word,
+          // keywordAll: store.getters.keywordAll
+        },
+        linknum: [], //总链接地区
+        allLinknum: 0,//总链接地区
+        unlinknum: 0, //未知地区---总链接地区
+        lowsale: [], //低价卖家
+        alllowsale:0,//总低价卖家
+        allsale: 0, //总卖家
+        unallsale:0,//未知地区---低价卖家占比
+        unallowsale: 0,//未知地区---低价卖家占比
+        linksaleList: [], //监控链接销售额
+        allsaleprice: 0, //监控链接总销售额
+        linkstateList1:[], //低价链接分布--低价正价链接分布
+        linkstateList2: [], //正价链接分布--低价正价链接分布
+        lowlinkstate: 0,//总低价链接数
+        normallinkstate: 0, //总正价链接数
+        unlowlinkstate: 0,//未知地区总低价链接数
+        unnormallinkstate:0,//未知地区总正价链接数
+        salespriceList: [],//低价销售额占比
+        totalsales: 0, // 总销售额---低价销售额占比
+        somesales:0, //总低价销售额--低价销售额占比
        }
   },
   created() {
+    this.getlowsales()
     this.getlinknumApi()
-    this.params.keyword=this.optionkeyword[0]
-    
-  },
-  mounted() {
-   
-    this.getlowsale()
-    this.getlowsamll()
-    this.getlowNormal()
+    this.getallDataApi()
+    this.getlinkSales()
+    this.getlinkStatistics()
   },
   methods: {
+   
     //时间处理
     getTime(time) {
       if (time) {
@@ -188,25 +253,34 @@ export default {
     },
     //获取链接数量接口
     async getlinknumApi() {
-      const res = await maplistApi({ keywordAll: store.getters.keywordAll,isArea:'1'})
+      if (this.params.keyword) {
+        this.allparams.keyword=this.params.keyword
+      //   store.getters.keywordPrice.forEach((item) => {
+      //   if (this.allparams.keyword === item.word) {
+      //     this.allparams.lowestPrice=item.lowestPrice
+      //   }
+      // })
+      }
+      if (this.params.site) {
+        this.allparams.site=this.params.site
+      }
+      const res = await maplistApi(this.allparams)
       this.linknum = []
       this.allLinknum=0
       res.forEach(item => {
         if (item.location == '暂无') {
-          this.unlinknum=item.uniqueProductCount
+          this.unlinknum = item.uniqueProductCount
         } else {
           this.linknum.push({ name: item.location, value: item.uniqueProductCount })
           this.allLinknum+=item.uniqueProductCount
-          
         }
       })
-      this.allLinknum+=this.unlinknum
-      console.log('this.linknum', this.linknum);
+      this.allLinknum += this.unlinknum
       this.getlinknum()
     },
     //链接总数量
     getlinknum() {
-      let myChart = this.echarts.init(this.$refs.linknum)
+      this.myChart1 = this.echarts.init(this.$refs.linknum)
       let option
       option = {
           tooltip: {
@@ -225,11 +299,12 @@ export default {
               type: 'pie',
               radius: ['40%', '70%'],
               avoidLabelOverlap: false,
-              // label: {
+              label: {
+                color:'#fff',
                 // show: false,
               //   // position: 'center',
               //   // formatter:'{b}:{d}%'
-              // },
+              },
                emphasis: {
                 itemStyle: {
           shadowBlur: 10,
@@ -243,8 +318,58 @@ export default {
               data: this.linknum
             }
           ]
-        };
-      option && myChart.setOption(option);
+      };
+      this.changePages1()
+      option && this.myChart1.setOption(option);
+     
+    },
+    //总链接地区分布跳转
+    changePages1() {
+      this.myChart1.on('click',({ data }) =>{
+        this.$router.push({ name: 'goodsAlayse', params: { location: data.name,keyword:this.params.keyword } }).catch(err => err)
+      })
+    },
+     //获取低价卖家占比接口
+     async getallDataApi() {
+      
+      // this.params={
+      //     keyword: store.getters.keywordPrice[0].word,
+      //     isArea: '1',
+      //     keywordAll: store.getters.keywordAll
+       //   }
+      //  if (this.allparams.site) {
+      //   this.params.site=this.allparams.site
+      // }
+       const res = await maplistApi(this.params)
+       this.unallsale = 0
+      this.allsale=0
+       res.forEach(item => { 
+         if (item.location == '暂无') { 
+           this.unallsale = item.uniqueShopCount
+           this.allsale += item.uniqueShopCount
+         } else {
+           this.allsale+=item.uniqueShopCount
+         }
+      })
+      store.getters.keywordPrice.forEach((item) => {
+        if (this.params.keyword === item.word) {
+          this.params.lowPrice=item.lowestPrice
+        }
+      })
+      const res2 = await maplistApi(this.params)
+      this.lowsale = []
+       this.alllowsale = 0
+      this.unalllowsale=0
+      res2.forEach(item => {
+        if (item.location == '暂无') {
+          this.alllowsale += item.uniqueShopCount
+          this.unallowsale=item.uniqueShopCount
+        } else {
+          this.lowsale.push({name: item.location, value: item.uniqueShopCount})
+          this.alllowsale+=item.uniqueShopCount
+        }
+      })
+      this.getlowsale()
     },
     //低价卖家占比
     getlowsale() {
@@ -270,11 +395,12 @@ export default {
               startAngle: 180,
               endAngle: 360,
               avoidLabelOverlap: false,
-              // label: {
+              label: {
+                color:'#fff',
                 // show: false,
               //   // position: 'center',
               //   // formatter:'{b}:{d}%'
-              // },
+              },
                emphasis: {
                 itemStyle: {
           shadowBlur: 10,
@@ -285,17 +411,43 @@ export default {
               // labelLine: {
               //   show: false
               // },
-              data: [
-                { value: 1048, name: 'Search' },
-                { value: 735, name: 'Direct' },
-                { value: 580, name: 'Email' },
-                { value: 484, name: 'Union' },
-                { value: 300, name: 'Video' }
-              ]
+              data: this.lowsale
             }
           ]
-        };
+      };
+      myChart.on('click',({ data }) =>{
+        this.$router.push({ name: 'goodsAlayse', params: { location: data.name,keyword:this.params.keyword,wordprice:this.params.lowPrice } }).catch(err => err)
+      })
       option && myChart.setOption(option);
+    },
+    //获取低价销售额占比接口
+    async getlowsales() {
+      if (this.params.site) {
+        this.salesparams.site=this.params.site
+      }
+      store.getters.keywordPrice.forEach((item) => {
+        if (this.params.keyword === item.word) {
+          this.salesparams.lowPrice=item.lowestPrice
+        }
+      })
+      const res=await lowsalesApi(this.salesparams)
+      this.salespriceList = res
+      this.somesales=0
+      res.forEach(item => {
+        this.somesales += item.totalPrice
+        let range = item.priceRange.split('~')
+        let range1 =Number(range[0]).toFixed(2) 
+        let range2 = Number(range[1]).toFixed(2)
+        let range3=`￥${range1}~${range2}`
+        this.salespriceList.push({name:range3,value:item.count})
+      })
+      this.gettotalprice()
+      this.getlowsamll()
+    },
+    //获取低价销售额占比--总销售额
+    async gettotalprice() {
+      const res = await totalpriceApi({ keyword: this.salesparams.keyword })
+      this.totalsales=res.allLowPrice
     },
     //低价销售额占比
     getlowsamll() {
@@ -304,7 +456,7 @@ export default {
       option = {
           tooltip: {
           trigger: 'item',
-          formatter:'{b}:{c}({d}%)'
+          formatter:'{b} :{c}({d}%)'
           },
         // legend: {
         //     top:'30%',
@@ -316,15 +468,16 @@ export default {
             {
               // name: 'Access From',
               type: 'pie',
-              radius: ['0%', '85%'],
+              radius: ['0%', '82%'],
               // startAngle: 180,
               // endAngle: 360,
               avoidLabelOverlap: false,
-              // label: {
+              label: {
+                color:'#fff',
                 // show: false,
               //   // position: 'center',
               //   // formatter:'{b}:{d}%'
-              // },
+              },
                emphasis: {
                 itemStyle: {
           shadowBlur: 10,
@@ -335,19 +488,67 @@ export default {
               // labelLine: {
               //   show: false
               // },
-              data: [
-                { value: 1048, name: 'Search' },
-                { value: 735, name: 'Direct' },
-                { value: 580, name: 'Email' },
-                { value: 484, name: 'Union' },
-                { value: 300, name: 'Video' }
-              ]
+              data: this.salespriceList
             }
           ]
-        };
+      };
+      myChart.on('click',({ data }) =>{
+        this.$router.push({ name: 'goodsAlayse', params: {keyword:this.params.keyword,rangeprice:data.name } }).catch(err => err)
+      })
       option && myChart.setOption(option);
     },
-    //低价正价链接数量
+    //获取低价正价分布链接接口---低价
+    async getlinkStatistics() {
+      if (this.params.site) {
+        this.linkstateparams.site=this.params.site
+      }
+      this.linkstateparams.keyword = this.params.keyword
+      store.getters.keywordPrice.forEach((item) => {
+        if (this.linkstateparams.keyword === item.word) {
+          this.linkstateparams.lowPrice=item.lowestPrice
+        }
+      })
+      const res = await linkStatisticsApi(this.linkstateparams)
+      this.lowlinkstate = 0
+      this.unlowlinkstate = 0
+      this.linkstateList1=[]
+      res.forEach(item => {
+        if (item.location == '暂无') {
+          this.unlowlinkstate=item.linkCount
+        } else {
+          this.linkstateList1.push({ name: item.location, value: item.linkCount })
+          this.lowlinkstate+=item.linkCount
+        }
+      })
+      
+      this.getlinkStatistics2()
+    },
+    //获取低价正价链接分布接口---正价
+    async getlinkStatistics2() {
+      if (this.params.site) {
+        this.linkstateparams2.site=this.params.site
+      }
+      this.linkstateparams2.keyword = this.params.keyword
+      store.getters.keywordPrice.forEach((item) => {
+        if (this.linkstateparams2.keyword === item.word) {
+          this.linkstateparams2.lowPrice=item.lowestPrice
+        }
+      })
+      const res = await linkStatisticsApi(this.linkstateparams2)
+      this.normallinkstate = 0
+      this.unnormallinkstate = 0
+      this.linkstateList2=[]
+      res.forEach(item => {
+        if (item.location == '暂无') {
+          this.unnormallinkstate=item.linkCount
+        } else {
+          this.linkstateList2.push({ name: item.location, value: item.linkCount })
+          this.normallinkstate+=item.linkCount
+        }
+      })
+      this. getlowNormal()
+    },
+    //低价正价链接分布
     getlowNormal() {
       let myChart = this.echarts.init(this.$refs.lowNormal)
       let option
@@ -369,66 +570,85 @@ export default {
               labelLine: {
                 show: false
               },
-              data: [
-        { value: 1548, name: 'Search Engine' },
-        { value: 775, name: 'Direct' },
-        { value: 679, name: 'Marketing', selected: true }
-      ]
-    },
-    {
-      name: '低价链接数',
-      type: 'pie',
-      radius: ['70%', '100%'],
-      labelLine: {
-        length: 20
-      },
-      label: {
-        formatter: '{b|{b}：}{c}',
-        color:'#fff',
-        // borderColor: '#8C8D8E',
-        // borderWidth: 1,
-        // borderRadius: 4,
-        rich: {
-          // a: {
-          //   color: '#6E7079',
-          //   lineHeight: 22,
-          //   align: 'center'
-          // },
-          // hr: {
-          //   borderColor: '#8C8D8E',
-          //   width: '100%',
-          //   borderWidth: 1,
-          //   height: 0
-          // },
-          // b: {
-          //   color: '#4C5058',
-          //   fontSize: 14,
-          //   fontWeight: 'bold',
-          //   lineHeight: 33
-          // },
-          // per: {
-          //   color: '#fff',
-          //   backgroundColor: '#4C5058',
-          //   padding: [3, 4],
-          //   borderRadius: 4
-          // }
+              data: this.linkstateList2
+            },
+            {
+              name: '低价链接数',
+              type: 'pie',
+              radius: ['70%', '100%'],
+              labelLine: {
+                length: 20
+              },
+              label: {
+                formatter: '{a}-{b}：{c}',
+                color:'#fff',
+              },
+              data:this.linkstateList1
+            }
+          ]
+      };
+      myChart.on('click',(params) =>{
+        console.log(params);
+        if (params.seriesName === '低价链接数') {
+          this.$router.push({ name: 'goodsAlayse', params: { location: params.data.name,keyword:this.params.keyword,wordprice:this.params.lowPrice } }).catch(err => err)
+        } else {
+          this.$router.push({ name: 'goodsAlayse', params: { location: params.data.name,keyword:this.params.keyword,wordprice2:this.params.lowPrice } }).catch(err => err)
         }
-      },
-      data: [
-        { value: 1048, name: 'Baidu' },
-        { value: 335, name: 'Direct' },
-        { value: 310, name: 'Email' },
-        { value: 251, name: 'Google' },
-        { value: 234, name: 'Union Ads' },
-        { value: 147, name: 'Bing' },
-        { value: 135, name: 'Video Ads' },
-        { value: 102, name: 'Others' }
-      ]
-    }
-  ]
-};
+      })
       option && myChart.setOption(option);
-    }
+    },
+    //更换平台
+    changeDatas() {
+      if (this.params.site == '全部') {
+        this.params.site = ''
+        this.allparams.site=''
+        this.linkparams.site = ''
+        this.salesparams.site = ''
+        this.linkstateparams.site = ''
+        this.linkstateparams2.site=''
+      }
+      this.getlinknumApi()
+      this.getallDataApi()
+      this.getlinkSales()
+      this.getlowsales()
+      this.getlinkStatistics()
+    },
+    //更换链接总数量关键词
+    changeall() {
+      this.getallDataApi()
+      this.getlinknumApi()
+      this.getlowsales()
+      this.getlinkSales()
+      this.getlinkStatistics()
+    },
+    //更换低价卖家占比关键词
+    // changeshop() {
+    //   this.getallDataApi()
+    // },
+    //更换低价销售额占比关键词
+    // changesales() {
+    //   this.getlowsales()
+    // },
+    //更换监控链接销售额关键词
+    // changelink() {
+    //   this.getlinkSales()
+    // },
+    //监控链接销售额接口
+    async getlinkSales() {
+      if (this.params.site) {
+        this.linkparams.site = this.params.site
+      }
+      const res = await linkSalesApi(this.linkparams)
+      this.linksaleList = res
+      this.allsaleprice=0
+      this.linksaleList.forEach(item => {
+        this.allsaleprice+=Number((Number(item.price)*item.deal).toFixed(2))
+      })
+    },
+    //图片路径错误时换成指定图片
+    handleImageError(e) {
+      e.srcElement.src = require("@/assets/imgerro.jpg");
+    },
     }
   }
 </script>
@@ -466,6 +686,7 @@ export default {
         display: flex;
         align-items: center;
         margin:0 20px;
+        font-size: 16px;
         .lowerPrice{
         width: 70px;
         height: 36px;
@@ -484,12 +705,21 @@ export default {
           margin-left: 10px;
         }
       }
+      .pirce{
+        font-size: 16px;
+        font-weight: normal;
+        i{
+          padding: 0 5px;
+          border-bottom: 1px solid #fff;
+        }
+      }
   }
   .part{
     padding:0 20px;
     display: flex;
     color: #fff;
     margin-bottom: 20px;
+    font-size: 20px;
     .part3{
       width: 650px;
       height: 400px;
@@ -498,6 +728,23 @@ export default {
       h3{
         padding: 10px;
         text-align: center;
+        position: relative;
+        .search{
+          position: absolute;
+          top: 10px;
+          left: -15px;
+      font-size: 12px;
+      padding-left: 20px;
+      .el-select{
+        width: 100px;
+        ::v-deep .el-input__inner{
+          height: 30px;
+        }
+        ::v-deep .el-icon-arrow-up{
+          line-height: 30px;
+        }
+      }
+    }
       }
       .link{
         .link-title{
@@ -540,9 +787,30 @@ export default {
       border: 1px solid #ccc;
       border-radius: 10px;
       margin-right: 30px;
+      padding: 10px;
       h3{
+        position: relative;
         text-align: center;
-        padding: 10px;
+        // span{
+        //   margin-left: 240px;
+        // }
+        .search{
+          position: absolute;
+          top: 10px;
+          left: -15px;
+      font-size: 12px;
+      padding-left: 20px;
+      .el-select{
+        width: 100px;
+        ::v-deep .el-input__inner{
+          height: 30px;
+        }
+        ::v-deep .el-icon-arrow-up{
+          line-height: 30px;
+        }
+      }
+      
+    }
       }
       .partbody{
         .linknum{
@@ -555,11 +823,11 @@ export default {
           display: flex;
           justify-content: space-between;
           .box{
-            padding: 10px 30px;
+            padding: 10px 20px;
             p{
               text-align: center;
-              height: 40px;
-              font-size: 32px;
+              height: 32px;
+              font-size: 22px;
             }
           }
           .box2{
@@ -567,7 +835,7 @@ export default {
             p{
               text-align: center;
               height: 34px;
-              font-size: 32px;
+              font-size: 28px;
             }
           }
         }
@@ -586,20 +854,32 @@ export default {
       .partbody{
         display: flex;
         align-items: center;
+        .allbox{
+          height: 345px;
+        }
+        .search{
+      font-size: 12px;
+      padding-left: 20px;
+      .el-select{
+        width: 100px;
+      }
+    }
         .left{
-          width: 170px;
+          width: 200px;
+          height: 285px;
+          margin-top: 30px;
           .box{
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             margin-left: 20px;
             p{
             text-align: center;
-            height: 40px;
+            height: 36px;
             font-size: 32px;
           }
           }
         }
         .linknum{
-          width: 480px;
+          width: 460px;
           height: 350px;
         }
       }
@@ -610,24 +890,61 @@ export default {
       border: 1px solid #ccc;
       border-radius: 10px;
       h3{
+        position: relative;
         padding: 10px;
         text-align: center;
+        .search{
+          position: absolute;
+          top: 10px;
+          left: -5px;
+      font-size: 12px;
+      padding-left: 20px;
+      .el-select{
+        width: 100px;
+        ::v-deep .el-input__inner{
+          height: 30px;
+        }
+        ::v-deep .el-icon-arrow-up{
+          line-height: 30px;
+        }
+      }
+    }
+    p{
+      position: absolute;
+      top: 15px;
+      right: 30px;
+      font-size: 20px;
+      color: #ccc;
+    }
       }
       .link{
         .link-title{
-          width: 606px;
+          width: 616px;
           height: 35px;
           line-height: 35px;
           display: flex;
-          padding:0 20px;
+          align-items: center;
+          font-size: 16px;
+          padding: 0 10px;
           p{
-          width: 120px;
+          width: 80px;
           text-align: center;
         }
+        span{
+            width: 80px;
+            text-align: center;
+            font-size: 18px;
+          }
+          h4{
+            width: 170px;
+            font-weight: normal;
+            text-align: center;
+          }
         }
-        .link-body{
-          width: 610px;
+        .linkbox{
+          width: 620px;
           height: 300px;
+          padding:0 10px;
           overflow-y: scroll;
             &::-webkit-scrollbar {
                 width: 4px; /* 设置滚动条的宽度 */
@@ -638,13 +955,45 @@ export default {
             &::-webkit-scrollbar-thumb {
                 background-color: #388fcd; /* 设置滑块的颜色 */
             }
+        }
+        .link-body{
           display: flex;
-          padding:0 20px;
+          align-items: center;
           p{
-            width: 120px;
-            height: 120px;
-            line-height: 120px;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
             text-align: center;
+            img{
+              width: 80px;
+              height: 80px;
+              border-radius: 5px;
+            }
+          }
+          span{
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            text-align: center;
+            font-size: 14px;
+            &:nth-child(3){
+              width: 100px;
+            }
+          }
+          h4{
+            width: 160px;
+            height: 80px;
+            line-height: 60px;
+            font-weight: normal;
+            text-align: center;
+            font-size: 12px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding: 10px;
+            &:hover{
+              cursor: default;
+            }
           }
         }
       }
@@ -656,8 +1005,36 @@ export default {
       border-radius: 10px;
       margin-right: 30px;
       h3{
+        position: relative;
         padding: 10px;
         text-align: center;
+        .search{
+          position: absolute;
+          top: 10px;
+          left: -15px;
+      font-size: 12px;
+      padding-left: 20px;
+      .el-select{
+        width: 100px;
+        ::v-deep .el-input__inner{
+          height: 30px;
+        }
+        ::v-deep .el-icon-arrow-up{
+          line-height: 30px;
+        }
+      }
+    }
+    .pirce{
+      position: absolute;
+      top: 40px;
+      left: 5px;
+      font-size: 14px;
+      font-weight: normal;
+      i{
+        padding: 0 5px;
+        border-bottom: 1px solid #fff;
+      }
+    }
       }
       .partbody{
         .linknum{
@@ -672,7 +1049,7 @@ export default {
           p{
             text-align: center;
             height: 40px;
-            font-size: 32px;
+            font-size: 22px;
           }
         }
         }

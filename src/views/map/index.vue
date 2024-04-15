@@ -118,7 +118,7 @@
           </div>
           <div class="circleTitle">
             <div class="line"></div>
-              <p>全网最低价商品排序</p>
+              <p>低价商品排序</p>
             <div class="line"></div>
           </div>
           <div class="nodate" v-if="nodate">暂无数据</div>
@@ -236,7 +236,8 @@ export default {
       superData: [], //优惠商家,
       detailinfo: [],
       xdata:[] , //折线图x轴数据
-      keywordAll: [], //关键词
+      keywordAll: [], //全部关键词
+      keywordPrice:[], //全部关键词+价格
       companyName:store.getters.companyName
     };
   },
@@ -285,6 +286,7 @@ export default {
        const res = await getInfoApi({ userId: store.getters.id })
        res.forEach(item => {
          this.options.push(item.keyword)
+         this.keywordPrice.push({word:item.keyword,lowestPrice:item.lowestPrice})
        })
       for (let i = 0; i < this.options.length; i++){
          if (i > 0) {
@@ -292,6 +294,7 @@ export default {
          }
        }
        await this.$store.commit('saveKeywordAll', this.keywordAll.join(','))
+       this.$store.commit('savekeywordPrice',this.keywordPrice)
        this.onshow=true
      },
     //选择展示的折线图
@@ -638,13 +641,13 @@ export default {
     background-repeat: no-repeat;
     background-size: 100% 100%;
   .header {
-    width: 559.783rpx;
+    width: 927px;
     background-repeat: no-repeat;
     height: 128px;
     background-image: url(@/assets/maptitle.png);
     margin-left: 551px;
     .title {
-      width: 70%;
+      width: 100%;
       display: flex;
       justify-content: center;
       padding-top: 40px;
@@ -671,7 +674,7 @@ export default {
       // position: relative;
       margin-top: 10px;
       padding-left: 135px;
-      width: 370.773rpx;
+      width: 614px;
       height: 686px;
       background-image: url(@/assets/leftbgi.png);
         .circle{
@@ -827,7 +830,7 @@ export default {
       }
       .middle{
         position: relative;
-        width: 460.145rpx;
+        width: 762px;
         height: 768px;
         background-image: url(@/assets/middlebgi.png);
         .allnum{
@@ -987,7 +990,7 @@ export default {
           }
           .circleTitle{
             padding-top: 35px;
-            padding-left: 40px;
+            padding-left: 80px;
             display: flex;
             .line{
               width: 56px;

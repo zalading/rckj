@@ -50,6 +50,7 @@
 </template>
 
 <script>
+// import elementResizeDetectorMaker from "element-resize-detector";
 import chinaJson from '@/utils/china.json';
 import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
 import "echarts-gl"
@@ -350,10 +351,18 @@ export default {
             };
             this.linstenProvinceClick()
             this.myChart.setOption(option);
-            // window.addEventListener('resize', function () {
-            // this.myChart.resize();
-        // });
-            window.addEventListener('resize',this.adaptScreen)
+          //  window.addEventListener('resize', function () {
+          //  this.myChart.resize();
+          //  });
+        window.addEventListener('resize',this.adaptScreen)
+             //根据当前容器的尺寸变化而让图表也跟着变化
+            //  let changeSize = elementResizeDetectorMaker()
+            // let _this = this
+            // changeSize.listenTo(this.myChart,() => {  //chartDom为之前获取到的容器名
+            //     _this.$nextTick(() => {
+            //         this.myChart.resize()
+            //     })
+            // })
       },
       adaptScreen() {
       this.myChart.resize();
@@ -361,8 +370,7 @@ export default {
     linstenProvinceClick() {
       // 接收一个对象， 解构出的data对象值为series数组中data数据源中的对象
       this.myChart.on('click', ({ data }) => {
-        console.log('this.price', this.price);
-        this.$router.push({name:'goodsAlayse',params:{location:data.name}}).catch(err=>err)
+        this.$router.push({name:'goodsAlayse',params:{location:data.name,wordprice:this.params.lowPrice,keyword:this.mapkeyword}}).catch(err=>err)
         if (!data || !data.name) return;
         const provinceName = data.name;
         const provinceList = cloneDeep(this.provinceList);

@@ -12,7 +12,8 @@ const store = new Vuex.Store({
     id:null,
     phone: null,
     companyName: null,
-    keywordAll:null
+    keywordAll: null,
+    keywordPrice:null
   },
   mutations: {
     saveToken(state, token) {
@@ -44,6 +45,12 @@ const store = new Vuex.Store({
     },
     removeKeywordAll(state) {
       state.keywordAll=null
+    },
+    savekeywordPrice(state, keywordPrice) {
+      state.keywordPrice=keywordPrice
+    },
+    removeKeywordPrice(state) {
+      state.keywordPrice=null
     }
   },
   // user,

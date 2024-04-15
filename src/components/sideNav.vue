@@ -101,6 +101,7 @@ export default {
         this.$store.commit('removeId')
         this.$store.commit('removeCompanyName')
         this.$store.commit('removeKeywordAll')
+        this.$store.commit('removeKeywordPrice')
       }).catch(()=>{})
     },
   }
@@ -155,6 +156,9 @@ export default {
           }
           .icon2{
             display: none;
+          }
+          span{
+            font-size: 16px;
           }
         }
       }

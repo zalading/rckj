@@ -39,7 +39,7 @@
       label="关键词">
     </el-table-column>
     <el-table-column
-      prop="keyword"
+      prop="lowestPrice"
       label="低价">
     </el-table-column>
     <el-table-column
