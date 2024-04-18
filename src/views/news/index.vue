@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     godashbord() {
-      this.$router.push('/dashbord')
+      this.$router.push('/')
     },
     ggobusiness() {
       this.$router.push('/business')
@@ -146,6 +146,8 @@ export default {
     }
   }
   .image{
+    width: 1809px;
+    height: 679px;
     margin-top: 6vh;
     margin-left: 40px;
   }

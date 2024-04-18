@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     godashbord() {
-      this.$router.push('/dashbord')
+      this.$router.push('/')
     },
     ggobusiness() {
       this.$router.push('/business')

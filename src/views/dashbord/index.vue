@@ -2,7 +2,7 @@
   <div class="content">
     <div class="one">
     <div class="header">
-        <div><img src="../../assets/shouye/logo.png" alt="" class="logo"></div>
+        <div><img src="@/assets/shouye/logo.png" alt="" class="logo"></div>
         <!-- 导航栏 -->
         <div class="nav" @mouseenter="enter" @mouseleave="leave">
           <ul>
@@ -14,7 +14,8 @@
             <li class="nav-item" @click="gorelate">联系苒辰</li>
           </ul>
         </div>
-        <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon">
+        <!-- <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon"> -->
+        <img src="@/assets/shouye/loginicon.png"  @click="openLogin" class="loginicon">
     </div>
     <div class="ranchen">
       <!-- <div class="line"></div> -->
@@ -63,47 +64,47 @@
       <h3>部分服务平台</h3>
       <div class="blueline"></div>
       <ul>
-        <li><img src="@/assets/pinpai/ping1.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping2.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping3.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping10.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping4.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping5.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping6.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping11.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping7.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping8.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping9.png" alt=""></li>
-        <li><img src="@/assets/pinpai/ping12.png" alt=""></li>
+        <li><img src="@/assets/pinpai/ping1.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping2.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping3.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping10.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping4.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping5.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping6.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping11.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping7.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping8.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping9.png" alt="" ></li>
+        <li><img src="@/assets/pinpai/ping12.png" alt="" ></li>
       </ul>
     </div>
     <div class="three">
       <h3>部分合作品牌</h3>
       <div class="blueline"></div>
       <ul>
-        <li><img src="@/assets/pinpai/f1.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f2.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f3.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f4.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f5.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f6.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f7.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f8.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f9.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f10.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f11.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f12.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f13.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f14.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f15.png" alt=""></li>
-        <li><img src="@/assets/pinpai/f16.png" alt=""></li>
+        <li><img src="@/assets/pinpai/f1.png" alt="" class="img1"></li>
+        <li><img src="@/assets/pinpai/f2.png" alt="" class="img2"></li>
+        <li><img src="@/assets/pinpai/f3.png" alt="" class="img3"></li>
+        <li><img src="@/assets/pinpai/f4.png" alt="" class="img4"></li>
+        <li><img src="@/assets/pinpai/f5.png" alt="" class="img5"></li>
+        <li><img src="@/assets/pinpai/f6.png" alt="" class="img6"></li>
+        <li><img src="@/assets/pinpai/f7.png" alt="" class="img7"></li>
+        <li><img src="@/assets/pinpai/f8.png" alt="" class="img8"></li>
+        <li><img src="@/assets/pinpai/f9.png" alt="" class="img9"></li>
+        <li><img src="@/assets/pinpai/f10.png" alt="" class="img10"></li>
+        <li><img src="@/assets/pinpai/f11.png" alt="" class="img11"></li>
+        <li><img src="@/assets/pinpai/f12.png" alt="" class="img12"></li>
+        <li><img src="@/assets/pinpai/f13.png" alt="" class="img13"></li>
+        <li><img src="@/assets/pinpai/f14.png" alt="" class="img14"></li>
+        <li><img src="@/assets/pinpai/f15.png" alt="" class="img15"></li>
+        <li><img src="@/assets/pinpai/f16.png" alt="" class="img16"></li>
       </ul>
     </div>
     <div class="four">
       <h3>部分合作案例</h3>
       <div class="blueline"></div>
       <div class="cooperate">
-        <div class="left"><img src="@/assets/shouye/cooperate1.png" alt=""></div>
+        <div class="left"><img src="@/assets/shouye/cooperate1.png" alt="" ></div>
         <div class="right">
           <p>美的集团电商和法务部领导2022年来我司探讨深度合作细节，合作之前全网低价乱价链接上万条交给我司控价后，再经过一年的维护处理后低价链接清除90%，并且提前续签下一年合作。</p>
           <img src="@/assets/shouye/cooperate2.png" alt="">
@@ -167,7 +168,6 @@
     <el-dialog
       center
       :visible.sync="dialogVisible"
-      width="425px"
       :show-close="false"
       :close-on-click-modal="false"
       >
@@ -547,6 +547,14 @@ export default {
       margin-bottom: 70px;
       &:nth-child(4n){
         margin-right: 0;
+        img{
+          width: 269px;
+        height: 146px;
+        }
+      }
+      img{
+        width: 169px;
+        height: 169px;
       }
       img:hover{
         margin-bottom: 10px;
@@ -598,6 +606,70 @@ export default {
         margin-right: 10px;
         margin-bottom: 10px;
       }
+      .img1{
+        width: 148px;
+        height: 165px;
+      }
+      .img2{
+        width: 224px;
+        height: 173px;
+      }
+      .img3{
+        width: 307px;
+        height: 153px;
+      }
+      .img4{
+        width: 137px;
+        height: 101px;
+      }
+      .img5{
+        width: 239px;
+        height: 193px;
+      }
+      .img6{
+        width: 276px;
+        height: 134px;
+      }
+      .img7{
+        width: 304px;
+        height: 170px;
+      }
+      .img8{
+        width: 284px;
+        height: 134px;
+      }
+      .img9{
+        width: 322px;
+        height: 142px;
+      }
+      .img10{
+        width: 311px;
+        height: 127px;
+      }
+      .img11{
+        width: 283px;
+        height: 170px;
+      }
+      .img12{
+        width: 275px;
+        height: 134px;
+      }
+      .img13{
+        width: 321px;
+        height: 133px;
+      }
+      .img14{
+        width: 326px;
+        height: 85px;
+      }
+      .img15{
+        width: 288px;
+        height: 137px;
+      }
+      .img16{
+        width: 342px;
+        height: 129px;
+      }
     }
   }
 }
@@ -635,6 +707,8 @@ export default {
         margin-left: 40px;
       }
       img{
+        width: 628px;
+        height: 353px;
         margin-left: 584px;
         margin-top: 30px;
       }
@@ -710,6 +784,7 @@ export default {
   }
 }
 ::v-deep .el-dialog{
+  width: 425px;
   background-image: url(@/assets/shouye/dialog.png);
   background-size: cover;
   background-color: transparent;

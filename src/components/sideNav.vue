@@ -12,26 +12,26 @@
           <i class="el-icon-close" @click="drawer=false"></i>
         </div>
         <ul>
-          <li @click="nav1">
-            <img src="@/assets/sidenav11.png" alt="" class="icon1">
-            <img src="@/assets/sidenav12.png" alt="" class="icon2">
-            <span>数据展示</span>
-          </li>
           <li @click="nav2">
             <img src="@/assets/sidenav21.png" alt="" class="icon1">
             <img src="@/assets/sidenav22.png" alt="" class="icon2">
             <span>数据大屏</span>
+          </li>
+          <li @click="nav1">
+            <img src="@/assets/sidenav11.png" alt="" class="icon1">
+            <img src="@/assets/sidenav12.png" alt="" class="icon2">
+            <span>数据展示</span>
           </li>
           <li @click="nav3">
             <img src="@/assets/sidenav31.png" alt="" class="icon1">
             <img src="@/assets/sidenav32.png" alt="" class="icon2">
             <span>产品列表</span>
           </li>
-          <!-- <li @click="nav4">
+          <li @click="nav4">
             <img src="@/assets/sidenav41.png" alt="" class="icon1">
             <img src="@/assets/sidenav42.png" alt="" class="icon2">
-            <span>低价链接</span>
-          </li> -->
+            <span>商家列表</span>
+          </li>
           <li @click="nav5">
             <img src="@/assets/sidenav51.png" alt="" class="icon1">
             <img src="@/assets/sidenav52.png" alt="" class="icon2">
@@ -82,7 +82,7 @@ export default {
     },
     //跳转到销售分析
     nav4() {
-      this.$router.push('/newlowPrice').catch(()=>{this.drawer=false})
+      this.$router.push('/shoplist').catch(()=>{this.drawer=false})
     },
     nav5() {
       this.$router.push('/keyword').catch(()=>{this.drawer=false})

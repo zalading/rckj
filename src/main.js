@@ -7,6 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '@/permission'
 import *as echarts from 'echarts'
 import 'lib-flexible/flexible'
+// import VueLazyload from 'vue-lazyload'
 import sideNav from './components/sideNav.vue';  //全局注册侧边导航组件
 Vue.component('sideNav', sideNav)
 
@@ -14,7 +15,7 @@ Vue.prototype.echarts=echarts
 // Vue.config.productionTip = false
 
 Vue.use(ElementUI);
-
+// Vue.use(VueLazyload)
 
 
 new Vue({

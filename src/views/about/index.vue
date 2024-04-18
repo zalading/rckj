@@ -2,7 +2,7 @@
   <div class="content">
     <div class="one">
       <div class="header">
-        <div><img src="../../assets/shouye/logo.png" alt="" class="logo"></div>
+        <div><img src="../../assets/shouye/logo.png" alt=""  class="logo"></div>
         <!-- 导航栏 -->
         <div class="nav">
           <ul>
@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     godashbord() {
-      this.$router.push('/dashbord')
+      this.$router.push('/')
     },
     ggobusiness() {
         this.$router.push('/business')
@@ -159,6 +159,8 @@ export default {
     }
   }
   .image{
+    width: 1809px;
+    height: 716px;
     margin-top: 5vh;
     margin-left: 40px;
   }

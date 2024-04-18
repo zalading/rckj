@@ -155,8 +155,7 @@ export default {
   methods: {
     //统计数据
     async getStatistics() {
-      const res = await statisticsApi({ userId: store.getters.id })
-      console.log(res);
+      await statisticsApi({ userId: store.getters.id })
     },
     //时间处理
     getTime(time) {

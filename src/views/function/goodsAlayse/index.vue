@@ -36,6 +36,14 @@
               </el-option>
             </el-select>
         </div>
+        <div class="search">
+          店铺搜索：
+          <el-input
+    placeholder="请输入内容"
+    prefix-icon="el-icon-search"
+    v-model="shopvalue" @input="shopvalueSearch">
+  </el-input>
+        </div>
         <!-- <button @click="sortPrice" style="margin:0 15px">价格排序</button> -->
         
       </div>
@@ -191,16 +199,15 @@ export default {
         Timer: null, //定时器
         tableData: [],
         options:['全部','安徽','澳门','北京','重庆','福建','甘肃','广东','广西','贵州','海南','河北','河南','黑龙江','湖北','湖南','吉林','江苏','江西','辽宁','内蒙古','宁夏','青海','上海','陕西','山东','山西','四川','台湾','天津', '西藏','香港','新疆','云南','浙江'],  //选择地区下拉框
-        optionsite: ['全部', '淘宝', '京东', '拼多多'],
+        optionsite: ['全部', '淘宝', '京东', '拼多多','1688'],
         optionkeyword: ['全部'],
         minPrice: null,
-        maxPrice:null
-        
+        maxPrice:null,
+        shopvalue:'' //店铺搜索
       }
   },
   created() {
-    console.log('this.$route.params',this.$route.params);
-    if (this.$route.params.location&&this.$route.params.wordprice) {
+    if (this.$route.params.wordprice) {
       this.params.location = this.$route.params.location
       this.params.keyword = this.$route.params.keyword
       this.minPrice=0
@@ -221,7 +228,9 @@ export default {
       this.minPrice=this.$route.params.rangeprice.slice(1).split('~')[0]
       this.maxPrice = this.$route.params.rangeprice.slice(1).split('~')[1]
       this.params.priceRange = this.minPrice+','+this.maxPrice
-      console.log('his.$route.params.wordprice', this.minPrice);
+    }
+    if (this.$route.params.keywords) {
+      this.params.keyword=this.$route.params.keywords
     }
     this.getinfo()
     
@@ -334,6 +343,15 @@ export default {
         this.Timer = setTimeout(async () => {
            this.getGoodslist()
           },300)
+    },
+    //店铺搜索
+    shopvalueSearch(val) {
+      let timer=null
+      clearTimeout(timer)
+      timer=setTimeout(() => {
+        this.params.shopSearch = val
+        this.getGoodslist()
+      },300)
     },
     //图片路径错误时换成指定图片
     handleImageError(e) {

@@ -4,13 +4,13 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-   {
-     path: '/',
-     redirect: '/dashbord',
-   },
+  //  {
+  //    path: '/',
+  //    redirect: '/dashbord',
+  //  },
   //首页
   {
-    path: '/dashbord',
+    path: '/',
     name: 'dashbord',
     component: () => import( '../views/dashbord/index.vue')
   },
@@ -65,9 +65,9 @@ const routes = [
     component: () => import( '../views/function/dataScreen')
   },
   {
-    path: '/newlowPrice',
-    name: 'newlowPrice',
-    component: () => import('../views/function/newlowPrice'),
+    path: '/shoplist',
+    name: 'shoplist',
+    component: () => import('../views/function/shoplist'),
     props: true
   },
   {

@@ -112,9 +112,11 @@
             <button @click="changeSite('淘宝')">淘宝</button>
             <button @click="changeSite('京东')">京东</button>
             <button @click="changeSite('拼多多')">拼多多</button>
-            
-            <img src="@/assets/search.png" alt="">
-            <input type="text" placeholder="请输入" v-model="searchValue">
+            <button @click="changeSite('1688')">1688</button>
+            <div class="inputbox">
+              <img src="@/assets/search.png" alt="">
+              <input type="text" placeholder="请输入" v-model="searchValue">
+            </div>
           </div>
           <div class="circleTitle">
             <div class="line"></div>
@@ -387,7 +389,6 @@ export default {
          }
       }
       newlinePrice=newlinePrice.slice(-7)
-      console.log('newlinePrice',newlinePrice);
        let itemsava = []
        this.xdata = []
         for (let a = 0; a < newlinePrice.length; a++){
@@ -397,9 +398,7 @@ export default {
       let shijian
        let ab=0
        // console.log('xdata', this.xdata);
-       // for (let i1 = 0; i1 < this.xdata.length; i1++){
          for (let i2 = 0; i2 < newlinePrice.length; i2++){
-       //     // console.log(this.xdata[i1] == newlinePrice[i2].searchDate.splice(1, 2).join('/'));
            for (let i4 = 0; i4 < newlinePrice[i2].data.length; i4++){
          let arr=Array(this.xdata.length).fill(NaN)
           for (let i1 = 0; i1 < this.xdata.length; i1++) {
@@ -451,7 +450,6 @@ export default {
               }
          }
        }
-      console.log('itemsava', itemsava);
       for (let n = 0; n < itemsava.length; n++){
         for (let m = 1; m < itemsava[n].data.length; m++){
            if (itemsava[n].data[m - 1] && !(itemsava[n].data[m])) {
@@ -459,7 +457,6 @@ export default {
            }
         }
       }
-      console.log('itemsava2', itemsava);
       //    for (let n = 0; n < itemsava.length; n++){
       //      for (let m = n + 1; m < itemsava.length; m++){
       //        if (itemsava[n].numIid === itemsava[m].numIid) {
@@ -482,7 +479,6 @@ export default {
             }
            }
        }
-       console.log('this',this.series);
         this.chartZhuzhuangtu()
       
     },
@@ -599,7 +595,9 @@ export default {
         },
         series: this.series
       }
+
       option && myChart.setOption(option);
+
       if (this.series.length <= 5) {
         myChart.setOption({legend:{show:true}})
         myChart.setOption({grid:{top:'35%'}})
@@ -607,6 +605,9 @@ export default {
         myChart.setOption({ legend: { show: false } })
         myChart.setOption({grid:{top:'10%'}})
       }
+      // myChart.on('click', { seriesType: 'line' }, function (params) {
+      //   console.log('折线图点击',params);
+      // })
     },
 
     //图片路径错误时换成指定图片
@@ -645,6 +646,7 @@ export default {
     background-repeat: no-repeat;
     height: 128px;
     background-image: url(@/assets/maptitle.png);
+    background-size: cover;
     margin-left: 551px;
     .title {
       width: 100%;
@@ -677,6 +679,7 @@ export default {
       width: 614px;
       height: 686px;
       background-image: url(@/assets/leftbgi.png);
+      background-size: cover;
         .circle{
           width: 440px;
           height: 340px;
@@ -947,6 +950,7 @@ export default {
       width: 582px;
       height: 671px;
       background-image: url(@/assets/rightbgi.png);
+      background-size: cover;
       background-position: right;
       .saleAvager{
           width: 500px;
@@ -956,8 +960,9 @@ export default {
           position: relative;
           .site{
             position: absolute;
+            display: flex;
             top: -42px;
-            left: -3px;
+            left: -33px;
             button{
               width: 70px;
               height: 30px;
@@ -969,22 +974,27 @@ export default {
                       color: #3db3eb;
                     }
             }
-            img{
-              width: 20px;
-              height: 20px;
-              position: absolute;
-              top: 6px;
-              right: 11px;
-            }
-            input{
-              height: 30px;
-              background-color: transparent;
-              color: #fff;
-              border:1px solid #287adf;
+            .inputbox{
+              width: 180px;
+              position: relative;
               margin-left: 10px;
-              padding-left: 10px;
-              &::placeholder{
+              img{
+                width: 20px;
+                height: 20px;
+                position: absolute;
+                top: 6px;
+                right: 0px;
+              }
+              input{
+                height: 30px;
+                background-color: transparent;
                 color: #fff;
+                border:1px solid #287adf;
+                margin-left: 10px;
+                padding-left: 10px;
+                &::placeholder{
+                  color: #fff;
+                }
               }
             }
           }

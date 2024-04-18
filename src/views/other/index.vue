@@ -5,7 +5,6 @@
       <div class="title" >
         {{companyName}}商品数据展示
       </div>
-      <!-- <sideNav /> -->
     </header>
     <div class="body">
       <div class="left">
@@ -74,25 +73,158 @@
           <div class="linetu" ref="linetu"></div>
         </div>
       </div>
-      <div class="middle"></div>
-      <div class="right"></div>
+      <div class="middle">
+        <div class="map" ref="mapRef">
+          <ThreeMap :price="lowerPrice" @allProductfn="allProductfn" @lowProductfn="lowProductfn" @lowerpricefn="lowerpricefn" ref="map"></ThreeMap>
+        </div>
+        <div class="numtop">
+          <div class="numtext">关键词</div>
+          <div class="numtext">最低价</div>
+          <div class="numtext" v-if="price">低价商品数</div>
+          <div class="numtext" v-else>总商品数</div>
+        </div>
+        <div class="numbotton">
+          <div class="numbgi">
+            <el-select v-model="mapkeyword" placeholder="请选择" @change="changePrice">
+              <el-option
+                v-for="item in options"
+                :key="item"
+                :label="item"
+                :value="item" style="text-align: center;">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="numbgi">
+            <input type="number" placeholder="最低价" v-model="price" @input="changePrice">
+          </div>
+          <div class="numbgi">
+            <input type="number" v-model="lowProduct" disabled>
+            <!-- <p>{{this.lowProduct}}</p> -->
+            <!-- <p><CountTo :startVal='0' :endVal='lowProduct' :duration='2000' /></p> -->
+          </div>
+        </div>
+        <!-- <div class="allnum">总商品数量<p>{{allproduct  }}</p></div> -->
+      </div>
+      <div class="right">
+        <div class="saleAvager">
+          <div class="site">
+           <div class="box"> 链接总数：<CountTo :startVal='0' :endVal='allLinknum' :duration='1000' /></div>
+            <div class="box">暂无地区数：<CountTo :startVal='0' :endVal='unlinknum' :duration='1000' /></div>
+            <!-- <button @click="changeSite()">全部</button>
+            <button @click="changeSite('淘宝')">淘宝</button>
+            <button @click="changeSite('京东')">京东</button>
+            <button @click="changeSite('拼多多')">拼多多</button>
+            <button @click="changeSite('1688')">1688</button>
+            <div class="inputbox">
+              <img src="@/assets/search.png" alt="">
+              <input type="text" placeholder="请输入" v-model="searchValue">
+            </div> -->
+          </div>
+          <div class="circleTitle">
+            <div class="line"></div>
+              <p>总链接地区分布</p>
+            <div class="line"></div>
+          </div>
+          <div class="nodate" v-if="nodate">暂无数据</div>
+          <div class="bingtu" v-else>
+            <div class="partbody">
+              <!-- <div class="allbox">
+                <div class="leftt">
+                  <div class="box">
+                   <p>链接总数</p>
+                    <p><CountTo :startVal='0' :endVal='allLinknum' :duration='1000' /></p>
+                  </div>
+                  <div class="box" v-if="this.unlinknum">
+                    <p>暂无地区数</p>
+                    <p><CountTo :startVal='0' :endVal='unlinknum' :duration='1000' /></p>
+                  </div>
+                </div>
+              </div> -->
+              <div class="linknum" ref="linknum"></div>
+            </div>
+            <!-- <div class="showGoods">
+              <div class="shangpin" v-for="(item,index) in lowerlist" :key="index">
+                <div class="s-left">
+                  <img :src="item.imgUrl" alt="" @error=handleImageError v-if="item.imgUrl">
+                  <img src="@/assets/imgerro.jpg" alt="" v-else>
+                </div>
+                <div class="s-right">
+                  <p>{{ item.title }}</p>
+                  <div class="s-title">
+                    店铺：{{ item.shop }}
+                  </div>
+                  <div class="price">
+                    <p>￥{{ item.price }}</p>
+                    <p v-if="item.deal">销售量:{{ item.deal }}</p> 
+                  </div>
+                  <div class="price">
+                    <p>{{ item.site }}</p>
+                    <p v-if="item.location">地区：{{ item.location }}</p>
+                  </div>
+                </div>
+                <div class="money">
+                  <a :href="item.detailUrl" target="_blank">
+                    <button>跳转详情</button>
+                  </a>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <div class="priceAvager">
+          <div class="circleTitle">
+            <div class="line"></div>
+              <p>重点链接监控情况</p>
+            <div class="line"></div>
+          </div>
+          <div class="bingtu">
+            <div class="showGoods">
+              <div class="shangpin" v-for="(item,index) in linkList" :key="index">
+                <div class="s-left">
+                  <a :href="item.detailUrl" target="_blank">
+                    <img :src="item.imgUrl" alt="" @error=handleImageError v-if="item.imgUrl">
+                    <img src="@/assets/imgerro.jpg" alt="" v-else>
+                  </a>
+                </div>
+                <div class="s-right">
+                  <p>{{ item.title }}</p>
+                  <div class="s-title">
+                    店铺：{{ item.shop }}
+                  </div>
+                  <div class="price">
+                    <p>￥{{ item.price }}</p>
+                    <p v-if="item.deal">{{ item.deal }}</p>
+                  </div>
+                  <div class="price">
+                    <p v-if="item.site">{{ item.site }}</p>
+                    <p v-if="item.location">地区：{{ item.location }}</p>
+                  </div>
+                </div>
+                <div class="link">
+                  <p class="p1" v-if="item.sj==='上架中'">{{ item.sj }}</p>
+                  <p class="p2" v-else>{{ item.sj }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
     </div>
   </div>
 </template>
-
 <script>
 import * as echarts from 'echarts'
-// import CountTo from 'vue-count-to';
-// import ThreeMap from '@/views/map/components/Threemap' 
-import { lowerGoodsApi, linetuApi, lineDataApi, linkDetailApi,storeInfoApi } from '@/apis/map'
+import CountTo from 'vue-count-to';
+import ThreeMap from '@/views/map/components/Threemap' 
+import { lowerGoodsApi, linetuApi, lineDataApi, linkDetailApi,storeInfoApi,maplistApi } from '@/apis/map'
 import { getInfoApi } from '@/apis/user'
 import store from '@/store'
 // import cloneDeep from 'lodash/cloneDeep'; //lodash库中深拷贝对象的方法
 export default {
   name:'MapIndex',
   components: {
-    // CountTo,
-    // ThreeMap,
+    CountTo,
+    ThreeMap,
   },
   data() {
     return {
@@ -124,19 +256,105 @@ export default {
       superData: [], //优惠商家,
       detailinfo: [],
       xdata:[] , //折线图x轴数据
-      keywordAll: [], //关键词
-      companyName:store.getters.companyName
+      keywordAll: [], //全部关键词
+      keywordPrice:[], //全部关键词+价格
+      companyName: store.getters.companyName,
+      allparams: {   //总链接地区参数
+          // lowestPrice: 0,
+          isArea: '1',
+          keywordAll: store.getters.keywordAll
+        },
     };
   },
   async created() {
+    
     await this.getinfo()
     this.changeSite()
     this.getlineData()
     this.getlink()
     this.storeInfo()
     // this.getPrice()
+    this.getlinknumApi()
   },
   methods: {
+    //获取链接数量接口
+    async getlinknumApi() {
+      // if (this.params.keyword) {
+      //   this.allparams.keyword=this.params.keyword
+      // //   store.getters.keywordPrice.forEach((item) => {
+      // //   if (this.allparams.keyword === item.word) {
+      // //     this.allparams.lowestPrice=item.lowestPrice
+      // //   }
+      // // })
+      // }
+      // if (this.params.site) {
+      //   this.allparams.site=this.params.site
+      // }
+      const res = await maplistApi(this.allparams)
+      this.linknum = []
+      this.allLinknum=0
+      res.forEach(item => {
+        if (item.location == '暂无') {
+          this.unlinknum = item.uniqueProductCount
+        } else {
+          this.linknum.push({ name: item.location, value: item.uniqueProductCount })
+          this.allLinknum+=item.uniqueProductCount
+        }
+      })
+      this.allLinknum += this.unlinknum
+      this.getlinknum()
+    },
+    //链接总数量
+    getlinknum() {
+      this.myChart1 = this.echarts.init(this.$refs.linknum)
+      let option
+      option = {
+          tooltip: {
+          trigger: 'item',
+          formatter:'{a}<br/>{b}:{c}({d}%)'
+          },
+        // legend: {
+        //     top:'30%',
+        //     right: '5%',
+        //     orient: 'vertical',
+        //     textStyle: {  color: '#fff'},
+        //   },
+          series: [
+            {
+              name: '链接总数量',
+              type: 'pie',
+              radius: ['40%', '70%'],
+              avoidLabelOverlap: false,
+              label: {
+                color:'#fff',
+                // show: false,
+              //   // position: 'center',
+              //   // formatter:'{b}:{d}%'
+              },
+               emphasis: {
+                itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+               },
+              // labelLine: {
+              //   show: false
+              // },
+              data: this.linknum
+            }
+          ]
+      };
+      this.changePages1()
+      option && this.myChart1.setOption(option);
+     
+    },
+    //总链接地区分布跳转
+    changePages1() {
+      this.myChart1.on('click',({ data }) =>{
+        this.$router.push({ name: 'goodsAlayse', params: { location: data.name,keyword:this.params.keyword } }).catch(err => err)
+      })
+    },
     //获取监控商家店铺信息
     async storeInfo() {
       const res = await storeInfoApi()
@@ -171,6 +389,7 @@ export default {
        const res = await getInfoApi({ userId: store.getters.id })
        res.forEach(item => {
          this.options.push(item.keyword)
+         this.keywordPrice.push({word:item.keyword,lowestPrice:item.lowestPrice})
        })
       for (let i = 0; i < this.options.length; i++){
          if (i > 0) {
@@ -178,6 +397,7 @@ export default {
          }
        }
        await this.$store.commit('saveKeywordAll', this.keywordAll.join(','))
+       this.$store.commit('savekeywordPrice',this.keywordPrice)
        this.onshow=true
      },
     //选择展示的折线图
@@ -270,7 +490,6 @@ export default {
          }
       }
       newlinePrice=newlinePrice.slice(-7)
-      //  console.log('newlinePrice',newlinePrice);
        let itemsava = []
        this.xdata = []
         for (let a = 0; a < newlinePrice.length; a++){
@@ -280,37 +499,65 @@ export default {
       let shijian
        let ab=0
        // console.log('xdata', this.xdata);
-       // for (let i1 = 0; i1 < this.xdata.length; i1++){
          for (let i2 = 0; i2 < newlinePrice.length; i2++){
-       //     // console.log(this.xdata[i1] == newlinePrice[i2].searchDate.splice(1, 2).join('/'));
            for (let i4 = 0; i4 < newlinePrice[i2].data.length; i4++){
          let arr=Array(this.xdata.length).fill(NaN)
           for (let i1 = 0; i1 < this.xdata.length; i1++) {
             if (this.xdata[i1] === newlinePrice[i2].searchDate.slice(1, 3).join('/')) {
              shijian=i1
             }
-          }
+             }
+             let avag = 0
              newlinePrice[i2].data[i4].response.items.forEach(item => {
-              let sindex
-               let flag = itemsava.some((newitem,index) => {
-                 if (item.sku_id == newitem.sku_id) {
-                  sindex=index
-                 return true
-                 } else {
-                 return false
-               }
-               })
-               if (!flag) {
-                 itemsava[ab] = { data: arr, sku_id: item.sku_id,numIid:newlinePrice[i2].data[i4].numIid }
-                 itemsava[ab].data[shijian]=Number(item.sku_price)
-                 ab++
-               } else {
-                itemsava[sindex].data[shijian]=Number(item.sku_price)
-               }
+              //每个sku都添加进去
+              // let sindex --numIid+sku_id
+              //  let flag = itemsava.some((newitem,index) => {
+              //    if (item.sku_id == newitem.sku_id) {
+              //     sindex=index
+              //    return true
+              //    } else {
+              //    return false
+              //  }
+              //  })
+              //  if (!flag) {
+              //    itemsava[ab] = { data: arr, sku_id: item.sku_id,numIid:newlinePrice[i2].data[i4].numIid }
+              //    itemsava[ab].data[shijian]=Number(item.sku_price)
+              //    ab++
+              //  } else {
+              //   itemsava[sindex].data[shijian]=Number(item.sku_price)
+              //  }
+
+
+               //只计算spu---numIid
+               
+              avag+=Number(item.sku_price)
              })
+             let sindex
+             avag =(avag/ newlinePrice[i2].data[i4].response.items.length).toFixed(2)
+             let flag = itemsava.some((item,index) => {
+                if ( newlinePrice[i2].data[i4].numIid== item.numIid) {
+                 sindex=index
+                return true
+                } else {
+                return false
+              }
+              })
+              if (!flag) {
+                itemsava[ab] = { data: arr,numIid:newlinePrice[i2].data[i4].numIid }
+                itemsava[ab].data[shijian]=Number(avag)
+                ab++
+              } else {
+               itemsava[sindex].data[shijian]=Number(avag)
+              }
          }
        }
-      // console.log('itemsava',itemsava);
+      for (let n = 0; n < itemsava.length; n++){
+        for (let m = 1; m < itemsava[n].data.length; m++){
+           if (itemsava[n].data[m - 1] && !(itemsava[n].data[m])) {
+             itemsava[n].data[m]=itemsava[n].data[m-1]
+           }
+        }
+      }
       //    for (let n = 0; n < itemsava.length; n++){
       //      for (let m = n + 1; m < itemsava.length; m++){
       //        if (itemsava[n].numIid === itemsava[m].numIid) {
@@ -321,19 +568,18 @@ export default {
       //      }
       //    }
           // console.log('itemsava',itemsava);
-      //     for (let x = 0; x < this.options1.length; x++){
-      //       for (let y = 0; y < itemsava.length; y++){
-      //         if (itemsava[y].numIid === this.options1[x].numIid) {
-      //           let obj = {
-      //             name: this.options1[x].title,
-      //             data: itemsava[y].avag,
-      //             type:'line'
-      //           }
-      //           this.series[y]=obj
-      //         }
-        //      }
-        // }
-      //  console.log('this',this.series);
+        for (let x = 0; x < this.options1.length; x++){
+          for (let y = 0; y < itemsava.length; y++){
+            if (itemsava[y].numIid === this.options1[x].numIid) {
+              let obj = {
+                name: this.options1[x].title,
+                data: itemsava[y].data,
+                type:'line'
+              }
+              this.series[y]=obj
+            }
+           }
+       }
         this.chartZhuzhuangtu()
       
     },
@@ -450,7 +696,9 @@ export default {
         },
         series: this.series
       }
+
       option && myChart.setOption(option);
+
       if (this.series.length <= 5) {
         myChart.setOption({legend:{show:true}})
         myChart.setOption({grid:{top:'35%'}})
@@ -458,6 +706,9 @@ export default {
         myChart.setOption({ legend: { show: false } })
         myChart.setOption({grid:{top:'10%'}})
       }
+      // myChart.on('click', { seriesType: 'line' }, function (params) {
+      //   console.log('折线图点击',params);
+      // })
     },
 
     //图片路径错误时换成指定图片
@@ -476,36 +727,28 @@ export default {
   // }
 };
 </script>
-
-
 <style lang="scss" scoped>
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-.wrap{
-  background-image: url(@/assets/mapbgc.png); 
-  width: 100%;   
-  height: 100vh;  
-  position: absolute;  
-  background-repeat: no-repeat;     
-  background-size: 100% 100%;
-  background-color: #0c234d;
-  padding:20px;
-  .company{
-    color: #fff;
-    margin-left: 100px;
-    height: 70px;
-    font-size: 26px;
-    font-weight: bolder;
-    line-height: 54px;
-  }
-  .header {
-    width: 559.783rpx;
-    height: 128px;
+.wrap {
+  width: 100%;
+  height: 100%;
+  background-image: url(@/assets/otherbgi.png);
+  background-color: #081e44;
+  position: absolute;
+  // top: 0;
+  // left: 0;
     background-repeat: no-repeat;
+    background-size: 100% 100%;
+  .header {
+    width: 927px;
+    background-repeat: no-repeat;
+    height: 128px;
     background-image: url(@/assets/maptitle.png);
+    background-size: cover;
     margin-left: 551px;
     .title {
       width: 100%;
@@ -538,6 +781,7 @@ export default {
       width: 614px;
       height: 686px;
       background-image: url(@/assets/leftbgi.png);
+      background-size: cover;
         .circle{
           width: 440px;
           height: 340px;
@@ -805,9 +1049,10 @@ export default {
       }
     .right {
       margin-top: 10px;
-      width: 613px;
+      width: 582px;
       height: 671px;
       background-image: url(@/assets/rightbgi.png);
+      background-size: cover;
       background-position: right;
       .saleAvager{
           width: 500px;
@@ -817,8 +1062,14 @@ export default {
           position: relative;
           .site{
             position: absolute;
+            display: flex;
             top: -42px;
             left: -3px;
+            .box{
+              color: #fff;
+              margin-right: 40px;
+              font-size: 20px;
+            }
             button{
               width: 70px;
               height: 30px;
@@ -830,28 +1081,33 @@ export default {
                       color: #3db3eb;
                     }
             }
-            img{
-              width: 20px;
-              height: 20px;
-              position: absolute;
-              top: 6px;
-              right: 11px;
-            }
-            input{
-              height: 30px;
-              background-color: transparent;
-              color: #fff;
-              border:1px solid #287adf;
+            .inputbox{
+              width: 180px;
+              position: relative;
               margin-left: 10px;
-              padding-left: 10px;
-              &::placeholder{
+              img{
+                width: 20px;
+                height: 20px;
+                position: absolute;
+                top: 6px;
+                right: 0px;
+              }
+              input{
+                height: 30px;
+                background-color: transparent;
                 color: #fff;
+                border:1px solid #287adf;
+                margin-left: 10px;
+                padding-left: 10px;
+                &::placeholder{
+                  color: #fff;
+                }
               }
             }
           }
           .circleTitle{
             padding-top: 35px;
-            padding-left: 40px;
+            padding-left: 80px;
             display: flex;
             .line{
               width: 56px;
@@ -873,7 +1129,39 @@ export default {
             color: #ccc;
           }
           .bingtu{
-            padding: 10px 30px;
+            // padding: 10px 30px;
+            .partbody{
+        display: flex;
+        align-items: center;
+        .allbox{
+          height: 345px;
+        }
+        .search{
+      font-size: 12px;
+      padding-left: 20px;
+      .el-select{
+        width: 100px;
+      }
+    }
+        .leftt{
+          width: 200px;
+          height: 285px;
+          margin-top: 30px;
+          .box{
+            margin-bottom: 40px;
+            margin-left: 20px;
+            p{
+            text-align: center;
+            height: 36px;
+            font-size: 32px;
+          }
+          }
+        }
+        .linknum{
+          width: 460px;
+          height: 285px;
+        }
+      }
             .showGoods{
               height:245px;
               width:439px;
@@ -976,7 +1264,7 @@ export default {
           .bingtu{
             padding: 10px 30px;
             .showGoods{
-              height:245px;
+              height:230px;
               width:439px;
               overflow-y: scroll;
               &::-webkit-scrollbar {
@@ -1034,8 +1322,23 @@ export default {
                   width: 75px;
                   color: #fff;
                   font-size: 12px;
-                  text-align: center;
-                  line-height: 72px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  .p1{
+                    width: 55px;
+                    padding: 5px;
+                    text-align: center;
+                    background-color: #56f48b;
+                    border-radius: 5px;
+                  }
+                  .p2{
+                    width: 55px;
+                    padding: 5px;
+                    text-align: center;
+                    background-color: #f56666;
+                    border-radius: 5px;
+                  }
                 }
               }
 
@@ -1048,4 +1351,5 @@ export default {
 ::v-deep .el-select-dropdown__list{
   padding: 6px 15px;
 }
+
 </style>

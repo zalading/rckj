@@ -6,14 +6,14 @@
     </div>
     <div class="demo-input-suffix">
       <div class="top">
-        <!-- <div class="search">
-          选择关键词：
+        <div class="search">
+          选择地区：
           <el-input
             placeholder="请输入关键词"
             v-model="params.keyword"  @input="changeGoods">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
-        </div> -->
+        </div>
         <div class="search">
           <!-- <button @click="handleEdit()">新增关键词</button> -->
         </div>
@@ -36,11 +36,11 @@
     </el-table-column>
     <el-table-column
       prop="keyword"
-      label="关键词">
+      label="店铺图片">
     </el-table-column>
     <el-table-column
       prop="merchantCount"
-      label="商家数量">
+      label="店铺名称">
     </el-table-column>
     <el-table-column
       prop="productCount"
@@ -48,24 +48,17 @@
     </el-table-column>
     <el-table-column
       prop="productSales"
-      label="商品销量">
+      label="宝贝描述">
     </el-table-column>
     <el-table-column
       prop="linkMonitorCount"
-      label="链接监控数量">
+      label="商家服务">
     </el-table-column>
     <el-table-column
       prop=" createTime"
-      label="创建时间">
+      label="物流服务">
       <template slot-scope="scope">
         <p>{{ getTime(scope.row.createTime)}}</p>
-      </template>
-    </el-table-column>
-    <el-table-column
-      prop="updateTime"
-      label="更新时间">
-      <template slot-scope="scope">
-        <p>{{ getTime(scope.row.updateTime)  }}</p>
       </template>
     </el-table-column>
     <el-table-column label="操作">

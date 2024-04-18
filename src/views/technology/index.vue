@@ -2,7 +2,7 @@
   <div class="content">
     <div class="one">
       <div class="header">
-        <div><img src="../../assets/shouye/logo.png" alt="" class="logo"></div>
+        <div><img src="../../assets/shouye/logo.png" alt=""  class="logo"></div>
         <!-- 导航栏 -->
         <div class="nav">
           <ul>
@@ -16,12 +16,12 @@
         </div>
         <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon">
       </div>
-      <img src="@/assets/shouye/technologyimg.png" alt="" class="image">
+      <img src="@/assets/shouye/technologyimg.png" alt=""  class="image">
     </div>
     <div class="two">
       <h3>我们的技术</h3>
       <div class="blueline"></div>
-      <img src="@/assets/shouye/ourstechnology.png" alt="">
+      <img src="@/assets/shouye/ourstechnology.png" alt="" >
     </div>
     <div class="three">
       <h3>我们的实力</h3>
@@ -34,8 +34,8 @@
       <div class="picture">
         <img src="@/assets/shouye/wuuliangye.png" alt="" class="img1">
         <img src="@/assets/shouye/taobao.png" alt="" class="img2">
-        <img src="@/assets/shouye/haier.png" alt="" class="img2">
-        <img src="@/assets/shouye/midea.png" alt="">
+        <img src="@/assets/shouye/haier.png" alt="" class="img3">
+        <img src="@/assets/shouye/midea.png" alt="" class="img4">
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     godashbord() {
-      this.$router.push('/dashbord')
+      this.$router.push('/')
     },
     ggobusiness() {
         this.$router.push('/business')
@@ -148,8 +148,11 @@ export default {
     }
   }
   .image{
-    margin-top: 6vh;
+    width: 1714px;
+    height: 688px;
+    margin-top: 60px;
     margin-left: 80px;
+    background-size: cover;
   }
 }
 .two{
@@ -170,8 +173,11 @@ export default {
     background-color: rgba(31, 108, 196, 1);
   }
   img{
+    width: 1260px;
+    height: 570px;
     margin-top: 193px;
     margin-left: 313px;
+    background-size: cover;
   }
   
 }
@@ -212,11 +218,24 @@ export default {
     display: flex;
     align-items: center;
     .img1{
+      width: 212px;
+      height: 212px;
       margin-right: 80px;
       margin-left: 74px;
     }
     .img2{
+      width: 248px;
+      height: 248px;
       margin-right: 63px;
+    }
+    .img3{
+      width: 248px;
+      height: 124px;
+      margin-right: 63px;
+    }
+    .img4{
+      width: 293px;
+      height: 103px;
     }
   }
 }

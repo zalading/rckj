@@ -2,7 +2,7 @@
   <div class="conten">
     <div class="one">
       <div class="header">
-        <div><img src="../../assets/shouye/logo.png" alt="" class="logo"></div>
+        <div><img src="../../assets/shouye/logo.png" alt=""  class="logo"></div>
         <!-- 导航栏 -->
         <div class="nav">
           <ul>
@@ -16,42 +16,42 @@
         </div>
         <img src="@/assets/shouye/loginicon.png" alt="" @click="openLogin" class="loginicon">
       </div>
-      <img src="@/assets/shouye/businessimg.png" alt="" class="image">
+      <img src="@/assets/shouye/businessimg.png"  alt="" class="image">
     </div>
     <div class="two">
       <h3>负责的板块</h3>
       <div class="blueline"></div>
       <ul>
         <li>
-          <img src="@/assets/shouye/business-1.png" alt="">
+          <img src="@/assets/shouye/business-1.png"  alt="">
           <p>控价打假</p>
         </li>
         <li>
-          <img src="@/assets/shouye/business-2.png" alt="">
+          <img src="@/assets/shouye/business-2.png"  alt="">
           <p>假货防货</p>
         </li>
         <li>
-          <img src="@/assets/shouye/business-3.png" alt="">
+          <img src="@/assets/shouye/business-3.png"  alt="">
           <p>品牌入驻</p>
         </li>
         <li>
-          <img src="@/assets/shouye/business-4.png" alt="">
+          <img src="@/assets/shouye/business-4.png"  alt="">
           <p>内容营销</p>
         </li>
         <li>
-          <img src="@/assets/shouye/business-5.png" alt="">
+          <img src="@/assets/shouye/business-5.png"  alt="">
           <p>电商数据</p>
         </li>
         <li>
-          <img src="@/assets/shouye/business-6.png" alt="">
+          <img src="@/assets/shouye/business-6.png"  alt="">
           <p>品牌维护</p>
         </li>
         <li>
-          <img src="@/assets/shouye/business-7.png" alt="">
+          <img src="@/assets/shouye/business-7.png"  alt="">
           <p>渠道管理</p>
         </li>
         <li>
-          <img src="@/assets/shouye/business-8.png" alt="">
+          <img src="@/assets/shouye/business-8.png"  alt="">
           <p>知识产权侵权</p>
         </li>
       </ul>
@@ -94,12 +94,11 @@ export default {
   name: 'BusinessIndex',
   data() {
     return {
-
     }
   },
   methods: {
     godashbord() {
-      this.$router.push('/dashbord')
+      this.$router.push('/')
     },
     gotechnology() {
         this.$router.push('/technology')
@@ -195,6 +194,8 @@ export default {
     }
   }
   .image{
+    width: 1783px;
+    height: 716px;
     margin-top: 6vh;
     margin-left: 40px;
   }
@@ -236,6 +237,7 @@ export default {
       p{
         height: 81px;
         line-height: 81px;
+        font-size: 16px;
         text-align: center;
         background-color:rgba(204, 204, 204, 1);
 ;

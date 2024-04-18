@@ -12,7 +12,7 @@
       <img src="@/assets/password.png" alt="">
       <input type="password" placeholder="请输入密码" v-model="formData.password">
      </div>
-     <p>修改密码</p>
+     <!-- <p>修改密码</p> -->
      <button @click="login">登录</button>
    </div>
   </div>
@@ -88,6 +88,7 @@ export default {
   position: fixed;
   .form{
     background-image: url(@/assets/loginform.png);
+    background-size: cover;
     width: 772px;
     height: 495px;
     margin-top: 206px;

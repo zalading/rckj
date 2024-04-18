@@ -4,13 +4,84 @@
 //   lintOnSave:false
 // })
 
-
+// const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin"); //本地图片压缩
 // 熟悉proxy 代理的用法
 module.exports = {
   devServer: {
     proxy: 'http://192.168.1.116:8080'
     // proxy:'http://www.ranchenkj.com'
+  },
+  chainWebpack:config=>{
+    config.module
+      .rule('images')
+      .use('image-webpack-loader')
+      .loader('image-webpack-loader')
+      .options({
+        mozjpeg: {
+          progressive: true,
+          quality: 65
+        },
+        optipng: {
+          enabled: false
+        },
+        pngquant: {
+          quality: [0.65, 0.9],
+          speed: 4
+        },
+        gifsicle: {
+          interlaced: false
+        },
+        webp: {
+          quality: 75
+        }
+      })
+      .end()
   }
+  // configureWebpack: (config) => {
+  //   let optimization={//放置压缩的操作
+  //     minimizer: [
+  //       //1. css代码压缩（原生格式压缩为一行，注意：默认生产模式已经开启了html压缩、js压缩，不需要配置）
+  //       // new CssMinimizerPlugin(), 
+   
+  //       // //2. js压缩
+  //       // new TerserWebpackPlugin({
+  //       //   parallel: threads, //开启多进程和设置进程数量
+  //       // }),
+   
+  //       //3. 压缩图片
+  //       new ImageMinimizerPlugin({
+  //         minimizer: {
+  //           implementation: ImageMinimizerPlugin.imageminGenerate,
+  //           options: {
+  //             plugins: [
+  //               ["gifsicle", { interlaced: true }],
+  //               ["jpegtran", { progressive: true }],
+  //               ["optipng", { optimizationLevel: 5 }],
+  //               [
+  //                 "svgo",
+  //                 {
+  //                   plugins: [
+  //                     "preset-default",
+  //                     "prefixIds",
+  //                     {
+  //                       name: "sortAttrs",
+  //                       params: {
+  //                         xmlnsOrder: "alphabetical",
+  //                       },
+  //                     },
+  //                   ],
+  //                 },
+  //               ],
+  //             ],
+  //           },
+  //         },
+  //       }),
+  //     ],
+  //   }
+  //   Object.assign(config, {
+  //     optimization
+  //   })
+  //  }
 }
 
 // 'use strict'
