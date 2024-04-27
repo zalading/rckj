@@ -12,15 +12,15 @@
           <i class="el-icon-close" @click="drawer=false"></i>
         </div>
         <ul>
-          <li @click="nav2">
-            <img src="@/assets/sidenav21.png" alt="" class="icon1">
-            <img src="@/assets/sidenav22.png" alt="" class="icon2">
-            <span>数据大屏</span>
-          </li>
           <li @click="nav1">
             <img src="@/assets/sidenav11.png" alt="" class="icon1">
             <img src="@/assets/sidenav12.png" alt="" class="icon2">
             <span>数据展示</span>
+          </li>
+          <li @click="nav2">
+            <img src="@/assets/sidenav21.png" alt="" class="icon1">
+            <img src="@/assets/sidenav22.png" alt="" class="icon2">
+            <span>数据大屏</span>
           </li>
           <li @click="nav3">
             <img src="@/assets/sidenav31.png" alt="" class="icon1">
@@ -118,26 +118,32 @@ export default {
       color: rgb(181,211,245);
     }
   ::v-deep .el-drawer__body{
-      width: 155px;
+      width: 185px;
+      background-color: #111727;
       .title{
         padding: 15px 15px 0 13px;
         color: #ccc;
         display: flex;
         justify-content: end;
+        margin-bottom: 30px;
       }
       ul{
         padding-left: 0;
         li{
           list-style: none;
-          height: 30px;
-          line-height: 30px;
-          margin-left: 25px;
+          height: 40px;
+          line-height: 40px;
+          padding-left: 15px;
           margin-bottom: 10px;
           display: flex;
           align-items: center;
           cursor: pointer;
+          color: #fff;
           &:hover{
-            color: #1d99c1;
+            // color: #1d99c1;
+            background-color: #364252;
+            border-radius: 5px;
+            
             .icon1{
               display: none;
             }
@@ -148,7 +154,6 @@ export default {
           img{
             width: 14px;
             height: 16px;
-            margin-right: 10px;
             vertical-align: text-bottom;
           }
           .icon1{
@@ -158,6 +163,9 @@ export default {
             display: none;
           }
           span{
+            width: 130px;
+            text-align: center;
+            display: inline-block;
             font-size: 16px;
           }
         }

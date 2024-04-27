@@ -15,7 +15,7 @@ router.beforeEach(async(to, from, next) => {
     // 存在token
     if (whiteList.includes(to.path)) {
       // 跳转到主页
-      next('/dataScreen') // 中转到主页
+      next('/map') // 中转到主页
       // next（地址）并没有执行后置守卫
       nprogress.done()
     } else {

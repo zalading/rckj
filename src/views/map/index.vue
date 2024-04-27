@@ -176,7 +176,7 @@
                   </div>
                   <div class="price">
                     <p>￥{{ item.price }}</p>
-                    <p v-if="item.deal">{{ item.deal }}</p>
+                    <p v-if="item.deal">销量：{{ item.deal }}</p>
                   </div>
                   <div class="price">
                     <p v-if="item.site">{{ item.site }}</p>
@@ -184,7 +184,8 @@
                   </div>
                 </div>
                 <div class="link">
-                  <p>{{ item.sj }}</p>
+                  <p class="p1" v-if="item.sj==='上架中'">{{ item.sj }}</p>
+                  <p class="p2" v-else>{{ item.sj }}</p>
                 </div>
               </div>
             </div>
@@ -635,7 +636,8 @@ export default {
 .wrap {
   width: 100%;
   height: 100%;
-  background-image: url(@/assets/mapbgc.png);
+  background-image: url(@/assets/otherbgi.png);
+  background-color: #081e44;
   position: absolute;
   // top: 0;
   // left: 0;
@@ -1183,8 +1185,23 @@ export default {
                   width: 75px;
                   color: #fff;
                   font-size: 12px;
-                  text-align: center;
-                  line-height: 72px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  .p1{
+                    width: 55px;
+                    padding: 5px;
+                    text-align: center;
+                    background-color: #56f48b;
+                    border-radius: 5px;
+                  }
+                  .p2{
+                    width: 55px;
+                    padding: 5px;
+                    text-align: center;
+                    background-color: #f56666;
+                    border-radius: 5px;
+                  }
                 }
               }
 

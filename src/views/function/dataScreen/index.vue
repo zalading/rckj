@@ -82,7 +82,8 @@
             </div>
             <div class="box">
               <p>占比</p>
-              <p>{{(((this.alllowsale/this.allsale)*100).toFixed(2))}}%</p>
+              <p v-if="isNaN((((this.alllowsale/this.allsale)*100).toFixed(2)))">暂无</p>
+              <p v-else>{{(((this.alllowsale/this.allsale)*100).toFixed(2))}}%</p>
             </div>
             <div class="box">
               <p>暂无地区数</p>
@@ -116,8 +117,8 @@
               </p>
               <h4 :title="item.shop" class="p1">{{item.shop}}</h4>
               <h4 :title="nameSplit(item)">{{nameSplit(item)}}</h4>
-              <span>￥{{item.price[0]}}</span>
               <span>￥{{item.price[1]}}</span>
+              <span>￥{{item.price[0]}}</span>
               <span>￥{{item.cha}}</span>
               <i>{{ item.continuousLowPriceDays }}天</i>
               <!-- <span><el-switch v-model="item.isMonitored" disabled></el-switch></span> -->
@@ -720,86 +721,92 @@ export default {
         this.daylinkparams.site ='淘宝2'
       } else if (this.params.site === '京东') {
         this.daylinkparams.site ='京东2'
-      }
-      const res = await beforeApi(this.daylinkparams)
-      let index1 = 0
-      let sindex
-      let sindex1
-      console.log('[]',this.daylink);
-        for (let i = 0; i < res.length; i++) {
-          if (res[i].response.items.length > 0) {
-            for (let n = 0; n < res[i].response.items.length; n++){
-              let flag = this.daylink.some((item, index) => {
-              if (item.sku_id == res[i].response.items[n].sku_id) {
-                sindex1=index
-                return true
-              } else {
-                return false
-                }
-            })
-              if (!flag) {
-                this.daylink[index1] = ({
-                 sku_id: res[i].response.items[n].sku_id,
-                 price: [Number(res[i].response.items[n].sku_price),NaN],
-                 imgUrl: res[i].imgUrl,
-                 shop: res[i].shop,
-                 title:res[i].title,
-                 sku_properties_name: res[i].response.items[n].sku_properties_name,
-                 detailUrl: res[i].detailUrl,
-                 continuousLowPriceDays:res[i].continuousLowPriceDays
-               })
-                index1 = index1 + 1
-              } else {
-                this.daylink[sindex1].price[1]=Number(res[i].yesterdayResponse.items[n].sku_price)
-            }
-            }
-            }
-      }
-      for (let j = 0; j < res.length; j++){
-        if (res[j].yesterdayResponse) {
-        for (let k = 0; k < res[j].yesterdayResponse.items.length; k++){
-          let flag = this.daylink.some((item2, index) => {
-              if (item2.sku_id == res[j].yesterdayResponse.items[k].sku_id) {
-                sindex=index
-                return true
-              } else {
-                return false
-              }
-            })
-       
-          if (!flag) {
-            this.daylink[index1]=({ sku_id: res[j].yesterdayResponse.items[k].sku_id, price: [NaN,Number(res[j].yesterdayResponse.items[k].sku_price)],imgUrl:res[j].imgUrl })
-            this.daylink[index1].shop = res[j].shop
-            this.daylink[index1].title = res[j].title
-            this.daylink[index1].sku_properties_name=res[j].yesterdayResponse.items[k].sku_properties_name
-            this.daylink[index1].detailUrl = res[j].detailUrl
-            this.daylink[index1].continuousLowPriceDays=res[j].continuousLowPriceDays
-            index1=index1+1
-          } else {
-            this.daylink[sindex].price[1]=Number(res[j].yesterdayResponse.items[k].sku_price)
-         
-          }
-          }
-        }
-      }
-      if (this.daylink.length <= 0) {
-        this.nodata=true
       } else {
-        this.nodata=false
+        this.daylinkparams.site=this.params.site
       }
-      this.daylink.forEach((item) => {
-        item.cha=Number(item.price[0])-Number(item.price[1])
-        if (isNaN(item.price[0])) {
-          item.price[0]='暂无'
+      this.$nextTick(async() => {
+        const res = await beforeApi(this.daylinkparams)
+        let sindex
+        let sindex1
+        console.log('[]',this.daylink);
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].response.items.length > 0) {
+              for (let n = 0; n < res[i].response.items.length; n++){
+                let flag = this.daylink.some((item, index) => {
+                if (item.sku_id == res[i].response.items[n].sku_id) {
+                  sindex1=index
+                  return true
+                } else {
+                  return false
+                  }
+              })
+                if (!flag) {
+                  let obj = {
+                    sku_id: res[i].response.items[n].sku_id,
+                   price: [Number(res[i].response.items[n].sku_price),NaN],
+                   imgUrl: res[i].imgUrl,
+                   shop: res[i].shop,
+                   title:res[i].title,
+                   sku_properties_name: res[i].response.items[n].sku_properties_name,
+                   detailUrl: res[i].detailUrl,
+                   continuousLowPriceDays:res[i].continuousLowPriceDays
+                  }
+                  this.daylink.push(obj)
+                } else {
+                  this.daylink[sindex1].price[1]=Number(res[i].yesterdayResponse.items[n].sku_price)
+              }
+              }
+              }
         }
-        if (isNaN(item.price[1])) {
-          item.price[1]='暂无'
+        for (let j = 0; j < res.length; j++){
+          if (res[j].yesterdayResponse) {
+          for (let k = 0; k < res[j].yesterdayResponse.items.length; k++){
+            let flag = this.daylink.some((item2, index) => {
+                if (item2.sku_id == res[j].yesterdayResponse.items[k].sku_id) {
+                  sindex=index
+                  return true
+                } else {
+                  return false
+                }
+              })
+         
+            if (!flag) {
+              let obj2 = {
+                sku_id: res[j].yesterdayResponse.items[k].sku_id,
+                   price: [NaN,Number(res[j].yesterdayResponse.items[k].sku_price)],
+                   imgUrl: res[j].imgUrl,
+                   shop: res[j].shop,
+                   title:res[j].title,
+                   sku_properties_name: res[j].yesterdayResponse.items[k].sku_properties_name,
+                   detailUrl: res[j].detailUrl,
+                   continuousLowPriceDays:res[j].continuousLowPriceDays
+              }
+              this.daylink.push(obj2)
+            } else {
+              this.daylink[sindex].price[1]=Number(res[j].yesterdayResponse.items[k].sku_price)
+            }
+            }
+          }
         }
-        if (isNaN(item.cha)) {
-          item.cha='暂无'
+        if (this.daylink.length <= 0) {
+          this.nodata=true
+        } else {
+          this.nodata=false
         }
+        this.daylink.forEach((item) => {
+          item.cha=Number(item.price[0])-Number(item.price[1])
+          if (isNaN(item.price[0])) {
+            item.price[0]='暂无'
+          }
+          if (isNaN(item.price[1])) {
+            item.price[1]='暂无'
+          }
+          if (isNaN(item.cha)) {
+            item.cha='暂无'
+          }
+        })
+        console.log('dalink',this.daylink);
       })
-      console.log('dalink',this.daylink);
     },
     //监控链接销售额接口
     async getlinkSales() {
@@ -1201,7 +1208,7 @@ export default {
           .p1{
           width: 110px;
           height: 80px;
-          line-height: 60px;
+          line-height: 80px;
           font-weight: normal;
           text-align: center;
           font-size: 12px;

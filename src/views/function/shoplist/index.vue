@@ -15,8 +15,13 @@
           </el-input>
         </div>
         <div class="search">
-          <!-- <button @click="handleEdit()">新增关键词</button> -->
-        </div>
+        店铺搜索：
+        <el-input
+    placeholder="请输入内容"
+    prefix-icon="el-icon-search"
+    v-model="shopvalue">
+  </el-input>
+  </div>
       </div>
     </div>
     <el-table
@@ -93,7 +98,7 @@
 </template>
 
 <script>
-import { getInfoApi } from '@/apis/user'
+import { statApi } from '@/apis/shoplist'
 import store from '@/store'
 export default {
   name: 'NewlowPrice',
@@ -117,11 +122,12 @@ export default {
           isMonitored:false
         },
         formLabelWidth: '80px',
-        handleTitle:''
+        handleTitle: '',
+        shopvalue:''
        }
   },
   created() {
-    // this.getGoodslist()
+    this.getGoodslist()
   },
   methods: {
     //时间处理
@@ -134,7 +140,7 @@ export default {
       return `${index+1}`
     },
     async getGoodslist() {
-      const res = await getInfoApi(this.params)
+      const res = await statApi(this.params)
       this.tableData=res
     },
      changeGoods() {
